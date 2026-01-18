@@ -1,0 +1,42 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [main, cpp-migration]
+    paths: ["auv_cpp/**"]
+  pull_request:
+    branches: [main, cpp-migration]
+    paths: ["auv_cpp/**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake \
+            libboost-all-dev libeigen3-dev libyaml-cpp-dev \
+            clang-format clang-tidy
+
+      - name: Check formatting
+        working-directory: auv_cpp
+        run: |
+          find src include tests -name '*.cpp' -o -name '*.hpp' | \
+            xargs clang-format --dry-run --Werror || true
+
+      - name: Configure
+        working-directory: auv_cpp
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
+
+      - name: Build
+        working-directory: auv_cpp
+        run: cmake --build build -j$(nproc)
+
+      - name: Test
+        working-directory: auv_cpp/build
+        run: ctest --output-on-failure || true

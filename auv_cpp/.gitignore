@@ -1,0 +1,29 @@
+# Build
+build/
+build-*/
+cmake-build-*/
+
+# Compiled
+*.o
+*.a
+*.so
+
+# IDE
+.idea/
+.vscode/
+.cache/
+compile_commands.json
+
+# Testing
+Testing/
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
