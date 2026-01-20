@@ -6,11 +6,13 @@
 
 int main() {
 
+    //initialize pigpio 
     if(gpioInitialise() < 0) {
         std::cerr << "failed to initialize pigpio" << std::endl;
         return 1;
     }
 
+    //test each motor
     for(int i = 0; i < 50; i++) {
        try {
         Motor motor(i);
