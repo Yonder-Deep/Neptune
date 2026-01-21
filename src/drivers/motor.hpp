@@ -1,4 +1,10 @@
-//motor.hpp is the header file for the motor class
+/**
+@class Motor
+@brief sets speed of motor and can test it
+
+motor.hpp is the header file for the motor class
+it can set the speed of the motor and test it
+*/
 
 #pragma once
 
@@ -41,7 +47,9 @@ class Motor {
             double pwm_speed = speed * (CENTER_PWM_RANGE) / MAX_SPEED + CENTER_PWM_VALUE;
 
             //change motor speed
+            #ifndef BUILD_SIMULATION
             gpioServo(pin, static_cast<unsigned int>(pwm_speed));
+            #endif
         }
 
         //test the motor by setting speed values between time intervals
