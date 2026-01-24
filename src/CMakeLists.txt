@@ -5,6 +5,7 @@ project(neptune CXX)
 add_executable(neptune main.cpp)
 
 #BUILD_SIMULATION option
+#this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
 
 #find pigpio library(only if not in simulation mode)
