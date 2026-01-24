@@ -50,7 +50,7 @@ class Motor {
             #ifndef BUILD_SIMULATION
             gpioServo(pin, static_cast<unsigned int>(pwm_speed));
             #else
-            std::cout << "simulation Motor" << pin << " speed: " << " -> PWM: " << pwm_speed << std::endl;
+            std::cout << "simulation Motor " << pin << " speed: " << " -> PWM: " << pwm_speed << std::endl;
             #endif
         }
 
