@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.25)
 
 project(neptune CXX)
 
-
 add_executable(neptune main.cpp)
+
+#BUILD_SIMULATION option
+option(BUILD_SIMULATION "Build in simulation mode" OFF)
 
 #find pigpio library(only if not in simulation mode)
 if(NOT BUILD_SIMULATION)
@@ -20,13 +22,13 @@ if(NOT BUILD_SIMULATION)
 else()
     #pigpio library isn't required in simulation mode 
     #not sure how simulations will work yet if we do any
-    message(STATUS "Building in simulation mode. Pigpio library not required.")
+    message(STATUS "Building in simulation mode. Pigpio library not used.")
     set(PIGPIO_LINK_LIBS "")
 endif()
 
 #create motor library (just header file)
 add_library(motor INTERFACE)
-target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/api)
+target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
 
 #add pigpio include directory to motor target
 if(NOT BUILD_SIMULATION)
@@ -35,15 +37,16 @@ if(NOT BUILD_SIMULATION)
 endif()
 
 #executable for testing motor(separate from library)
-add_executable(motor_test src/drivers/main.cpp)
+add_executable(motor_test drivers/main.cpp)
 target_link_libraries(motor_test motor)
-if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${PIGPIO_LINK_LIBS})
+
+#define BUILD SIMULATION
+if(BUILD_SIMULATION)
+    target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
 endif()
 
-if(BUILD_TESTS)
-    enable_testing()
-    #add_subdirectory(tests)
+if(NOT BUILD_SIMULATION)
+    target_link_libraries(motor_test ${PIGPIO_LINK_LIBS})
 endif()
 
 #to use the motor library elsewhere
