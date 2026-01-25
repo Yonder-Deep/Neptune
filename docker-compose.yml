@@ -1,0 +1,68 @@
+services:
+  # C++ build environment
+  cpp:
+    build:
+      context: ./auv_cpp
+      dockerfile: Dockerfile
+    volumes:
+      - ./auv_cpp:/app
+    working_dir: /app
+    command: bash
+    stdin_open: true
+    tty: true
+
+  # C++ build (one-shot) - cleans build dir to avoid Dev Container conflicts
+  cpp-build:
+    build:
+      context: ./auv_cpp
+      dockerfile: Dockerfile
+    volumes:
+      - ./auv_cpp:/app
+    working_dir: /app
+    command: bash -c "rm -rf build && cmake -B build -G Ninja -DBUILD_TESTS=ON && cmake --build build"
+
+  # C++ test (one-shot) - cleans build dir to avoid Dev Container conflicts
+  cpp-test:
+    build:
+      context: ./auv_cpp
+      dockerfile: Dockerfile
+    volumes:
+      - ./auv_cpp:/app
+    working_dir: /app
+    command: >
+      bash -c "rm -rf build &&
+      cmake -B build -G Ninja -DBUILD_TESTS=ON &&
+      cmake --build build &&
+      ctest --test-dir build --output-on-failure"
+
+  # Frontend dev server
+  frontend:
+    build:
+      context: ./web_app/frontend_gui
+      dockerfile: Dockerfile
+    volumes:
+      - ./web_app/frontend_gui:/app
+      - /app/node_modules  # Use container's node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+
+  # Frontend build (one-shot)
+  frontend-build:
+    build:
+      context: ./web_app/frontend_gui
+      dockerfile: Dockerfile
+    volumes:
+      - ./web_app/frontend_gui:/app
+      - /app/node_modules
+    command: npm run build
+
+  # Frontend lint (one-shot)
+  frontend-lint:
+    build:
+      context: ./web_app/frontend_gui
+      dockerfile: Dockerfile
+    volumes:
+      - ./web_app/frontend_gui:/app
+      - /app/node_modules
+    command: bash -c "npm run lint && npm run format:check"

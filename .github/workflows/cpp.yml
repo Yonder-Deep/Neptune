@@ -1,0 +1,119 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [main, develop, cpp-migration]
+    paths:
+      - "auv_cpp/**"
+      - ".github/workflows/cpp.yml"
+  pull_request:
+    branches: [main, develop, cpp-migration]
+    paths:
+      - "auv_cpp/**"
+
+jobs:
+  format-check:
+    name: Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t auv-cpp auv_cpp/
+
+      - name: Check clang-format
+        run: |
+          docker run --rm auv-cpp bash -c "
+            find src include tests -name '*.cpp' -o -name '*.hpp' -o -name '*.h' 2>/dev/null | \
+            xargs -r clang-format --dry-run --Werror
+          "
+
+  lint:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    needs: format-check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t auv-cpp auv_cpp/
+
+      - name: Run clang-tidy
+        run: |
+          docker run --rm auv-cpp bash -c "
+            cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTS=ON && \
+            find src -name '*.cpp' 2>/dev/null | xargs -r clang-tidy -p build --quiet
+          "
+        continue-on-error: true
+
+  build-test:
+    name: Build & Test (${{ matrix.build_type }})
+    runs-on: ubuntu-latest
+    needs: format-check
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: auv_cpp
+          load: true
+          tags: auv-cpp:${{ matrix.build_type }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and Test
+        run: |
+          docker run --rm auv-cpp:${{ matrix.build_type }} bash -c "
+            cmake -B build -G Ninja \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DBUILD_TESTS=ON \
+              ${{ matrix.build_type == 'Debug' && '-DCMAKE_CXX_FLAGS=--coverage' || '' }} && \
+            cmake --build build && \
+            ctest --test-dir build --output-on-failure
+          "
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t auv-cpp auv_cpp/
+
+      - name: Build with coverage and run tests
+        run: |
+          docker run --rm -v ${{ github.workspace }}/coverage:/coverage auv-cpp bash -c "
+            cmake -B build -G Ninja \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DBUILD_TESTS=ON \
+              -DCMAKE_CXX_FLAGS='--coverage' && \
+            cmake --build build && \
+            ctest --test-dir build --output-on-failure && \
+            lcov --capture --directory build \
+              --output-file /coverage/coverage.info --ignore-errors mismatch && \
+            lcov --remove /coverage/coverage.info '/usr/*' '*/tests/*' \
+              --output-file /coverage/coverage.info --ignore-errors unused
+          "
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/coverage.info
+          flags: cpp
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
