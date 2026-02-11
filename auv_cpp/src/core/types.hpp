@@ -9,7 +9,7 @@
 
 // Forward declarations
 struct State;
-struct SerialState;
+//struct SerialState;
 
 /// Log message sources
 enum class LogSource {
@@ -49,7 +49,7 @@ struct State {
         : position(pos), velocity(vel), attitude(att), angular_velocity(ang_vel) {}
 };
 
-using SerialState = State;
+//using SerialState = State;
 
 /// State with body-frame forces and torques
 struct ExpandedState : State {
