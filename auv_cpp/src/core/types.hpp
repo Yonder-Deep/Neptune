@@ -10,8 +10,6 @@
 // Forward declarations
 struct State;
 
-struct SerialState;
-
 /// Log message sources
 enum class LogSource {
     MAIN,  // Main system loop
@@ -50,7 +48,6 @@ struct State {
         : position(pos), velocity(vel), attitude(att), angular_velocity(ang_vel) {}
 };
 
-using SerialState = State;
 
 /// State with body-frame forces and torques
 struct ExpandedState : State {
