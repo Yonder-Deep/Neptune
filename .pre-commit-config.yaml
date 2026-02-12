@@ -14,6 +14,7 @@ repos:
       - id: check-yaml
         args: [--unsafe]
       - id: check-json
+        exclude: tsconfig\.json$
       - id: check-added-large-files
         args: ["--maxkb=1000"]
       - id: check-merge-conflict
@@ -31,16 +32,17 @@ repos:
     hooks:
       - id: eslint
         name: ESLint
-        entry: bash -c 'cd web_app/frontend_gui && npx eslint --fix "$@"' --
+        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && npx eslint --fix "${stripped[@]}"' --
         language: system
         files: ^web_app/frontend_gui/src/.*\.(ts|tsx|js|jsx)$
         pass_filenames: true
 
       - id: prettier
         name: Prettier
-        entry: bash -c 'cd web_app/frontend_gui && npx prettier --write "$@"' --
+        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && npx prettier --write "${stripped[@]}"' --
         language: system
         files: ^web_app/frontend_gui/.*\.(ts|tsx|js|jsx|css|json)$
+        exclude: tsconfig\.json$
         pass_filenames: true
 
   # YAML validation
