@@ -32,14 +32,14 @@ repos:
     hooks:
       - id: eslint
         name: ESLint
-        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && npx eslint --fix "${stripped[@]}"' --
+        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && ./node_modules/.bin/eslint --fix "${stripped[@]}"' --
         language: system
         files: ^web_app/frontend_gui/src/.*\.(ts|tsx|js|jsx)$
         pass_filenames: true
 
       - id: prettier
         name: Prettier
-        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && npx prettier --write "${stripped[@]}"' --
+        entry: bash -c 'stripped=(); for f in "$@"; do stripped+=("${f#web_app/frontend_gui/}"); done; cd web_app/frontend_gui && ./node_modules/.bin/prettier --write "${stripped[@]}"' --
         language: system
         files: ^web_app/frontend_gui/.*\.(ts|tsx|js|jsx|css|json)$
         exclude: tsconfig\.json$
