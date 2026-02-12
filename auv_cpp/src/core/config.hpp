@@ -14,7 +14,7 @@ struct NetworkConfig {
 
 struct Config {
     MotorConfig motors;
-    SystemConfig system;
+    NetworkConfig system;
 
     static Config load(const std::string& path) {
         Config cfg;
