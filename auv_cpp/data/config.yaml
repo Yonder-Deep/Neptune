@@ -1,0 +1,58 @@
+# TODO: Calibrate all values before deployment
+
+system:
+  simulation: true
+  perception: false
+
+motors:
+  pin1: 0  # Forward - TODO: Set correct GPIO pin
+  pin2: 0  # Turn
+  pin3: 0  # Front
+  pin4: 0  # Back
+
+network:
+  ip: "localhost"
+  port: 8080
+
+sensors:
+  gps:
+    baudrate: 9600
+    timeout: 0.1
+
+  depth:
+    i2c_addr: 0x76
+    fluid_density: 1000.0  # Freshwater
+
+  imu:
+    hard_iron_offset: [0.0, 0.0, 0.0]  # TODO: Calibrate
+    gyro_offset: [0.0, 0.0, 0.0]       # TODO: Calibrate
+    madgwick_gain: 0.5
+
+control:
+  loop_hz: 1000.0
+
+  # PID gains
+  surge:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
+  sway:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
+  heave:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
+  roll:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
+  pitch:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
+  yaw:
+    kp: 0.0
+    ki: 0.0
+    kd: 0.0
