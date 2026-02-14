@@ -1,25 +1,26 @@
 import pyaudio
-import numpy as np
-
-FORMAT = pyaudio.paInt32 # EVO 8 supports 24-bit, usually padded to 32
-CHANNELS = 2             # Number of hydrophones
-RATE = 48000             # Sample rate (Hz)
-CHUNK = 1024             # Buffer size
 
 p = pyaudio.PyAudio()
 
-# Start Stream
-stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+# 1. Find the EVO 8 automatically
+evo_index = None
+for i in range(p.get_device_count()):
+    dev = p.get_device_info_by_index(i)
+    # Check if name contains "EVO" and it has input channels
+    if "EVO" in dev['name'] and dev['maxInputChannels'] > 0:
+        evo_index = i
+        print(f"Found EVO 8 at index {evo_index}")
+        break
 
-def get_clean_vector():
-    # 1. Read raw bytes from the EVO 8
-    data = stream.read(CHUNK)
-    
-    # 2. Convert to NumPy array (assuming 32-bit integer)
-    signal_int = np.frombuffer(data, dtype=np.int32)
-    
-    # 3. Normalize to float32 range [-1, 1]
-    # This is your "clean vector" for math
-    signal_float = signal_int.astype(np.float32) / np.iinfo(np.int32).max
-    
-    return signal_float
+if evo_index is None:
+    raise Exception("Could not find Audient EVO 8! Is it plugged in?")
+
+# 2. Open the stream using that specific index
+stream = p.open(
+    format=pyaudio.paInt32,
+    channels=2,
+    rate=48000,
+    input=True,
+    input_device_index=evo_index, # Uses the index we found above
+    frames_per_buffer=1024
+)
