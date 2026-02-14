@@ -1,7 +1,7 @@
 FROM osrf/ros:humble-desktop-full
 
 RUN apt-get update && apt-get install -y \
-    ros-humble-gazebo-ros-plugins \
+    ros-humble-gazebo-ros-pkgs \
     build-essential \
     cmake \
     git \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     
 WORKDIR /opt/uuv_ws/src
 RUN git clone https://github.com/uuvsimulator/uuv_simulator.git -b humble-devel
-WORKDIR /optuuv_ws
+WORKDIR /opt/uuv_ws
 RUN . /opt/ros/humble/setup.bash && colcon build --symlink-install
 
 # Python dependenices for AUV
