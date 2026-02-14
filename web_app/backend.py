@@ -59,7 +59,7 @@ def socket_handler(
                     )
                     queue_to_frontend.put(json.dumps(asdict(ping_result)))
                     active_pings.remove(ping)
-            
+
             if time() - last_ping > ping_interval:
                 active_pings.append(
                     Ping(

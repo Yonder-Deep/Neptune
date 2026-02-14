@@ -15,7 +15,7 @@ from typing import Optional
 from pathlib import Path
 from time import sleep
 
-from backend import socket_thread 
+from backend import socket_thread
 
 from pydantic_yaml import parse_yaml_file_as
 from ruamel.yaml import YAML
@@ -73,7 +73,7 @@ backend_thread = threading.Thread(
 
 def start_backend():
     """ If the backend websocket thread is not alive, start it.
-        If it is alive, do nothing. 
+        If it is alive, do nothing.
     """
     if backend_thread.is_alive() == False:
         backend_thread.start()

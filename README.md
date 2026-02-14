@@ -39,7 +39,7 @@ READ DOCS/docker.md
 ```cpp
 if (condition) {
     // code here
-} 
+}
 else {
     // alternative code
 }
@@ -89,7 +89,7 @@ Document every class with its purpose and usage:
 /**
  * @class PressureSensor
  * @brief Interface for MS5837 pressure/temperature sensor
- * 
+ *
  * Provides depth and temperature readings using I2C communication.
  * Handles calibration and conversion to engineering units.
  */
