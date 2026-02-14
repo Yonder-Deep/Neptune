@@ -1,11 +1,20 @@
 FROM debian:bookworm
 
-RUN apt-get update -y  
+
 
 # install cmake and ninja  
-RUN apt-get install -y cmake build-essential
-RUN apt-get install -y ninja-build
-RUN apt-get install -y git
 
 
+FROM python:3.12-slim
+RUN apt-get update -y  
+
+RUN apt-get install -y cmake build-essential ninja-build git xvfb \
+    x11vnc \
+    python3-opengl \
+    websockify \
+    fluxbox \
+    novnc 
+RUN pip install pybullet
+
+ENV DISPLAY=:1
 

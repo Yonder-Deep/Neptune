@@ -1,6 +1,12 @@
 {
-    "name": "neptune",
-    "build": {
-        "dockerfile": "../Docker/Dockerfile"
-    }
+    "name": "Neptune",
+    "dockerComposeFile": "../Docker/docker-compose.yaml",
+    "service": "neptune",
+    "customizations": {
+        "vscode": {
+            "extensions": []
+        }
+},
+"workspaceFolder": "/workspace",
+"postCreateCommand": ""
 }

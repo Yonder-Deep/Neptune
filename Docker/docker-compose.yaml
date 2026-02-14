@@ -1,0 +1,9 @@
+services:
+  neptune:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "neptune-dev-workspace"
+    entrypoint: sleep infinity
+    volumes:
+      - ../:/workspace
