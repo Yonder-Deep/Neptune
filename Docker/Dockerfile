@@ -1,7 +1,6 @@
 FROM osrf/ros:humble-desktop-full
 
 RUN apt-get update && apt-get install -y \
-    ros-humble-gazebo-ros-pkgs \
     ros-humble-gazebo-ros-plugins \
     build-essential \
     cmake \
