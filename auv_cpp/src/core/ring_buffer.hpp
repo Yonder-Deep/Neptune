@@ -1,76 +1,37 @@
 #pragma once
+#include <atomic>
+#include <array>
+#include <optional>
+//creating a universal ring buffer for any type and size
 
-#include "types.hpp"
-#include <iostream>
-#include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/lockfree/spsc_queue.hpp>
-#include <cstring>
-#include <string>
-#include <map>
-#include <memory>
+//size_t is a argument used by std:array, used as std::size_t. Its only positive, so better to use than integers IMO
+template<typename T, size_t Capacity> 
+struct SPSC {
+    private:
+    std::array<T, Capacity> SPSC_Buffer;
+    size_t head_index = 0;
+    size_t tail_index = 0;
 
-const size_t BUFFER_SIZE = 1024;  // Fixed size; adjust as needed
+    static constexpr size_t mask = Capacity - 1;
+    public:
 
-using SPSCQueue = boost::lockfree::spsc_queue<State, boost::lockfree::capacity<BUFFER_SIZE>>;
+    bool push(const T& item){
+        if (((head_index + 1) & mask) == tail_index){
+            return false;
+        }
 
-// Global map to keep managed_shared_memory objects alive
-static std::map<std::string, std::unique_ptr<boost::interprocess::managed_shared_memory>> g_segments;
+        SPSC_Buffer[head_index] = item;
+        head_index = (head_index + 1) & mask; //for wrapping around from 7 to 0 and not overshooting to 8. Basically modulo
+        return true;
+    };
 
-inline SPSCQueue* create_shared_queue(const std::string& name) {
-    try {
-        // Remove existing if present
-        boost::interprocess::shared_memory_object::remove(name.c_str());
-        
-        auto segment = std::make_unique<boost::interprocess::managed_shared_memory>(
-            boost::interprocess::create_only, name.c_str(), 262144);  // 256KB segment
-        
-        SPSCQueue* queue = segment->construct<SPSCQueue>("queue")();
-        g_segments[name] = std::move(segment);  // Keep segment alive
-        return queue;
-    } catch (const boost::interprocess::interprocess_exception& e) {
-        std::cerr << "Failed to create shared queue: " << e.what() << std::endl;
-        return nullptr;
-    }
-}
-
-inline SPSCQueue* open_shared_queue(const std::string& name) {
-    try {
-        auto segment = std::make_unique<boost::interprocess::managed_shared_memory>(
-            boost::interprocess::open_only, name.c_str());
-        
-        SPSCQueue* queue = segment->find<SPSCQueue>("queue").first;
-        g_segments[name] = std::move(segment);  // Keep segment alive
-        return queue;
-    } catch (const boost::interprocess::interprocess_exception& e) {
-        std::cerr << "Failed to open shared queue: " << e.what() << std::endl;
-        return nullptr;
-    }
-}
-
-inline void cleanup_shared_queue(const std::string& name) {
-    // Remove from global map (destructor called automatically)
-    g_segments.erase(name);
-    // Remove shared memory object
-    boost::interprocess::shared_memory_object::remove(name.c_str());
-}
-
-inline void print_state(const State& s) {
-    std::cout << "Position: [" << s.position[0] << ", " << s.position[1] << ", " << s.position[2] << "]" << std::endl;
-    std::cout << "Velocity: [" << s.velocity[0] << ", " << s.velocity[1] << ", " << s.velocity[2] << "]" << std::endl;
-    std::cout << "Attitude: [" << s.attitude[0] << ", " << s.attitude[1] << ", " << s.attitude[2] << "]" << std::endl;
-    std::cout << "Angular Velocity: [" << s.angular_velocity[0] << ", " << s.angular_velocity[1] << ", " << s.angular_velocity[2] << "]" << std::endl;
-}
-
-inline void worker_process(const std::string& name) {
-    SPSCQueue* queue = open_shared_queue(name);
-    if (!queue) return;
-
-    State s;
-    if (queue->pop(s)) {
-        std::cout << "Worker: Read state:" << std::endl;
-        print_state(s);
-        s.position[0] = 10.0;  // Modify
-        queue->push(s);
-        std::cout << "Worker: Pushed modified state" << std::endl;
-    }
-}
+    std::optional<T> pop(){
+        if (head_index == tail_index){
+            return {};
+        } else {
+            const T tail_value = SPSC_Buffer[tail_index];
+            tail_index = (tail_index + 1) & mask;
+            return tail_value;
+        }
+    };
+};
