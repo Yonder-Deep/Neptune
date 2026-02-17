@@ -27,6 +27,8 @@ class Motor {
         const int CENTER_PWM_VALUE = 1500;
         const int MAX_SPEED = 150;
 
+        //1100 <- 1500 -> 1900
+
         //initialize gpio elsewhere with gpioInitialise()
         Motor(int gpioPin) : pin(gpioPin), speed(0.0) { }
 

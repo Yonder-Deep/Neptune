@@ -14,7 +14,6 @@ tests the motor class
     #include <pigpio.h>
 #endif
 
-
 int main() {
 
     #ifndef BUILD_SIMULATION

@@ -1,5 +1,4 @@
-//3 functions so that the ST LSM6DSOX and LIS3MDL driver can talk to the i2c bus
-
+//3 functions so that the ST LSM6DSOX and LIS3MDL driver can talk to the i2c bu
 
 #include <pigpio.h>
 #include <unistd.h>
@@ -10,7 +9,6 @@ typedef struct {
     uint8_t i2cAddress;
     int i2cHandle;
 } platformHandleT;
-
 
 //writes bytes to specific register on ST drivers
 int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t len) {
