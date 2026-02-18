@@ -1,76 +1,47 @@
 #pragma once
+#include <atomic>
+#include <array>
+#include <optional>
+#include <type_traits>
+//creating a universal ring buffer for any type and size
 
-#include "types.hpp"
-#include <iostream>
-#include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/lockfree/spsc_queue.hpp>
-#include <cstring>
-#include <string>
-#include <map>
-#include <memory>
+//size_t is a argument used by std:array, used as std::size_t. Its only positive, so better to use than integers IMO
+template<typename T, size_t Capacity> 
+struct SPSC {
+    static_assert(Capacity > 0 && (Capacity & (Capacity-1)) == 0, "Capacity has to be a power of 2 for bit modulo");
+    static_assert(std::is_trivially_copyable_v<T>,"T must be trivially copyable"); //for memcpy to be allowed
+    private:
+    alignas(64) std::array<T, Capacity> SPSC_Buffer; //alignas 64 is basically a way to stop false sharing
+    alignas(64) std::atomic<size_t> head_index = 0; //It creates seperate cache lines for each variable
+    alignas(64) std::atomic<size_t> tail_index = 0; //So that they dont invalidate eachother
 
-const size_t BUFFER_SIZE = 1024;  // Fixed size; adjust as needed
+    static constexpr size_t mask = Capacity - 1;
+    
+    
+    public:
 
-using SPSCQueue = boost::lockfree::spsc_queue<State, boost::lockfree::capacity<BUFFER_SIZE>>;
-
-// Global map to keep managed_shared_memory objects alive
-static std::map<std::string, std::unique_ptr<boost::interprocess::managed_shared_memory>> g_segments;
-
-inline SPSCQueue* create_shared_queue(const std::string& name) {
-    try {
-        // Remove existing if present
-        boost::interprocess::shared_memory_object::remove(name.c_str());
+    bool push(const T& item){
         
-        auto segment = std::make_unique<boost::interprocess::managed_shared_memory>(
-            boost::interprocess::create_only, name.c_str(), 262144);  // 256KB segment
-        
-        SPSCQueue* queue = segment->construct<SPSCQueue>("queue")();
-        g_segments[name] = std::move(segment);  // Keep segment alive
-        return queue;
-    } catch (const boost::interprocess::interprocess_exception& e) {
-        std::cerr << "Failed to create shared queue: " << e.what() << std::endl;
-        return nullptr;
-    }
-}
+        size_t h = head_index.load(std::memory_order_relaxed);
+        size_t t = tail_index.load(std::memory_order_acquire);
+        if (((h + 1) & mask) == t){
+            return false;
+        }
 
-inline SPSCQueue* open_shared_queue(const std::string& name) {
-    try {
-        auto segment = std::make_unique<boost::interprocess::managed_shared_memory>(
-            boost::interprocess::open_only, name.c_str());
-        
-        SPSCQueue* queue = segment->find<SPSCQueue>("queue").first;
-        g_segments[name] = std::move(segment);  // Keep segment alive
-        return queue;
-    } catch (const boost::interprocess::interprocess_exception& e) {
-        std::cerr << "Failed to open shared queue: " << e.what() << std::endl;
-        return nullptr;
-    }
-}
+        SPSC_Buffer[h] = item;
+        head_index.store((h+1) & mask, std::memory_order_release); //mask for wrapping around from 7 to 0 and not overshooting to 8. Basically modulo
+        return true;
+    };
 
-inline void cleanup_shared_queue(const std::string& name) {
-    // Remove from global map (destructor called automatically)
-    g_segments.erase(name);
-    // Remove shared memory object
-    boost::interprocess::shared_memory_object::remove(name.c_str());
-}
-
-inline void print_state(const State& s) {
-    std::cout << "Position: [" << s.position[0] << ", " << s.position[1] << ", " << s.position[2] << "]" << std::endl;
-    std::cout << "Velocity: [" << s.velocity[0] << ", " << s.velocity[1] << ", " << s.velocity[2] << "]" << std::endl;
-    std::cout << "Attitude: [" << s.attitude[0] << ", " << s.attitude[1] << ", " << s.attitude[2] << "]" << std::endl;
-    std::cout << "Angular Velocity: [" << s.angular_velocity[0] << ", " << s.angular_velocity[1] << ", " << s.angular_velocity[2] << "]" << std::endl;
-}
-
-inline void worker_process(const std::string& name) {
-    SPSCQueue* queue = open_shared_queue(name);
-    if (!queue) return;
-
-    State s;
-    if (queue->pop(s)) {
-        std::cout << "Worker: Read state:" << std::endl;
-        print_state(s);
-        s.position[0] = 10.0;  // Modify
-        queue->push(s);
-        std::cout << "Worker: Pushed modified state" << std::endl;
-    }
-}
+    std::optional<T> pop(){
+        size_t t = tail_index.load(std::memory_order_relaxed);
+        size_t h = head_index.load(std::memory_order_acquire);
+        if (t==h){
+            return {};
+        } else {
+            const T tail_value = SPSC_Buffer[t];
+            tail_index.store((t + 1)& mask, std::memory_order_release);
+            return tail_value;
+        }
+    };
+};
