@@ -6,6 +6,10 @@ RUN apt-get update -y
 RUN apt-get install -y cmake build-essential
 RUN apt-get install -y ninja-build
 
+#install spdlog and fmt (spdlog needs fmt)
+RUN apt-get install -y libspdlog-dev
+RUN apt-get install -y libfmt-dev
+
 # install boost
 RUN apt-get install -y libboost-all-dev
 
