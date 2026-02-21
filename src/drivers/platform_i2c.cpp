@@ -1,4 +1,4 @@
-//3 functions so that the ST LSM6DSOX and LIS3MDL driver can talk to the i2c bu
+//3 functions so that the ST LSM6DSOX and LIS3MDL driver can talk to the i2c
 
 #include <pigpio.h>
 #include <unistd.h>

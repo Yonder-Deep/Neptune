@@ -13,7 +13,7 @@ int main() {
         //forward (1900 is max pwm)
         double pwm = 1700;
         //pin 1 tends to be 12C like IMU
-        int pin = 1; //not sure what pin the motor is attached to yet
+        int pin = 3 //not sure what pin the motor is attached to yet
         gpioServo(pin, static_cast<unsigned int>(pwm));
         std::this_thread::sleep_for(std::chrono::seconds(5));
 

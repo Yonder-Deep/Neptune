@@ -9,6 +9,7 @@ tests the motor class
 
 #include <iostream>
 #include "motor.hpp"
+#include "imu.hpp"
 
 #ifndef BUILD_SIMULATION
     #include <pigpio.h>

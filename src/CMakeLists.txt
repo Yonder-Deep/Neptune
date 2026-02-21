@@ -70,6 +70,10 @@ if(NOT BUILD_SIMULATION)
     target_link_libraries(motor_test ${PIGPIO_LINK_LIBS})
 endif()
 
+#motor test includes imu.hpp which needs the ST driver headers and libs
+target_include_directories(motor_test PRIVATE ${LSM6DSOX_PID_DIR} ${LIS3MDL_PID_DIR})
+target_link_libraries(motor_test lsm6dsox_driver lis3mdl_driver)
+
 #executable for test.cpp
 add_executable(test drivers/test.cpp)
 target_link_libraries(test ${PIGPIO_LINK_LIBS})
