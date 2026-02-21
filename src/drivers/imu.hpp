@@ -1,5 +1,7 @@
 #pragma once
 
+/*
+
 #include <thread>
 #include <chrono>
 #include <pigpio.h>
@@ -70,3 +72,5 @@ class IMU {
         }
 
 };
+
+*/
