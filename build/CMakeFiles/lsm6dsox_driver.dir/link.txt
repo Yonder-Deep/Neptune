@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblsm6dsox_driver.a "CMakeFiles/lsm6dsox_driver.dir/workspaces/Neptune/lsm6dsox-pid/lsm6dsox_reg.c.o"
-/usr/bin/ranlib liblsm6dsox_driver.a

@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblis3mdl_driver.a "CMakeFiles/lis3mdl_driver.dir/workspaces/Neptune/lis3mdl-pid/lis3mdl_reg.c.o"
-/usr/bin/ranlib liblis3mdl_driver.a

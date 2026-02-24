@@ -1,6 +1,0 @@
-/workspaces/Neptune/build/CMakeFiles/lsm6dsox_driver.dir
-/workspaces/Neptune/build/CMakeFiles/lis3mdl_driver.dir
-/workspaces/Neptune/build/CMakeFiles/neptune.dir
-/workspaces/Neptune/build/CMakeFiles/motor_test.dir
-/workspaces/Neptune/build/CMakeFiles/edit_cache.dir
-/workspaces/Neptune/build/CMakeFiles/rebuild_cache.dir
