@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/neptune.dir/main.cpp.o CMakeFiles/neptune.dir/drivers/platform_i2c.cpp.o -o neptune  liblsm6dsox_driver.a liblis3mdl_driver.a 

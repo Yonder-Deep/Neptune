@@ -24,37 +24,37 @@ target_include_directories(neptune PRIVATE ${LSM6DSOX_PID_DIR} ${LIS3MDL_PID_DIR
 #this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
 
-#find pigpio library(only if not in simulation mode)
+#find lgpio library(only if not in simulation mode)
 if(NOT BUILD_SIMULATION)
-    find_library(PIGPIO_LIB pigpio)
-    find_path(PIGPIO_INCLUDE_DIR pigpio.h)
+    find_library(LGPIO_LIB lgpio)
+    find_path(LGPIO_INCLUDE_DIR lgpio.h)
 
-    if(NOT PIGPIO_LIB OR NOT PIGPIO_INCLUDE_DIR)
-        message(FATAL_ERROR "pigpio library not found")
+    if(NOT LGPIO_LIB OR NOT LGPIO_INCLUDE_DIR)
+        message(FATAL_ERROR "lgpio library not found")
     endif()
 
-    set(PIGPIO_LINK_LIBS ${PIGPIO_LIB})
-    message(STATUS "Found pigpio library: ${PIGPIO_LIB}")
-    message(STATUS "Found pigpio include directory: ${PIGPIO_INCLUDE_DIR}")
+    set(LGPIO_LINK_LIBS ${LGPIO_LIB})
+    message(STATUS "Found lgpio library: ${LGPIO_LIB}")
+    message(STATUS "Found lgpio include directory: ${LGPIO_INCLUDE_DIR}")
 
-    #neptune links pigpio and has pigpio include directory if not in simulation
-    target_link_libraries(neptune ${PIGPIO_LINK_LIBS})
-    target_include_directories(neptune PRIVATE ${PIGPIO_INCLUDE_DIR})
+    #neptune links lgpio and has lgpio include directory if not in simulation
+    target_link_libraries(neptune ${LGPIO_LINK_LIBS})
+    target_include_directories(neptune PRIVATE ${LGPIO_INCLUDE_DIR})
 else()
-    #pigpio library isn't required in simulation mode 
+    #lgpio library isn't required in simulation mode 
     #not sure how simulations will work yet if we do any
-    message(STATUS "Building in simulation mode. Pigpio library not used.")
-    set(PIGPIO_LINK_LIBS "")
+    message(STATUS "Building in simulation mode. lgpio library not used.")
+    set(LGPIO_LINK_LIBS "")
 endif()
 
 #create motor library (just header file)
 add_library(motor INTERFACE)
 target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
 
-#add pigpio include directory to motor target
+#add lgpio include directory to motor target
 if(NOT BUILD_SIMULATION)
-    target_include_directories(motor INTERFACE ${PIGPIO_INCLUDE_DIR})
-    target_link_libraries(motor INTERFACE ${PIGPIO_LINK_LIBS})
+    target_include_directories(motor INTERFACE ${LGPIO_INCLUDE_DIR})
+    target_link_libraries(motor INTERFACE ${LGPIO_LINK_LIBS})
 endif()
 
 #executable for testing motor(separate from library)
@@ -67,17 +67,18 @@ if(BUILD_SIMULATION)
 endif()
 
 if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${PIGPIO_LINK_LIBS})
+    target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
 endif()
 
 #motor test includes imu.hpp which needs the ST driver headers and libs
 target_include_directories(motor_test PRIVATE ${LSM6DSOX_PID_DIR} ${LIS3MDL_PID_DIR})
 target_link_libraries(motor_test lsm6dsox_driver lis3mdl_driver)
 
+
 #executable for test.cpp
-add_executable(test drivers/test.cpp)
-target_link_libraries(test ${PIGPIO_LINK_LIBS})
-target_include_directories(test PRIVATE ${PIGPIO_INCLUDE_DIR})
+#add_executable(test drivers/test.cpp)
+#target_link_libraries(test ${LGPIO_LINK_LIBS})
+#target_include_directories(test PRIVATE ${LGPIO_INCLUDE_DIR})
 
 
 

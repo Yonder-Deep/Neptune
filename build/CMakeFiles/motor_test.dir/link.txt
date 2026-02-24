@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/motor_test.dir/drivers/main.cpp.o -o motor_test  liblsm6dsox_driver.a liblis3mdl_driver.a 
