@@ -6,7 +6,7 @@
  * @class Stepper
  * @brief Simple step/dir stepper motor controller
  *
- * Designed for STEP/DIR drivers (A4988, DRV8825, TMC, etc.)
+ * Designed for STEP/DIR drivers
  * Works on Raspberry Pi using pigpio, and on Windows using BUILD_SIMULATION.
  */
 class Stepper {
