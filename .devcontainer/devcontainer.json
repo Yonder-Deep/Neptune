@@ -4,7 +4,9 @@
     "service": "neptune",
     "customizations": {
         "vscode": {
-            "extensions": []
+            "extensions": [
+                "ms-python.python"
+            ]
         }
 },
 "workspaceFolder": "/workspace",

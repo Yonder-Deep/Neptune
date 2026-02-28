@@ -1,73 +1,52 @@
 import os
 import time
-
+import sys
 import pybullet as p
 import pybullet_data
 
-physicsClient = p.connect(p.GUI)  # GUI mode to see the simulation
+from scripts.neptune import Neptune
+
+
+last = ""
+headless = False
+step = 120.0
+for arg in sys.argv:
+    if arg == "-hl" or arg == "--headless":
+        headless = True
+    elif arg == "--help" or arg == "-h":
+        print("Runs the pybullet simulation\nUsage: \n \t--help(-h): prints this message \n \t--headless(-hl) Runs the simulation without the GUI \n\t--step(-s) <int value>:sets the step time between physics steps in Hertz. Default: 120 HZ")
+        quit()
+    elif last == "-s" or last == "--step":
+        step = int(arg)
+    last = arg
+    
+
+#end of arg parsing
+
+physicsClient = p.connect(p.DIRECT) if headless else p.connect(p.GUI)
+
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
-# gravity used for weight, buoyancy will be applied manually
-p.setGravity(0, 0, -9.81)
 
-# Load objects
-planeId = p.loadURDF("plane.urdf")
-cubeStartPos = [0, 0, 1]
-cubeStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
-boxId = p.loadURDF("cube.urdf", cubeStartPos, cubeStartOrientation, useFixedBase=False)
+p.loadURDF("plane.urdf", [0.0, 0.0, 0.0])
+p.setGravity(0, 0, 0) 
 
-# Water parameters
-water_level = 1.0  # z of water surface (plane sits at z=0)
-buoyancy_coefficient = 120.0  # tuning constant for buoyant force
-drag_coefficient = 8.0  # linear drag multiplier
-
-def apply_buoyancy_and_drag(body_id):
-    # Apply buoyancy and linear drag to base and all links
-    num_joints = p.getNumJoints(body_id)
-
-    # Handle base (-1) first
-    base_pos, base_orn = p.getBasePositionAndOrientation(body_id)
-    base_vel_lin, base_vel_ang = p.getBaseVelocity(body_id)
-    base_dyn = p.getDynamicsInfo(body_id, -1)
-    base_mass = base_dyn[0] if base_dyn is not None else 0.0
-
-    def handle_part(link_index, pos, vel_lin, mass):
-        depth = water_level - pos[2]
-        if depth > 0:
-            # Buoyant force: proportional to mass and submerged depth
-            buoyant_force = buoyancy_coefficient * depth * mass
-            p.applyExternalForce(body_id, link_index, [0, 0, buoyant_force], pos, p.WORLD_FRAME)
-        # Linear drag opposing motion
-        drag = [-drag_coefficient * mass * v for v in vel_lin]
-        p.applyExternalForce(body_id, link_index, drag, pos, p.WORLD_FRAME)
-
-    handle_part(-1, base_pos, base_vel_lin, base_mass)
-
-    # Now links
-    for link_idx in range(num_joints):
-        link_state = p.getLinkState(body_id, link_idx, computeLinkVelocity=1)
-        # link_state indexes: 0=worldLinkFramePosition, 6=worldLinkLinearVelocity
-        link_pos = link_state[0]
-        link_vel = link_state[6] if len(link_state) > 6 and link_state[6] is not None else (0.0, 0.0, 0.0)
-        dyn = p.getDynamicsInfo(body_id, link_idx)
-        link_mass = dyn[0] if dyn is not None else 0.0
-        handle_part(link_idx, link_pos, link_vel, link_mass)
-
+neptune = Neptune(physicsClient)
 
 start_time = time.time()
+
 step = 0
+
+
 try:
     while True:
-        # Apply custom water forces then step
-        apply_buoyancy_and_drag(boxId)
         p.stepSimulation()
-
-        if step % 120 == 0:
-            cubePos, cubeOrn = p.getBasePositionAndOrientation(boxId)
-            print(f"step={step} base_z={cubePos[2]:.3f}")
-
         step += 1
-        time.sleep(1.0 / 240.0)  # Run at 240 Hz (PyBullet default)
+        neptune.step(step)
+        time.sleep(1.0 / step) 
+        if step % 500 == 0:
+            (neptune.take_photo())
+        
 except KeyboardInterrupt:
-    pass
+    pass # pass to let disconnect get 
 
 p.disconnect()

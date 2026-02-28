@@ -14,7 +14,7 @@ RUN apt-get install -y cmake build-essential ninja-build git xvfb \
     websockify \
     fluxbox \
     novnc 
-RUN pip install pybullet
+RUN pip install pybullet numpy
 
 ENV DISPLAY=:1
 

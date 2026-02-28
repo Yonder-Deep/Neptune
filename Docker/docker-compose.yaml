@@ -6,4 +6,9 @@ services:
     image: "neptune-dev-workspace"
     entrypoint: sleep infinity
     volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw #this is only for linux, and allows gui passthrough
       - ../:/workspace
+    environment:
+      - DISPLAY=${DISPLAY}
+    ports:
+      - 6080:6080

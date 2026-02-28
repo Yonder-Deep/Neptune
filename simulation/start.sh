@@ -1,17 +1,20 @@
 #!/bin/bash
+
+
+
 set -e
 
 echo "Starting PyBullet simulation with VNC streaming..."
 
-# 1. Start virtual display in the background
 echo "Starting Xvfb virtual display..."
 Xvfb :1 -screen 0 1024x768x24 &
 XVFB_PID=$!
 sleep 2  # Wait for Xvfb to be ready
 
 # 2. Start lightweight window manager (fluxbox)
-echo "Starting window manager..."
+echo "Starting window manager..."   
 DISPLAY=:1 fluxbox &
+FLUXBOX_PID=$!
 sleep 1
 
 # 3. Start VNC server (mapping the Xvfb display)
@@ -41,11 +44,9 @@ fi
 
 WEBSOCKIFY_PID=$!
 sleep 1
-
 # 5. Run your PyBullet script (ensure it uses p.connect(p.GUI))
 echo "Starting PyBullet simulation..."
 export DISPLAY=:1
 python main.py
 
-# Cleanup on exit
-trap "kill $XVFB_PID $WEBSOCKIFY_PID 2>/dev/null || true" EXIT
+trap "kill -9 $XVFB_PID $WEBSOCKIFY_PID ${FLUXBOX_PID:-} 2>/dev/null || true" EXIT SIGINT

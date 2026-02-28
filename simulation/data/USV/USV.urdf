@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<robot name="neptune">
+  <link name="baseLink">
+    <contact>
+      <lateral_friction value="1.0" />
+      <rolling_friction value="0.0" />
+      <contact_cfm value="0.0" />
+      <contact_erp value="1.0" />
+    </contact>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+
+      <geometry>
+        <mesh filename="meshes/neptune-15mb.stl" scale="0.01" />
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <!-- bounding box from mesh AABB -->
+      <origin rpy="0 0 0" xyz="4.483144836425781 -4.462656478881835 2.2420947618486328" />
+      <geometry>
+        <box size="18.339250854492187 13.518894561767578 6.683012680053711" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="1 1 1" />
+      </geometry>
+      <material name="red">
+        <color rgba="1 0.2 0.2 1" />
+      </material>
+    </visual>
+  </link>
+<link name="lidar_link">
+  <visual>
+    <geometry>
+      <cylinder length="1" radius="1"/>
+    </geometry>
+  </visual>
+</link>
+  <joint name="camera_joint" type="fixed">
+    <parent link="baseLink" />
+    <child link="camera_link" />
+    <origin xyz="4 -4 7" rpy="0 0 0" />
+  </joint>
+  <joint name = "lidar_joint" type = "fixed">
+    <parent link = "baseLink" />
+    <child link="lidar_link" />
+    <origin xyz="0 -4 7" rpy="0 0 0" />
+  </joint> 
+
+</robot>
