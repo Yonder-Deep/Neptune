@@ -37,12 +37,13 @@ int main() {
         could also make a helper function later to find gpio chip
         */
 
-        int handle = lgGpiochipOpen(0); //open gpio chip 0
+        int handle = lgGpiochipOpen(0); //open gpio chip 0 
+        //for the pi5 used for testing the chip is 0
         if(handle < 0) {
             std::cerr << "failed to initialize lgpio" << std::endl;
             return 1;
         } else {
-            int pin = 3;
+            int pin = 2; //gpio pin 2 is on the physical pin 3
 
             Motor motor(pin, handle);
 
@@ -51,6 +52,14 @@ int main() {
                 std::cerr << "failed to claim output" << std::endl;
                 return 1;
             }
+
+            result = motor.setPwm(1500);
+            if(result < 0) {
+                std::cerr << "failed to set pwm" << std::endl;
+                return 1;
+            }
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+
 
             result = motor.setPwm(1700);
             if(result < 0) {
