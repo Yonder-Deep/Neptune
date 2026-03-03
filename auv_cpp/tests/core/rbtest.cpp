@@ -1,4 +1,4 @@
-#include "../../src/core/ring_buffer.hpp"
+#include "core/ring_buffer.hpp"
 #include <iostream>
 #include <cassert>
 #include <thread>

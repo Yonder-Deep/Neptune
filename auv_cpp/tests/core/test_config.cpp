@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../../src/core/config.hpp"
+#include "core/config.hpp"
 
 int main() {
     Config cfg = Config::load("../../data/config.yaml");
