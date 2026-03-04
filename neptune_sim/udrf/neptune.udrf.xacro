@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<robot name="neptune" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===================== Properties ===================== -->
+  <xacro:property name="body_length"  value="0.8"/>
+  <xacro:property name="body_radius"  value="0.12"/>
+  <xacro:property name="body_mass"    value="12.0"/>
+  <xacro:property name="thruster_mass" value="0.2"/>
+  <xacro:property name="thruster_r"   value="0.05"/>
+  <xacro:property name="thruster_l"   value="0.04"/>
+
+  <!-- ===================== Materials ====================== -->
+  <material name="dark_grey">
+    <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.1 0.3 0.8 1.0"/>
+  </material>
+
+  <!-- ===================== Macros ========================= -->
+  <xacro:macro name="thruster_link" params="name">
+    <link name="${name}">
+      <inertial>
+        <mass value="${thruster_mass}"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0"
+                 iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
+      <visual>
+        <geometry>
+          <cylinder radius="${thruster_r}" length="${thruster_l}"/>
+        </geometry>
+        <material name="dark_grey"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${thruster_r}" length="${thruster_l}"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="thruster_joint" params="name parent xyz rpy">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child  link="${name}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- ===================== Base Link ====================== -->
+  <link name="base_link">
+    <inertial>
+      <mass value="${body_mass}"/>
+      <inertia ixx="0.1" ixy="0" ixz="0"
+               iyy="0.4" iyz="0" izz="0.4"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="${body_radius}" length="${body_length}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="${body_radius}" length="${body_length}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ===================== Thrusters ====================== -->
+  <!-- Surge (forward/back) -->
+  <xacro:thruster_link name="thruster_surge"/>
+  <xacro:thruster_joint name="thruster_surge" parent="base_link"
+    xyz="0.4 0 0" rpy="0 1.5707 0"/>
+
+  <!-- Sway (left/right) -->
+  <xacro:thruster_link name="thruster_sway"/>
+  <xacro:thruster_joint name="thruster_sway" parent="base_link"
+    xyz="0 0.15 0" rpy="1.5707 0 0"/>
+
+  <!-- Heave front (up/down) -->
+  <xacro:thruster_link name="thruster_heave_front"/>
+  <xacro:thruster_joint name="thruster_heave_front" parent="base_link"
+    xyz="0.2 0 0.1" rpy="0 0 0"/>
+
+  <!-- Heave rear (up/down) -->
+  <xacro:thruster_link name="thruster_heave_rear"/>
+  <xacro:thruster_joint name="thruster_heave_rear" parent="base_link"
+    xyz="-0.2 0 0.1" rpy="0 0 0"/>
+
+  <!-- Yaw left -->
+  <xacro:thruster_link name="thruster_yaw_left"/>
+  <xacro:thruster_joint name="thruster_yaw_left" parent="base_link"
+    xyz="-0.35 0.1 0" rpy="1.5707 0 0"/>
+
+  <!-- Yaw right -->
+  <xacro:thruster_link name="thruster_yaw_right"/>
+  <xacro:thruster_joint name="thruster_yaw_right" parent="base_link"
+    xyz="-0.35 -0.1 0" rpy="1.5707 0 0"/>
+
+  <!-- =================== Gazebo Plugins ================== -->
+
+  <!-- Buoyancy: net upward force to simulate neutral buoyancy -->
+  <gazebo>
+    <plugin name="gazebo_ros_buoyancy" filename="libgazebo_ros_buoyancy.so">
+      <link_name>base_link</link_name>
+      <!-- Volume (m^3) * fluid_density (kg/m^3) * g (m/s^2) ~= body weight -->
+      <fluid_density>1000.0</fluid_density>
+      <volume>0.012</volume>
+      <center_of_volume>0 0 0.02</center_of_volume>
+    </plugin>
+  </gazebo>
+
+  <!-- Ground truth odometry via Gazebo -->
+  <gazebo>
+    <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
+      <ros>
+        <namespace>/neptune</namespace>
+        <remapping>odom:=ground_truth/odom</remapping>
+      </ros>
+      <body_name>base_link</body_name>
+      <frame_name>world</frame_name>
+      <update_rate>50.0</update_rate>
+      <xyz_offset>0 0 0</xyz_offset>
+      <rpy_offset>0 0 0</rpy_offset>
+      <gaussian_noise>0.001</gaussian_noise>
+    </plugin>
+  </gazebo>
+
+  <!-- IMU sensor -->
+  <gazebo reference="base_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <plugin name="gazebo_ros_imu_sensor" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <namespace>/neptune</namespace>
+          <remapping>~/out:=imu/data</remapping>
+        </ros>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- Hydrodynamic drag approximation via a generic force plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_force" filename="libgazebo_ros_force.so">
+      <ros>
+        <namespace>/neptune</namespace>
+        <remapping>gazebo_ros_force:=thruster/surge</remapping>
+      </ros>
+      <body_name>base_link</body_name>
+      <force_frame>base_link</force_frame>
+    </plugin>
+  </gazebo>
+
+</robot>

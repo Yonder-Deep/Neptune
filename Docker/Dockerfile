@@ -41,5 +41,5 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/blue_ws/install/setup.bash" >> ~/.bashrc
 
-WORKDIR /workspace/Neptune
+WORKDIR /workspaces/Neptune
 
