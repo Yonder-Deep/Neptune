@@ -9,6 +9,8 @@ from launch.actions import (
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+
 
 
 def generate_launch_description():
@@ -17,18 +19,15 @@ def generate_launch_description():
 
     # ---------- Arguments ----------
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
-    world_file = LaunchConfiguration(
-        "world",
-        default=os.path.join(pkg_neptune_sim, "worlds", "ocean.world"),
-    )
+    world_file = LaunchConfiguration("world")
     x_spawn = LaunchConfiguration("x", default="0.0")
     y_spawn = LaunchConfiguration("y", default="0.0")
     z_spawn = LaunchConfiguration("z", default="-5.0")  # start 5 m underwater
 
-    xacro_file = os.path.join(pkg_neptune_sim, "urdf", "neptune.urdf.xacro")
+    xacro_file = os.path.join(pkg_neptune_sim, "udrf", "neptune.udrf.xacro")
 
     # ---------- Robot description (xacro → URDF string) ----------
-    robot_description = Command(["xacro ", xacro_file])
+    robot_description = ParameterValue(Command(["xacro ", xacro_file]), value_type=str)
 
     # ---------- Nodes ----------
     robot_state_publisher = Node(
@@ -73,7 +72,7 @@ def generate_launch_description():
     return LaunchDescription(
         [
             DeclareLaunchArgument("use_sim_time", default_value="true"),
-            DeclareLaunchArgument("world"),
+            DeclareLaunchArgument("world",default_value=os.path.join(pkg_neptune_sim, "worlds", "ocean.world")),
             DeclareLaunchArgument("x", default_value="0.0"),
             DeclareLaunchArgument("y", default_value="0.0"),
             DeclareLaunchArgument("z", default_value="-5.0"),

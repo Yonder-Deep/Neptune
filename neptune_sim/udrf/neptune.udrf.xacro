@@ -99,18 +99,6 @@
     xyz="-0.35 -0.1 0" rpy="1.5707 0 0"/>
 
   <!-- =================== Gazebo Plugins ================== -->
-
-  <!-- Buoyancy: net upward force to simulate neutral buoyancy -->
-  <gazebo>
-    <plugin name="gazebo_ros_buoyancy" filename="libgazebo_ros_buoyancy.so">
-      <link_name>base_link</link_name>
-      <!-- Volume (m^3) * fluid_density (kg/m^3) * g (m/s^2) ~= body weight -->
-      <fluid_density>1000.0</fluid_density>
-      <volume>0.012</volume>
-      <center_of_volume>0 0 0.02</center_of_volume>
-    </plugin>
-  </gazebo>
-
   <!-- Ground truth odometry via Gazebo -->
   <gazebo>
     <plugin name="gazebo_ros_p3d" filename="libgazebo_ros_p3d.so">
@@ -118,7 +106,7 @@
         <namespace>/neptune</namespace>
         <remapping>odom:=ground_truth/odom</remapping>
       </ros>
-      <body_name>base_link</body_name>
+      <link_name>base_link</link_name>
       <frame_name>world</frame_name>
       <update_rate>50.0</update_rate>
       <xyz_offset>0 0 0</xyz_offset>

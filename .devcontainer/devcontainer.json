@@ -2,5 +2,12 @@
     "name": "neptune",
     "build": {
         "dockerfile": "../Docker/Dockerfile"
-    }
+    },
+    // "containerEnv": {
+    //     "DISPLAY": "100.80.117.17:0"
+    // },
+    // "runArgs": [
+    //     "--network=host"
+    // ]
+    "forwardPorts": [5900]
 }

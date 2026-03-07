@@ -31,6 +31,19 @@ RUN apt-get update && \
 # COPY auv/requirements/txt .
 # RUN pip3 install -r requirements.txt
 
+RUN apt-get update && apt-get install -y ca-certificates gpg wget && \
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+    gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | \
+    tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    apt-get update && \
+    apt-get install -y cmake && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    x11vnc xvfb fluxbox \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --continue-on-error" || true
 
