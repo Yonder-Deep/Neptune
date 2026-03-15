@@ -9,5 +9,11 @@
     // "runArgs": [
     //     "--network=host"
     // ]
-    "forwardPorts": [5900]
+    "forwardPorts": [5900, 6080],
+    "portsAttributes": {
+        "6080": {
+            "label": "noVNC",
+            "onAutoForward": "openBrowser"
+        }
+    }
 }

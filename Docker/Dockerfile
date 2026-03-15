@@ -44,6 +44,10 @@ RUN apt-get update && apt-get install -y \
     x11vnc xvfb fluxbox \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y \
+    novnc websockify \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --continue-on-error" || true
 
