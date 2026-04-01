@@ -2,23 +2,8 @@ cmake_minimum_required(VERSION 3.25)
 
 project(neptune C CXX)
 
-#paths to ST driver repos(relative to src/CMakeLists.txt)
-set(LSM6DSOX_PID_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../lsm6dsox-pid)
-set(LIS3MDL_PID_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../lis3mdl-pid)
 
-#do like 'if(NOT BUILD_SIMULATION)' for testing this thing
-#compiles lsm6dsox_reg.c into a static library called lsm6dsox_driver
-add_library(lsm6dsox_driver STATIC ${LSM6DSOX_PID_DIR}/lsm6dsox_reg.c) 
-#compiles lis3mdl_reg.c into a static library called lis3mdl_driver
-add_library(lis3mdl_driver STATIC ${LIS3MDL_PID_DIR}/lis3mdl_reg.c)
-
-target_include_directories(lsm6dsox_driver PUBLIC ${LSM6DSOX_PID_DIR})
-target_include_directories(lis3mdl_driver PUBLIC ${LIS3MDL_PID_DIR})
-
-add_executable(neptune main.cpp drivers/platform_i2c.cpp)
-
-target_link_libraries(neptune lsm6dsox_driver lis3mdl_driver)
-target_include_directories(neptune PRIVATE ${LSM6DSOX_PID_DIR} ${LIS3MDL_PID_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
+add_executable(neptune main.cpp)
 
 #BUILD_SIMULATION option
 #this isn't a physics engine its to mimic motor.py to simulate the motor
@@ -69,10 +54,6 @@ endif()
 if(NOT BUILD_SIMULATION)
     target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
 endif()
-
-#motor test includes imu.hpp which needs the ST driver headers and libs
-target_include_directories(motor_test PRIVATE ${LSM6DSOX_PID_DIR} ${LIS3MDL_PID_DIR})
-target_link_libraries(motor_test lsm6dsox_driver lis3mdl_driver)
 
 
 #executable for test.cpp

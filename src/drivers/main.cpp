@@ -93,20 +93,5 @@ int main() {
         std::cout << "Simulation mode. no hardware" << std::endl;
     #endif
 
-    //test each pin. Probably won't need this
-    /*
-        for(int i = 0; i < 50; i++) {
-       try {
-        lgGpioClaimOutput(handle, 0, i, 0);
-
-        Motor motor(i, handle);
-        motor.testMotor();
-        std::cout << "Motor: " << i << std::endl;
-       } catch(...) {
-        std::cout << "Skipped: " << i << std::endl;
-       }
-    }
-       */
-
     return 0;
 }
