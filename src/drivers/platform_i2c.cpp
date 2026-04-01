@@ -1,17 +1,24 @@
-/*
+
 
 //3 functions so that the ST LSM6DSOX and LIS3MDL driver can talk to the i2c
-
-#include <lgpio.h>
+#include <cstdint>
 #include <unistd.h>
 #include <stdlib.h>
 
+#ifndef BUILD_SIMULATION
+    #include <lgpio.h>
+#endif
 
 typedef struct {
     int i2cBus;
     uint8_t i2cAddress; //chip address
     int i2cHandle; //open connection to the chip. all actual i2c traffic uses this handle
 } platformHandleT;
+
+//each byte sent is written to one register, then the next, etc
+//look at the datasheet for registers and the number of bytes they send/store
+//if more bytes are written then the documented field they can fall into the next registers
+//don't write in read-only data registers
 
 
 //functions are named with _ so C driver can link to them
@@ -28,33 +35,18 @@ int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t 
     //essentially turn the generic handle back into our struct to use i2cHandle and anything else
     //ctx is short for context. In this it's the i2c context so it's a pointer to the struct that holds everything
     platformHandleT * ctx = (platformHandleT *) handle;
-    //allocates a buffer for "reg + data"
-    //we need 1 + len bytes (1 for reg, len for data)
-    //malloc(len + 1) allocates that many bytes onto the heap
-    //char * casts it so we can use it as a byte buffer
-    //a byte in memory is the same as a char in c so a buffer of chars = buffer of bytes
-    //out holds the full i2c write payload
-    char *out = (char *)malloc(len + 1);
-    //if malloc fails it returns null
-    //!out means null ig
-    //if its null we return -1 so driver knows the write failed and pigpio isn't called
-    if(!out) {return -1;}
-    //first byte sent over i2c must be the register address
-    out[0] = (char)reg;
-    //copies the data given by the driver bufp[0 to len-1] into out[1 to len]
-    //so out[0] is reg and out[everything else] is the data
-    for(uint16_t i = 0; i < len; i++) {
-        out[i+1] = bufp[i];
+
+    if(len > 32 || len < 1) {
+        return -1;
     }
 
-    int handle =lgI2cOpen(i2cBus, i2cAddress, 0);
-    int ret = lgI2cWrite(handle, reg, out);
-
-    //after getting the memory with malloc we give it back with free to not leak memory
-    //we're done with out after writing
-    free(out);
-
-    lgI2cClose(handle);
+    //writes up to 32 bytes of data to the register
+    //if we're writing over 32 bytes break it up into smaller writes
+    #ifndef BUILD_SIMULATION
+        int ret = lgI2cWriteI2cBlockData(ctx->i2cHandle, reg, (const char *)bufp, len);
+    #else
+        int ret = 0;
+    #endif
 
     //lgI2cWrite should return 0 on a success and -1 on failure 
     return (ret >= 0) ? 0 : -1;
@@ -63,23 +55,29 @@ int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t 
 
 
 
-//set specific register then read number of bytes from that register on the ST drivers
+//set specific register then read number of bytes from it
 int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len) {
     platformHandleT *ctx = (platformHandleT *) handle;
-    int wret = i2cWriteDevice(ctx->i2cHandle, (char *)&reg, 1);
-    if(wret != 0) {
+
+    if(len > 32 || len < 1) {
         return -1;
     }
 
-    int handle = lgI2cOpen(i2cBus, i2cAddress, 0);
-    int ret = lgI2cRead(handle, reg, bufp);
+    //reads up to a max of 32 bytes of data from the register
+    //data is put into the bufp pointer
+    #ifndef BUILD_SIMULATION
+        int n = lgI2cReadI2cBlockData(ctx->i2cHandle, reg, (char *)bufp, len);
+    #else
+        int n = 0;
+    #endif
 
-    lgI2cClose(handle);
-    return (ret == (int)len) ? 0 : -1;
+    //-1 lets ST driver know read failed
+    if (n < 0) {
+        return -1;
+    }
+    return (n == (int)len) ? 0 : -1;
 }
 
 void platform_delay(uint32_t millisec) {
     usleep(millisec * 1000);
 }
-
-*/
