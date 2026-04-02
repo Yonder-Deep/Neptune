@@ -21,10 +21,10 @@ int main() {
         return 1;
     } else {
         //placeholder values
-        int pin1 = 1; 
-        int pin2 = 2;
-        int pin3 = 3;
-        int pin4 = 4;
+        int pin1 = 24; 
+        int pin2 = 11;
+        int pin3 = 4;
+        int pin4 = 18;
 
         Motor motor1(pin1, handle);
         int result = motor1.claimPin();
@@ -81,13 +81,13 @@ int main() {
             std::cout << "1525 to 1900 is for forward thrust" << std::endl;
             std::cout << "1475 to 1100 is for backward thrust" << std::endl;
 
-            std::cout << "Input speed for the first motor: " << std::endl;
+            std::cout << "Input speed for the front motor: " << std::endl;
             std::cin >> input1;
-            std::cout << "Input speed for the second motor: " << std::endl;
+            std::cout << "Input speed for the right motor: " << std::endl;
             std::cin >> input2;
-            std::cout << "Input speed for the third motor: " << std::endl;
+            std::cout << "Input speed for the left motor: " << std::endl;
             std::cin >> input3;
-            std::cout << "Input speed for the fourth motor: " << std::endl;
+            std::cout << "Input speed for the back motor: " << std::endl;
             std::cin >> input4;
 
             result = motor1.setPwm(input1);
