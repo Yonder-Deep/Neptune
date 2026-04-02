@@ -1,0 +1,122 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.21227895753687573 -0.23169401250435753 0.949344789187094 2.6408678023986716
+  position 18725.948987569143 -9265.910316916652 4927.025824158396
+  follow "Neptune"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Fluid {
+  translation 0 0 -3
+  name "water"
+  description "The ocean"
+  viscosity 0
+  boundingObject Box {
+    size 1000000 100000 50
+  }
+  locked TRUE
+}
+Pose {
+  translation 0 0 -3
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          transparency 0.9
+        }
+        texture ImageTexture {
+          url [
+            "../data/images/Water 0175.JPG.jpg"
+          ]
+          filtering 1
+        }
+        textureTransform TextureTransform {
+          scale 60 60
+        }
+      }
+      geometry Box {
+        size 1000000 1000000 3
+      }
+    }
+  ]
+}
+Robot {
+  translation 5955.39200000007 -46.03164626283859 21.399885287585164
+  rotation 1 0 0 1.5707963267948968
+  children [
+    Group {
+      children [
+        InertialUnit {
+        }
+        Gyro {
+        }
+        GPS {
+        }
+        Camera {
+          translation -320.7 653.63 256.85
+          name "NeptuneFront"
+          boundingObject Box {
+            size 50 50 50
+          }
+          width 500
+          height 500
+        }
+      ]
+    }
+    CadShape {
+      url [
+        "../data/USV/neptune-low.obj"
+      ]
+      castShadows FALSE
+    }
+  ]
+  name "Neptune"
+  model "Neptune"
+  description "Neptune"
+  immersionProperties [
+    ImmersionProperties {
+      fluidName "water"
+    }
+  ]
+  boundingObject Pose {
+    translation -300 300 325
+    children [
+      Box {
+        size 1800 600 1200
+      }
+    ]
+  }
+  physics Physics {
+    density 1
+    damping Damping {
+    }
+  }
+  controller "neptune"
+  supervisor TRUE
+  linearVelocity 1 0 0
+}
+Pose {
+  translation 13603.3 0 0
+  children [
+    Solid {
+      boundingObject Box {
+        size 5000 5000 5000
+      }
+    }
+    Shape {
+      appearance Appearance {
+      }
+      geometry Box {
+        size 5000 5000 5000
+      }
+    }
+  ]
+}
