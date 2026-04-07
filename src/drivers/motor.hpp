@@ -1,92 +1,136 @@
 /**
 @Header Motor
-@brief sets speed of motor and can test it
+@brief Controls a motor via hardware PWM using the Linux sysfs interface.
 
-motor.hpp is the header file for the motor class
-it can set the speed of the motor and test it
+Requires dtoverlay=pwm-2chan in /boot/firmware/config.txt
+PWM channel 0 = GPIO 18, PWM channel 1 = GPIO 19
 */
 
 #pragma once
 
-
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <chrono>
 #include <thread>
 
-//hopefully should work on the pi. It works in simulation. Otherwise it won't build
-#ifndef BUILD_SIMULATION
-    #include <lgpio.h>
-#endif
-
 class Motor {
     private:
-        int pin;
-        int handle;
-        int pwm;
-    
-    public: 
-        //hardcoded values from AUV
-        const int CENTER_PWM_RANGE = 400;
-        const int CENTER_PWM_VALUE = 1500;
+        int channel;        // PWM channel (0 for GPIO 18, 1 for GPIO 19)
+        int pwm;            // current pulse width in microseconds
+        std::string base;   // sysfs path for this PWM channel
+        bool exported;
 
-        //1100 <- 1500 -> 1900
-
-        //gpio chip is opened/closed eleswhere
-        Motor(int gpioPin, int handle) : pin(gpioPin), handle(handle), pwm(1500) { }
-
-        int claimPin() {
-            #ifndef BUILD_SIMULATION
-                int result = lgGpioClaimOutput(handle, 0, pin, 0); //claim pin for motor
-                return result;
-            #else
-                return 0;
-            #endif
+        bool sysfsWrite(const std::string& file, const std::string& value) {
+            std::ofstream ofs(base + "/" + file);
+            if (!ofs.is_open()) {
+                std::cerr << "failed to open " << base << "/" << file << std::endl;
+                return false;
+            }
+            ofs << value;
+            ofs.close();
+            return true;
         }
 
-        //set speed of motor
-        int setPwm(int newPwm) {
-            pwm = newPwm;
+    public:
+        static constexpr int MIN_PWM = 1100;
+        static constexpr int MAX_PWM = 1900;
+        static constexpr int NEUTRAL_PWM = 1500;
+        static constexpr int PERIOD_NS = 20000000; // 20ms = 50Hz
 
-            if(pwm < 1100 || pwm > 1900) {
-                std::cerr << "pwm value out of range" << std::endl;
+        // channel: 0 for GPIO 18, 1 for GPIO 19
+        Motor(int pwmChannel)
+            : channel(pwmChannel)
+            , pwm(NEUTRAL_PWM)
+            , base("/sys/class/pwm/pwmchip0/pwm" + std::to_string(pwmChannel))
+            , exported(false)
+        {}
+
+        // Export the PWM channel and configure 50Hz period
+        int init() {
+            #ifndef BUILD_SIMULATION
+                // Export the channel
+                std::ofstream exportFs("/sys/class/pwm/pwmchip0/export");
+                if (!exportFs.is_open()) {
+                    std::cerr << "failed to open pwmchip0/export (already exported?)" << std::endl;
+                    // May already be exported, try to continue
+                }  else {
+                    exportFs << channel;
+                    exportFs.close();
+                    // Brief delay for sysfs to create the directory
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+
+                // Set period (50Hz = 20ms)
+                if (!sysfsWrite("period", std::to_string(PERIOD_NS))) {
+                    std::cerr << "failed to set period" << std::endl;
+                    return -1;
+                }
+
+                // Set initial duty cycle to neutral
+                if (!sysfsWrite("duty_cycle", std::to_string(NEUTRAL_PWM * 1000))) {
+                    std::cerr << "failed to set initial duty_cycle" << std::endl;
+                    return -1;
+                }
+
+                // Enable
+                if (!sysfsWrite("enable", "1")) {
+                    std::cerr << "failed to enable PWM" << std::endl;
+                    return -1;
+                }
+
+                exported = true;
+            #else
+                std::cout << "simulation: Motor channel " << channel << " initialized" << std::endl;
+                exported = true;
+            #endif
+            return 0;
+        }
+
+        // Set pulse width in microseconds (1100-1900)
+        int setPwm(int newPwm) {
+            if (newPwm < MIN_PWM || newPwm > MAX_PWM) {
+                std::cerr << "pwm value out of range: " << newPwm << std::endl;
                 return -1;
             }
 
-            //change motor speed
+            pwm = newPwm;
+
             #ifndef BUILD_SIMULATION
-                int result = lgTxServo(handle, pin, pwm, 50, 0, 0);
-                return result;
+                // Convert microseconds to nanoseconds for sysfs
+                if (!sysfsWrite("duty_cycle", std::to_string(pwm * 1000))) {
+                    std::cerr << "failed to set pwm" << std::endl;
+                    return -1;
+                }
             #else
-                std::cout << "simulation Motor " << pin << " PWM: " << pwm << std::endl;
-                return 0;
+                std::cout << "simulation Motor ch" << channel << " PWM: " << pwm << std::endl;
             #endif
+            return 0;
         }
 
         void stopMotor() {
             #ifndef BUILD_SIMULATION
-                lgTxServo(handle, pin, 0, 50, 0, 0); //turn off pulsewidths
+                sysfsWrite("duty_cycle", "0");
+                sysfsWrite("enable", "0");
             #else
-                std::cout << "simulation Motor " << pin << " stopped" << std::endl;
+                std::cout << "simulation Motor ch" << channel << " stopped" << std::endl;
             #endif
         }
 
-        int freePin() {
-            #ifndef BUILD_SIMULATION
-                int result = lgGpioFree(handle, pin);
-                return result;
-            #else
-                return 0;
-            #endif
+        void cleanup() {
+            if (exported) {
+                stopMotor();
+                // Unexport the channel
+                std::ofstream unexportFs("/sys/class/pwm/pwmchip0/unexport");
+                if (unexportFs.is_open()) {
+                    unexportFs << channel;
+                    unexportFs.close();
+                }
+                exported = false;
+            }
         }
 
-        //test the motor by setting speed values between time intervals
-        void testMotor() {
-            std::cout << ("TESTING MOTOR 2") << std::endl;
-            this->setPwm(1700);
-            std::this_thread::sleep_for(std::chrono::seconds(5));  
-            this->stopMotor();
+        ~Motor() {
+            cleanup();
         }
-
 };
-
-

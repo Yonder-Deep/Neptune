@@ -2,47 +2,35 @@ cmake_minimum_required(VERSION 3.25)
 
 project(neptune C CXX)
 
-
 add_executable(neptune main.cpp)
 
 #BUILD_SIMULATION option
-#this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
 
-#find lgpio library(only if not in simulation mode)
+#find lgpio library (only needed for non-motor targets when not in simulation)
 if(NOT BUILD_SIMULATION)
     find_library(LGPIO_LIB lgpio)
     find_path(LGPIO_INCLUDE_DIR lgpio.h)
 
-    if(NOT LGPIO_LIB OR NOT LGPIO_INCLUDE_DIR)
-        message(FATAL_ERROR "lgpio library not found")
+    if(LGPIO_LIB AND LGPIO_INCLUDE_DIR)
+        set(LGPIO_LINK_LIBS ${LGPIO_LIB})
+        message(STATUS "Found lgpio library: ${LGPIO_LIB}")
+        message(STATUS "Found lgpio include directory: ${LGPIO_INCLUDE_DIR}")
+        target_link_libraries(neptune ${LGPIO_LINK_LIBS})
+        target_include_directories(neptune PRIVATE ${LGPIO_INCLUDE_DIR})
+    else()
+        message(STATUS "lgpio library not found (not needed for motor tests)")
     endif()
-
-    set(LGPIO_LINK_LIBS ${LGPIO_LIB})
-    message(STATUS "Found lgpio library: ${LGPIO_LIB}")
-    message(STATUS "Found lgpio include directory: ${LGPIO_INCLUDE_DIR}")
-
-    #neptune links lgpio and has lgpio include directory if not in simulation
-    target_link_libraries(neptune ${LGPIO_LINK_LIBS})
-    target_include_directories(neptune PRIVATE ${LGPIO_INCLUDE_DIR})
 else()
-    #lgpio library isn't required in simulation mode 
-    #not sure how simulations will work yet if we do any
-    message(STATUS "Building in simulation mode. lgpio library not used.")
+    message(STATUS "Building in simulation mode.")
     set(LGPIO_LINK_LIBS "")
 endif()
 
-#create motor library (just header file)
+#create motor library (header-only, uses sysfs - no lgpio dependency)
 add_library(motor INTERFACE)
 target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
 
-#add lgpio include directory to motor target
-if(NOT BUILD_SIMULATION)
-    target_include_directories(motor INTERFACE ${LGPIO_INCLUDE_DIR})
-    target_link_libraries(motor INTERFACE ${LGPIO_LINK_LIBS})
-endif()
-
-#executable for testing motor(separate from library)
+#executable for testing motor (uses sysfs hardware PWM, no lgpio needed)
 add_executable(motor_test drivers/main.cpp)
 target_link_libraries(motor_test motor)
 
@@ -50,15 +38,10 @@ target_link_libraries(motor_test motor)
 add_executable(pool_test drivers/pool_test.cpp)
 target_link_libraries(pool_test motor)
 
-#define BUILD SIMULATION
+#define BUILD_SIMULATION
 if(BUILD_SIMULATION)
     target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
     target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
-endif()
-
-if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
-    target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
 endif()
 
 #to use the motor library elsewhere

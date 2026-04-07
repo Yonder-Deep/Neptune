@@ -1,97 +1,67 @@
 /**
 @Class Main
 
-tests the motor class
+Tests the motor class using hardware PWM via sysfs.
+
+Requires:
+  - dtoverlay=pwm-2chan in /boot/firmware/config.txt
+  - Motor wired to GPIO 18 (PWM channel 0)
+  - Run with sudo (sysfs PWM needs root)
 */
-
-
-//script for testing the motor class
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 #include "motor.hpp"
-//#include "imu.hpp"
-
-#ifndef BUILD_SIMULATION
-    #include <lgpio.h>
-#endif
 
 int main() {
+    // Channel 0 = GPIO 18, Channel 1 = GPIO 19
+    Motor motor(0);
 
-    #ifndef BUILD_SIMULATION
-        //need to find RP1 controller (varies with kernel/OS)
+    int result = motor.init();
+    if (result < 0) {
+        std::cerr << "failed to initialize motor" << std::endl;
+        return 1;
+    }
 
-        /*
-        sudo apt update
-        sudo apt install -y build-essential cmake liblgpio-dev
-        cd src
-        cmake -B build
-        cmake --build build
-        ./build/motor_test
+    std::cout << "Motor initialized. Arming ESC (7 seconds at neutral)..." << std::endl;
 
-        sudo apt install gpiod
-        sudo gpiodetect
+    // Arm ESC: hold neutral (1500us) for 7 seconds
+    result = motor.setPwm(1500);
+    if (result < 0) {
+        std::cerr << "failed to set neutral" << std::endl;
+        return 1;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(7));
 
-        set gpio chip to the one for [pinctrl-rp1]
+    // Forward at lowest speed (1525us) for 5 seconds
+    std::cout << "Forward (1525)..." << std::endl;
+    result = motor.setPwm(1525);
+    if (result < 0) {
+        std::cerr << "failed to set forward" << std::endl;
+        return 1;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
-        could also make a helper function later to find gpio chip
-        */
+    // Neutral for 3 seconds
+    std::cout << "Neutral (1500)..." << std::endl;
+    motor.setPwm(1500);
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
-        int handle = lgGpiochipOpen(0); //open gpio chip 0 
-        //for the pi5 used for testing the chip is 0
-        if(handle < 0) {
-            std::cerr << "failed to initialize lgpio" << std::endl;
-            return 1;
-        } else {
-            int pin = 2; //gpio pin 2 is on the physical pin 3
+    // Reverse at lowest speed (1475us) for 5 seconds
+    std::cout << "Reverse (1475)..." << std::endl;
+    result = motor.setPwm(1475);
+    if (result < 0) {
+        std::cerr << "failed to set reverse" << std::endl;
+        return 1;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
-            Motor motor(pin, handle);
+    // Stop
+    std::cout << "Stopping..." << std::endl;
+    motor.stopMotor();
+    motor.cleanup();
 
-            int result = motor.claimPin();
-            if(result < 0) {
-                std::cerr << "failed to claim output" << std::endl;
-                return 1;
-            }
-
-            result = motor.setPwm(1500);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                return 1;
-            }
-            std::this_thread::sleep_for(std::chrono::seconds(3));
-
-
-            result = motor.setPwm(1700);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                return 1;
-            }
-
-            std::this_thread::sleep_for(std::chrono::seconds(5));
-            result = motor.setPwm(1500);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                return 1;
-            }
-
-            std::this_thread::sleep_for(std::chrono::seconds(5));
-            result = motor.setPwm(1300);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                return 1;
-            }
-
-            std::this_thread::sleep_for(std::chrono::seconds(5));
-
-            motor.stopMotor();
-            motor.freePin();
-
-            lgGpiochipClose(handle);
-
-        }
-    #else
-        std::cout << "Simulation mode. no hardware" << std::endl;
-    #endif
-
+    std::cout << "Test complete." << std::endl;
     return 0;
 }
