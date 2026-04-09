@@ -12,3 +12,7 @@ services:
       - DISPLAY=${DISPLAY}
     ports:
       - 6080:6080
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - video

@@ -12,3 +12,19 @@ You can tell the container is open if the bar at the top of vscode shows `Neptun
 
 Later, you can relaunch directly in the contaier by choosing the [dev container] option when you select your workspace
 
+
+
+
+## GPU for simulation
+> This likely will need WSL for windows, I'm not sure and can't test yet. If any windows user wants to update this with more information, go ahead 
+### nvdia gpu:
+* the docs at show how: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+* You will need to edit the docker compose for this
+
+### AMD(igpu)
+* https://rocm.docs.amd.com/projects/install-on-linux/en/latest/how-to/docker.html
+
+
+
+
+
