@@ -1,8 +1,4 @@
-/**
-@Class Main
-
-tests the motor class
-*/
+//tests motor class
 
 
 //script for testing the motor class
