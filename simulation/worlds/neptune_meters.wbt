@@ -6,8 +6,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.01041773198521356 -0.6469029912244082 0.7625011415107504 5.8954810354738205
-  position 1772.3614794210187 642.135226961153 1985.549750599441
+  orientation 0.6325085651505812 -0.3694892498152447 -0.680742689481217 3.9018004486380375
+  position 7.6480646931200775 -7.253930829638504 7.6167045871921095
   follow "Neptune"
 }
 TexturedBackground {
@@ -15,17 +15,16 @@ TexturedBackground {
 TexturedBackgroundLight {
 }
 Fluid {
-  translation 0 0 -3
+  translation 0 0 -0.003
   name "water"
   description "The ocean"
-  viscosity 0
   boundingObject Box {
-    size 1000000 100000 50
+    size 1000 1000 0.05
   }
   locked TRUE
 }
 Pose {
-  translation 0 0 -3
+  translation 0 0 -0.003
   children [
     Shape {
       appearance Appearance {
@@ -43,115 +42,143 @@ Pose {
         }
       }
       geometry Box {
-        size 1000000 1000000 3
+        size 1000 1000 0.003
       }
     }
   ]
 }
 Robot {
-  translation 5959.889439178824 -46.03164628831581 21.39999999809669
-  rotation 1 1.173294967569972e-10 1.1732958844883034e-10 1.5707963267947385
+  translation 6.570705415219543 -7.196602180295456 0.20134390349152456
+  rotation -0.4943808155600411 -0.6036021592629285 -0.6255014328835059 -2.2135687887443494
   children [
     DEF Motors Group {
       children [
         Solid {
-          translation 206.4 -56.32 -156.89
-          rotation 0 1 0 -0.785398
+          translation 0.9 -0.3 -0.6
+          rotation 0 1 0 2.3561899994543
           children [
             Shape {
               appearance Appearance {
               }
               geometry Capsule {
-                height 50
-                radius 25
+                height 0.05
+                radius 0.025
               }
               castShadows FALSE
             }
             Propeller {
-  shaftAxis 0 0 1
-  thrustConstants 5000 0
-  torqueConstants 500 0
-  device RotationalMotor {
-    name "r_t_rot_motor"
-    maxVelocity 500
-    maxTorque 1e+23
-  }
-}
+              shaftAxis 0 0 1
+              thrustConstants 50 0
+              torqueConstants 5 0
+              device RotationalMotor {
+                name "l_t_rot_motor"
+                maxVelocity 500
+                maxTorque 10000000000
+              }
+            }
           ]
           name "l_t_prop"
           physics Physics {
+            density 500
             centerOfMass [
               0 0 0
             ]
           }
         }
         Solid {
-          translation 206.4 -56.32 780
+          translation 0.9 -0.3 0.6
           rotation 0 1 0 0.785398
           children [
             Shape {
               appearance Appearance {
               }
               geometry Capsule {
-                height 50
-                radius 25
+                height 0.05
+                radius 0.025
               }
               castShadows FALSE
             }
             Propeller {
+              shaftAxis 0 0 1
+              thrustConstants 50 0
+              torqueConstants 5 0
               device RotationalMotor {
                 name "r_t_rot_motor"
+                maxVelocity 500
+                maxTorque 10000000000
               }
             }
           ]
           name "r_t_motor"
           physics Physics {
+            density 500
+            centerOfMass [
+              0 0 0
+            ]
           }
         }
         Solid {
-          translation -812.838 -56.32 -144.052
-          rotation 0 1 0 0.785398
+          translation -0.9 -0.3 -0.6
+          rotation 0 1 0 -2.3561944871795863
           children [
             Shape {
               appearance Appearance {
               }
               geometry Capsule {
-                height 50
-                radius 25
+                height 0.05
+                radius 0.025
               }
               castShadows FALSE
             }
             Propeller {
+              shaftAxis 0 0 1
+              thrustConstants 50 0
+              torqueConstants 5 0
               device RotationalMotor {
                 name "l_b_rot_motor"
+                maxVelocity 500
+                maxTorque 10000000000
               }
             }
           ]
           name "l_b_motor"
           physics Physics {
+            density 500
+            centerOfMass [
+              0 0 0
+            ]
           }
         }
         Solid {
-          translation -800 -56.32 780
+          translation -0.9 -0.3 0.6
           rotation 0 1 0 -0.785398
           children [
             Shape {
               appearance Appearance {
               }
               geometry Capsule {
-                height 50
-                radius 25
+                height 0.05
+                radius 0.025
               }
               castShadows FALSE
             }
             Propeller {
+              shaftAxis 0 0 1
+              thrustConstants 50 0
+              torqueConstants 5 0
               device RotationalMotor {
                 name "r_b_rot_motor"
+                maxVelocity 500
+                maxTorque 10000000000
               }
             }
           ]
           name "r_b_motor"
           physics Physics {
+            density 500
+            centerOfMass [
+              0 0 0
+            ]
           }
         }
       ]
@@ -159,7 +186,7 @@ Robot {
     DEF Sensors Group {
       children [
         Lidar {
-          translation 467.26 594.13 282.817
+          translation 0.46726 0.59413 0.282817
           rotation 0 1 0 1.57
           children [
             Shape {
@@ -173,12 +200,13 @@ Robot {
                 }
               }
               geometry Cone {
-                bottomRadius 50
-                height 200
+                bottomRadius 0.05
+                height 0.2
               }
             }
           ]
           name "front_lidar"
+          maxRange 50
         }
         InertialUnit {
         }
@@ -187,20 +215,25 @@ Robot {
         GPS {
         }
         Camera {
-          translation -320.7 653.63 256.85
+          translation -0.3207 0.65363 0.25685
           name "NeptuneFront"
           boundingObject Box {
-            size 50 50 50
+            size 0.05 0.05 0.05
           }
           width 500
           height 500
         }
       ]
     }
-    CadShape {
-      url [
-        "../data/USV/neptune-low.obj"
-      ]
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.4 0.8
+        }
+      }
+      geometry Box {
+        size 1.8 0.6 1.2
+      }
       castShadows FALSE
     }
   ]
@@ -210,39 +243,41 @@ Robot {
   immersionProperties [
     ImmersionProperties {
       fluidName "water"
+      dragForceCoefficients 0.1 0 0
+      dragTorqueCoefficients 0.1 0 0
     }
   ]
   boundingObject Pose {
-    translation -300 300 325
     children [
       Box {
-        size 1800 600 1200
+        size 1.8 0.6 1.2
       }
     ]
   }
   physics Physics {
-    density 1
+    density 200
     damping Damping {
+      angular 0.3
     }
   }
   controller "neptune"
   supervisor TRUE
-  linearVelocity 2.4225695052284894e-50 -2.4225687128270648e-50 -6.111668467206068e-13
-  angularVelocity -4.2497372466399164e-15 6.966664689145093e-18 -3.1586936140108386e-28
+  linearVelocity -0.15791062375882958 1.3753481452198941 5.779930954879886e-16
+  angularVelocity 1.2781620980098165e-16 1.1507151124290204e-15 0.16513351713120414
 }
 Pose {
-  translation 13603.3 0 0
+  translation 13.6033 0 0
   children [
     Solid {
       boundingObject Box {
-        size 5000 5000 5000
+        size 5 5 5
       }
     }
     Shape {
       appearance Appearance {
       }
       geometry Box {
-        size 5000 5000 5000
+        size 5 5 5
       }
     }
   ]

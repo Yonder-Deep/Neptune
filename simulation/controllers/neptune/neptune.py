@@ -1,20 +1,22 @@
 """neptune controller."""
 import io
 import threading
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot, Motor, Supervisor, Keyboard
-import http.server
-import socketserver
+import math
+import struct
+
+from controller import Supervisor, Keyboard
 from flask import Flask, send_file
 from PIL import Image
-import struct
-import math
-robot = Supervisor() # Note this is supervise as in a node with control over the simulation, not the super class
+
+robot = Supervisor()
 node = robot.getSelf()
+
 keyboard = Keyboard()
+keyboard.enable(int(robot.getBasicTimeStep()))  
+
 timestep = int(robot.getBasicTimeStep())
 
+# Sensors
 front_cam_node = robot.getCamera("NeptuneFront")
 front_cam_node.enable(5)
 
@@ -26,63 +28,74 @@ gyro.enable(5)
 
 gps = robot.getGPS("gps")
 gps.enable(5)
-#ignore - the robot velocity is controlled manually instead of using motors
-#TODO in the future, we should move over to using motors.
-#lmotor = robot.getMotor("left_motor")
-#rmotor = robot.getMotor("right_motor")
-#lmotor.setPosition(float('inf'))
 
-#rmotor.setPosition(float('inf'))
+front_lidar = robot.getLidar("front_lidar")
+front_lidar.enable(5)
+front_lidar.enablePointCloud()
 
+# Motors
+l_t_motor = robot.getMotor("l_t_rot_motor")
+r_t_motor = robot.getMotor("r_t_rot_motor")
+l_b_motor = robot.getMotor("l_b_rot_motor")
+r_b_motor = robot.getMotor("r_b_rot_motor")
+
+all_motors = [l_t_motor, r_t_motor, l_b_motor, r_b_motor]
+
+for m in all_motors:
+    m.setPosition(float('inf'))  # velocity control mode
+    m.setVelocity(0)
+
+MOTOR_VELOCITY = 3.0  # rad/s — tuned for meter-scale boat with thrustConstants 50 0
 
 SIM_PORT = 8000
+app = Flask(__name__)
 
-app = Flask(__name__ )
-#flat multiplier since the cordinates are in huge amounts
-ROBOT_SPEED_MULTI = 50.0 
-MAX_ROBOT_SPEED = 20.0
-ROBOT_ACCEL = 1.0
 
-ROBOT_MAX_ROTATION_VEL = 0.2
-ROBOT_ROT_ACCEL = 0.01
 class RobotState():
-    left_motor = False
-    right_motor = False
-    speed = 0.0
+    top_l_motor = False
+    bottom_l_motor = False
+    top_r_motor = False
+    bottom_r_motor = False
     time = 0
-    rotation = 0.0
+
     def __init__(self):
         pass
+
     def tick(self):
         self.time += 1
-        if not self.right_motor and not self.left_motor:
-            self.speed = max(0, min(self.speed - ROBOT_ACCEL, MAX_ROBOT_SPEED))
-            self.rotation *= 0.95
-        elif self.left_motor and not self.right_motor:
-             self.speed = max(0, min(self.speed - ROBOT_ACCEL, MAX_ROBOT_SPEED))
-             self.rotation = min(self.rotation + ROBOT_ROT_ACCEL, ROBOT_MAX_ROTATION_VEL)
-        elif self.right_motor and not self.left_motor:
-             self.speed = max(0, min(self.speed - ROBOT_ACCEL, MAX_ROBOT_SPEED))
-             self.rotation = max(self.rotation - ROBOT_ROT_ACCEL, -ROBOT_MAX_ROTATION_VEL)
-        else:
-            self.speed = min(self.speed + ROBOT_ACCEL, MAX_ROBOT_SPEED)
-            self.rotation *= 0.95
-        
-    def getVel(self):
-        forward = node.getOrientation()[0:3]
-        x = forward[0] * self.speed* ROBOT_SPEED_MULTI
-        y = forward[1] * self.speed* ROBOT_SPEED_MULTI
-        z = forward[2] * self.speed * ROBOT_SPEED_MULTI
-        return [x, z, y, 0, 0, self.rotation]
-state = RobotState()  
-@app.route("/toggle_left")
-def left():
-    state.left_motor = not state.left_motor
-    return "ok  "
-@app.route("/toggle_right")
-def right():
-    state.right_motor = not state.right_motor
-    return "ok"
+
+    def apply_motors(self):
+        l_t_motor.setVelocity(MOTOR_VELOCITY if self.top_l_motor    else 0)
+        r_t_motor.setVelocity(MOTOR_VELOCITY if self.top_r_motor    else 0)
+        l_b_motor.setVelocity(MOTOR_VELOCITY if self.bottom_l_motor else 0)
+        r_b_motor.setVelocity(MOTOR_VELOCITY if self.bottom_r_motor else 0)
+
+
+state = RobotState()
+
+
+# --- Flask routes ---
+
+@app.route("/motor/top_left/toggle", methods=["POST", "GET"])
+def toggle_top_left():
+    state.top_l_motor = not state.top_l_motor
+    return {"status": state.top_l_motor}
+
+@app.route("/motor/top_right/toggle", methods=["POST", "GET"])
+def toggle_top_right():
+    state.top_r_motor = not state.top_r_motor
+    return {"status": state.top_r_motor}
+
+@app.route("/motor/bottom_left/toggle", methods=["POST", "GET"])
+def toggle_bottom_left():
+    state.bottom_l_motor = not state.bottom_l_motor
+    return {"status": state.bottom_l_motor}
+
+@app.route("/motor/bottom_right/toggle", methods=["POST", "GET"])
+def toggle_bottom_right():
+    state.bottom_r_motor = not state.bottom_r_motor
+    return {"status": state.bottom_r_motor}
+
 @app.route("/front_cam")
 def front_cam():
     img = front_cam_node.getImage()
@@ -93,36 +106,49 @@ def front_cam():
     img_bytes = io.BytesIO()
     pil_image.save(img_bytes, format='PNG')
     img_bytes.seek(0)
-    return send_file(
-        img_bytes,
-        mimetype='image/png',
-        download_name='image.png'
-    )
+    return send_file(img_bytes, mimetype='image/png', download_name='image.png')
+
 @app.route("/imu")
 def get_imu():
-    return imu.getRollPitchYaw()
-
+    return list(imu.getRollPitchYaw())
 
 @app.route("/gyro")
 def get_gyro():
-    return gyro.getValues()
+    return list(gyro.getValues())
 
 @app.route("/gps")
 def get_gps():
-    return gps.getValues()
-# @app.route("/front_lidar")
-# def front_lidar
-def start():
-    app.run(port = SIM_PORT)
-t = threading.Thread(target = start)
+    return list(gps.getValues())
+
+@app.route("/front_lidar")
+def get_front_lidar():
+    return [
+        [a.x, a.y, a.z]
+        for a in front_lidar.getLayerPointCloud(0)
+        if math.isfinite(a.x) and math.isfinite(a.y) and math.isfinite(a.z)
+    ]
+
+@app.route("/state")
+def get_state():
+    return {
+        "top_l_motor":    state.top_l_motor,
+        "top_r_motor":    state.top_r_motor,
+        "bottom_l_motor": state.bottom_l_motor,
+        "bottom_r_motor": state.bottom_r_motor,
+        "time":           state.time,
+        "gps":            list(gps.getValues()),
+    }
+
+
+def start_flask():
+    app.run(port=SIM_PORT)
+
+t = threading.Thread(target=start_flask)
 t.daemon = True
 t.start()
 
-print("abc")
+# --- Main simulation loop ---
 while robot.step(timestep) != -1:
     state.tick()
-    node.setVelocity(state.getVel())
+    state.apply_motors()
     key = keyboard.getKey()
-    #rmotor.setVelocity(10)
-    #lmotor.setVelocity(10)
-
