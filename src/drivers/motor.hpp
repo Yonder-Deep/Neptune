@@ -54,7 +54,9 @@ class Motor {
 
             //change motor speed
             #ifndef BUILD_SIMULATION
-                int result = lgTxServo(handle, pin, pwm, 50, 0, 0);
+                //lgTxServo isn't good: int result = lgTxServo(handle, pin, pwm, 50, 0, 0);
+                //duty cycle can be set from 0 to 100. 100 is for full power 0 is off
+                int result = lgTxPwm(handle, pin, pwm, 50, 0, 0); 
                 return result;
             #else
                 std::cout << "simulation Motor " << pin << " PWM: " << pwm << std::endl;
@@ -64,7 +66,9 @@ class Motor {
 
         void stopMotor() {
             #ifndef BUILD_SIMULATION
-                lgTxServo(handle, pin, 0, 50, 0, 0); //turn off pulsewidths
+                //apparently not great according to documentation: lgTxServo(handle, pin, 0, 50, 0, 0); 
+                // //turn off pulsewidths
+                lgTxPwm(handle, pin, 1500, 50, 0, 0); 
             #else
                 std::cout << "simulation Motor " << pin << " stopped" << std::endl;
             #endif

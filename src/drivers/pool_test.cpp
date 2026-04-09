@@ -7,10 +7,22 @@
     #include <lgpio.h>
 #endif
 
+//pool test results:
+//only works sometimes
+//pi pins require power cycling to work
+//loop doesn't really work
+//problem could've been from low voltage/bad connections
+//1525pwm didn't work
+//1700pwm worked
+//motors would turn on at different times at different speeds
+//some of them would start slow and then speed up to match the others
 
 // 4 motors 
 // don't know what pins they're on
 //also don't know gpio chip number but I assume it's 0
+//0 worked
+
+
 
 int main() {
     #ifndef BUILD_SIMULATION
