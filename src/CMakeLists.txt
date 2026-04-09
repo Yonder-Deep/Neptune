@@ -43,8 +43,8 @@ if(NOT BUILD_SIMULATION)
 endif()
 
 #executable for testing motor(separate from library)
-add_executable(motor_test drivers/main.cpp)
-target_link_libraries(motor_test motor)
+add_executable(motor_test1 drivers/main.cpp)
+target_link_libraries(motor_test1 motor)
 
 #executable for pool test
 add_executable(pool_test drivers/pool_test.cpp)
@@ -52,12 +52,12 @@ target_link_libraries(pool_test motor)
 
 #define BUILD SIMULATION
 if(BUILD_SIMULATION)
-    target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
+    target_compile_definitions(motor_test1 PRIVATE BUILD_SIMULATION)
     target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
 endif()
 
 if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
+    target_link_libraries(motor_test1 ${LGPIO_LINK_LIBS})
     target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
 endif()
 
