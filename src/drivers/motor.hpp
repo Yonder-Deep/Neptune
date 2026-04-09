@@ -76,7 +76,7 @@ class Motor {
                 //lgTxPwm(handle, pin, 1500, 8, 0, 0); 
                 int pulseOn = 1500;
                 int pulseOff = 20000 - pulseOn;
-                lgTxPulse(handle, pin, pulseOn, pulseOff, 0, 0)
+                lgTxPulse(handle, pin, pulseOn, pulseOff, 0, 0);
             #else
                 std::cout << "simulation Motor " << pin << " stopped" << std::endl;
             #endif
