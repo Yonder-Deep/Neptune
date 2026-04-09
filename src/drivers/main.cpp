@@ -61,7 +61,7 @@ int main() {
             std::this_thread::sleep_for(std::chrono::seconds(3));
 
 
-            result = motor.setPwm(1700);
+            result = motor.setPwm(1525);
             if(result < 0) {
                 std::cerr << "failed to set pwm" << std::endl;
                 return 1;
@@ -75,7 +75,7 @@ int main() {
             }
 
             std::this_thread::sleep_for(std::chrono::seconds(5));
-            result = motor.setPwm(1300);
+            result = motor.setPwm(1475);
             if(result < 0) {
                 std::cerr << "failed to set pwm" << std::endl;
                 return 1;

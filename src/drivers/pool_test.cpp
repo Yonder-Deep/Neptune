@@ -7,6 +7,11 @@
     #include <lgpio.h>
 #endif
 
+//todo
+//atexit/signal handler/RAII to free all pins and handles and stuff
+//stopMotor() should do 1500 not 0
+//switch to hardware pwm over software pwm
+
 //pool test results:
 //only works sometimes
 //pi pins require power cycling to work
