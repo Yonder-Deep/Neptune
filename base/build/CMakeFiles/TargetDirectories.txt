@@ -1,0 +1,7 @@
+/workspaces/Neptune/base/build/CMakeFiles/log_client.dir
+/workspaces/Neptune/base/build/CMakeFiles/edit_cache.dir
+/workspaces/Neptune/base/build/CMakeFiles/rebuild_cache.dir
+/workspaces/Neptune/base/build/CMakeFiles/list_install_components.dir
+/workspaces/Neptune/base/build/CMakeFiles/install.dir
+/workspaces/Neptune/base/build/CMakeFiles/install/local.dir
+/workspaces/Neptune/base/build/CMakeFiles/install/strip.dir

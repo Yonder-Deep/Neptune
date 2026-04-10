@@ -11,7 +11,7 @@ motors:
   pin4: 0  # Back
 
 network:
-  ip: "localhost"
+  ip: 0.0.0.0
   port: 8080
 
 sensors:
@@ -29,7 +29,7 @@ sensors:
     madgwick_gain: 0.5
 
 control:
-  loop_hz: 1000.0
+  loop_hz: 1.0000
 
   # PID gains
   surge:

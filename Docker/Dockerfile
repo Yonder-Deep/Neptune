@@ -21,3 +21,6 @@ RUN apt-get install -y git
 
 # install yaml-cpp (for C++ config loading)
 RUN apt-get install -y libyaml-cpp-dev
+
+# install websocketpp (for websocket communication)
+RUN apt-get install -y libwebsocketpp-dev

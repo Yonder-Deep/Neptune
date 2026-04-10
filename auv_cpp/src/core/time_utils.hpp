@@ -1,7 +1,10 @@
 #pragma once
 #include <chrono>
 #include <cstdint>
-#include <algorithm> 
+#include <algorithm>
+#include <ctime>
+#include <cstring>
+#include <string> 
 
 using SteadyClock = std::chrono::steady_clock;
 using TimePoint   = SteadyClock::time_point;
@@ -82,3 +85,18 @@ struct RateLoopTimer {
         return _overran;
     }
 };
+
+// Generate a timestamped filename for logs
+// Returns a string like "logs/neptune_2026-04-09_14-30-45.log"
+inline std::string timestamped_filename(const std::string& prefix = "neptune", 
+                                       const std::string& dir = "logs",
+                                       const std::string& ext = "log") {
+    auto now = std::chrono::system_clock::now();
+    auto time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* timeinfo = std::localtime(&time_t);
+
+    char buffer[256];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d_%H-%M-%S", timeinfo);
+    
+    return dir + "/" + prefix + "_" + buffer + "." + ext;
+}

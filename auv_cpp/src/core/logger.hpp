@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include <mutex>
+#include <functional>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -55,6 +56,12 @@ namespace detail {
 
 inline std::shared_ptr<spdlog::logger> logger;
 inline std::once_flag init_flag;
+
+// Callback type for broadcasting logs to remote systems (e.g., WebSocket)
+// Signature: void(const std::string& formatted_message)
+using LogBroadcastCallback = std::function<void(const std::string&)>;
+inline LogBroadcastCallback broadcast_callback;
+inline std::mutex broadcast_mtx;
 
 inline spdlog::level::level_enum to_spdlog_level(LogLevel lvl) {
     switch (lvl) {
@@ -118,6 +125,23 @@ inline void log_shutdown()
 }
 
 //------------------------------------------------------------------------------
+// Remote logging / WebSocket broadcast
+// Register a callback to broadcast logs to the base station or other remote systems
+//------------------------------------------------------------------------------
+
+inline void set_log_broadcast_callback(detail::LogBroadcastCallback callback)
+{
+    std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
+    detail::broadcast_callback = callback;
+}
+
+inline void clear_log_broadcast_callback()
+{
+    std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
+    detail::broadcast_callback = nullptr;
+}
+
+//------------------------------------------------------------------------------
 // Core logging API
 // calls spdlog with the appropriate level and injects the SOURCE into the message format.
 //------------------------------------------------------------------------------
@@ -130,12 +154,30 @@ inline void log_message(LogSource source,
         return; // safe no-op if not initialized
     }
 
-    // Inject SOURCE into message without extra logger creation
+    // Format the log message with source
+    std::string formatted = "[" + std::string(to_string(source)) + "] " + std::string(message);
+
+    // Send to console and file via spdlog
     detail::logger->log(
         detail::to_spdlog_level(level),
         "[{}] {}",
         to_string(source),
         message);
+
+    // Broadcast to remote systems (e.g., WebSocket) if callback is registered
+    {
+        std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
+        if (detail::broadcast_callback) {
+            try {
+                // Include log level and timestamp in the broadcast message
+                std::string broadcast_msg = "[" + std::string(to_string(source)) + "] " + 
+                                          std::string(message);
+                detail::broadcast_callback(broadcast_msg);
+            } catch (const std::exception& e) {
+                // Silently ignore broadcast errors to avoid breaking the logger
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

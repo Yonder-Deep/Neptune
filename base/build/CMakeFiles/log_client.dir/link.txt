@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/log_client.dir/log_client.cpp.o -o bin/log_client 
