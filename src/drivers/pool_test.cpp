@@ -1,6 +1,8 @@
 //test 4 motors for the pool test
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 #include "motor.hpp"
 
 #ifndef BUILD_SIMULATION
@@ -40,6 +42,15 @@ int main() {
             return 1;
         }
 
+        // Arm all 4 ESCs: hold neutral (1500us) for 7 seconds before accepting commands
+        std::cout << "Arming 4 ESCs (7 seconds at 1500us neutral)..." << std::endl;
+        motor1.setPwm(1500);
+        motor2.setPwm(1500);
+        motor3.setPwm(1500);
+        motor4.setPwm(1500);
+        std::this_thread::sleep_for(std::chrono::seconds(7));
+        std::cout << "ESCs armed. Ready for speed input." << std::endl;
+
         //for thruster speed
         //https://bluerobotics.com/store/thrusters/t100-t200-thrusters/t200-thruster-r2-rp/
         //for pwm and stuff
@@ -53,9 +64,11 @@ int main() {
 
             bool stop = false;
 
-            std::cout << "1500 will stop the thruster" << std::endl;
-            std::cout << "1525 to 1900 is for forward thrust" << std::endl;
-            std::cout << "1475 to 1100 is for backward thrust" << std::endl;
+            std::cout << "--- Motor Speed Input ---" << std::endl;
+            std::cout << "1500 = stop" << std::endl;
+            std::cout << "1530-1900 = forward (higher = faster)" << std::endl;
+            std::cout << "1470-1100 = reverse (lower = faster)" << std::endl;
+            std::cout << "Note: ~1475-1525 is the ESC dead zone; use wider offsets to actually move" << std::endl;
 
             std::cout << "Input speed for the front motor: " << std::endl;
             std::cin >> input1;
