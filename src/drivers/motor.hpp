@@ -70,24 +70,38 @@ class Motor {
             clock_gettime(CLOCK_MONOTONIC, &nextPeriod);
 
             while (running.load(std::memory_order_relaxed)) {
+                // Wait for start of next period. Wakeup jitter absorbed here
+                // does NOT affect pulse width (measured below from real HIGH time).
+                clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &nextPeriod, nullptr);
+
                 int pw = targetPwm.load(std::memory_order_relaxed);
 
                 if (pw > 0) {
-                    // Set pin HIGH (start of pulse)
+                    // Set pin HIGH and immediately capture the real timestamp.
+                    // Pulse width is measured from highTime, not nextPeriod,
+                    // so syscall/wakeup jitter cannot wobble it.
                     lgGpioWrite(handle, pin, 1);
+                    struct timespec highTime;
+                    clock_gettime(CLOCK_MONOTONIC, &highTime);
 
-                    // Wait for pulse width duration
-                    struct timespec pulseEnd = nextPeriod;
+                    struct timespec pulseEnd = highTime;
                     addNs(pulseEnd, pw * 1000L); // microseconds to nanoseconds
-                    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &pulseEnd, nullptr);
+
+                    // Busy-wait for the pulse duration. clock_gettime on aarch64
+                    // Linux is vDSO (no syscall), so the spin has sub-microsecond
+                    // granularity and doesn't suffer clock_nanosleep wakeup jitter.
+                    struct timespec now;
+                    do {
+                        clock_gettime(CLOCK_MONOTONIC, &now);
+                    } while (now.tv_sec < pulseEnd.tv_sec ||
+                             (now.tv_sec == pulseEnd.tv_sec && now.tv_nsec < pulseEnd.tv_nsec));
 
                     // Set pin LOW (end of pulse)
                     lgGpioWrite(handle, pin, 0);
                 }
 
-                // Advance to next period (20ms = 50Hz)
+                // Advance to next period (20ms = 50Hz). Absolute timebase -> no drift.
                 addNs(nextPeriod, 20000000L);
-                clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &nextPeriod, nullptr);
             }
 
             // Ensure pin is LOW when stopping
