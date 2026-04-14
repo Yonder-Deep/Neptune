@@ -54,9 +54,10 @@ int main() {
         motor.setPwm(1500);
         std::this_thread::sleep_for(std::chrono::seconds(3));
 
-        // Reverse at lowest speed (1475us) for 5 seconds
-        std::cout << "Reverse (1475)..." << std::endl;
-        motor.setPwm(1475);
+        // Reverse past ESC dead zone (1450us) for 5 seconds
+        // 1475 sits on the edge of the ~25us reverse deadband and often reads as stopped
+        std::cout << "Reverse (1450)..." << std::endl;
+        motor.setPwm(1450);
         std::this_thread::sleep_for(std::chrono::seconds(5));
 
         // Stop
