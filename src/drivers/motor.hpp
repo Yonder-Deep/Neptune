@@ -1,88 +1,132 @@
 /**
 @Header Motor
-@brief Controls a motor via hardware PWM using the Linux sysfs interface.
+@brief Controls a motor via manually generated PWM in a real-time thread.
 
-Requires dtoverlay=pwm-2chan in /boot/firmware/config.txt
-PWM channel 0 = GPIO 18, PWM channel 1 = GPIO 19
+Uses lgpio only for GPIO pin access (lgGpioWrite), NOT lgTxServo.
+A dedicated high-priority thread generates the 50Hz PWM signal
+with precise timing to avoid ESC signal loss.
+
+Requires: sudo (for RT scheduling priority)
 */
 
 #pragma once
 
 #include <iostream>
-#include <fstream>
-#include <string>
 #include <chrono>
 #include <thread>
+#include <atomic>
+#include <cstring>
+
+#ifndef BUILD_SIMULATION
+    #include <lgpio.h>
+    #include <sched.h>
+    #include <sys/mman.h>
+    #include <time.h>
+    #include <pthread.h>
+#endif
 
 class Motor {
     private:
-        int channel;        // PWM channel (0 for GPIO 18, 1 for GPIO 19)
-        int pwm;            // current pulse width in microseconds
-        std::string base;   // sysfs path for this PWM channel
-        bool exported;
+        int pin;
+        int handle;
+        std::atomic<int> targetPwm;   // pulse width in microseconds
+        std::atomic<bool> running;
+        std::thread pwmThread;
 
-        bool sysfsWrite(const std::string& file, const std::string& value) {
-            std::ofstream ofs(base + "/" + file);
-            if (!ofs.is_open()) {
-                std::cerr << "failed to open " << base << "/" << file << std::endl;
-                return false;
+        #ifndef BUILD_SIMULATION
+        // Add nanoseconds to a timespec, handling overflow
+        static void addNs(struct timespec& ts, long ns) {
+            ts.tv_nsec += ns;
+            while (ts.tv_nsec >= 1000000000L) {
+                ts.tv_nsec -= 1000000000L;
+                ts.tv_sec += 1;
             }
-            ofs << value;
-            ofs.close();
-            return true;
         }
+
+        // The PWM generation loop - runs in a dedicated RT thread
+        void pwmLoop() {
+            // Pre-fault stack to prevent page faults during RT execution
+            constexpr size_t STACK_PREFAULT_SIZE = 16 * 1024;
+            volatile char stackPrefault[STACK_PREFAULT_SIZE];
+            std::memset(const_cast<char*>(stackPrefault), 0, STACK_PREFAULT_SIZE);
+
+            // Pin to dedicated CPU core (reduces cache migration + IRQ contention)
+            cpu_set_t cpuSet;
+            CPU_ZERO(&cpuSet);
+            CPU_SET(PWM_CPU_CORE, &cpuSet);
+            if (pthread_setaffinity_np(pthread_self(), sizeof(cpuSet), &cpuSet) != 0) {
+                std::cerr << "warning: could not pin PWM thread to core "
+                          << PWM_CPU_CORE << std::endl;
+            }
+
+            // Set max real-time scheduling priority
+            struct sched_param sp;
+            sp.sched_priority = 99;
+            if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
+                std::cerr << "warning: could not set RT priority (run with sudo)" << std::endl;
+            }
+
+            struct timespec nextPeriod;
+            clock_gettime(CLOCK_MONOTONIC, &nextPeriod);
+
+            while (running.load(std::memory_order_relaxed)) {
+                int pw = targetPwm.load(std::memory_order_relaxed);
+
+                if (pw > 0) {
+                    // Set pin HIGH (start of pulse)
+                    lgGpioWrite(handle, pin, 1);
+
+                    // Wait for pulse width duration
+                    struct timespec pulseEnd = nextPeriod;
+                    addNs(pulseEnd, pw * 1000L); // microseconds to nanoseconds
+                    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &pulseEnd, nullptr);
+
+                    // Set pin LOW (end of pulse)
+                    lgGpioWrite(handle, pin, 0);
+                }
+
+                // Advance to next period (20ms = 50Hz)
+                addNs(nextPeriod, 20000000L);
+                clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &nextPeriod, nullptr);
+            }
+
+            // Ensure pin is LOW when stopping
+            lgGpioWrite(handle, pin, 0);
+        }
+        #endif
 
     public:
         static constexpr int MIN_PWM = 1100;
         static constexpr int MAX_PWM = 1900;
         static constexpr int NEUTRAL_PWM = 1500;
-        static constexpr int PERIOD_NS = 20000000; // 20ms = 50Hz
+        static constexpr int PWM_CPU_CORE = 3;  // pin PWM thread here (0-3 on Pi 5)
 
-        // channel: 0 for GPIO 18, 1 for GPIO 19
-        Motor(int pwmChannel)
-            : channel(pwmChannel)
-            , pwm(NEUTRAL_PWM)
-            , base("/sys/class/pwm/pwmchip0/pwm" + std::to_string(pwmChannel))
-            , exported(false)
+        Motor(int gpioPin, int gpioHandle)
+            : pin(gpioPin)
+            , handle(gpioHandle)
+            , targetPwm(0)
+            , running(false)
         {}
 
-        // Export the PWM channel and configure 50Hz period
+        // Claim the GPIO pin and start the PWM thread
         int init() {
             #ifndef BUILD_SIMULATION
-                // Export the channel
-                std::ofstream exportFs("/sys/class/pwm/pwmchip0/export");
-                if (!exportFs.is_open()) {
-                    std::cerr << "failed to open pwmchip0/export (already exported?)" << std::endl;
-                    // May already be exported, try to continue
-                }  else {
-                    exportFs << channel;
-                    exportFs.close();
-                    // Brief delay for sysfs to create the directory
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                // Lock memory to prevent page faults in RT thread
+                mlockall(MCL_CURRENT | MCL_FUTURE);
+
+                // Claim pin as output
+                int result = lgGpioClaimOutput(handle, 0, pin, 0);
+                if (result < 0) {
+                    std::cerr << "failed to claim GPIO pin " << pin << std::endl;
+                    return result;
                 }
 
-                // Set period (50Hz = 20ms)
-                if (!sysfsWrite("period", std::to_string(PERIOD_NS))) {
-                    std::cerr << "failed to set period" << std::endl;
-                    return -1;
-                }
-
-                // Set initial duty cycle to neutral
-                if (!sysfsWrite("duty_cycle", std::to_string(NEUTRAL_PWM * 1000))) {
-                    std::cerr << "failed to set initial duty_cycle" << std::endl;
-                    return -1;
-                }
-
-                // Enable
-                if (!sysfsWrite("enable", "1")) {
-                    std::cerr << "failed to enable PWM" << std::endl;
-                    return -1;
-                }
-
-                exported = true;
+                // Start PWM generation thread
+                running.store(true, std::memory_order_relaxed);
+                pwmThread = std::thread(&Motor::pwmLoop, this);
             #else
-                std::cout << "simulation: Motor channel " << channel << " initialized" << std::endl;
-                exported = true;
+                std::cout << "simulation: Motor pin " << pin << " initialized" << std::endl;
+                running.store(true);
             #endif
             return 0;
         }
@@ -94,43 +138,44 @@ class Motor {
                 return -1;
             }
 
-            pwm = newPwm;
+            targetPwm.store(newPwm, std::memory_order_relaxed);
 
-            #ifndef BUILD_SIMULATION
-                // Convert microseconds to nanoseconds for sysfs
-                if (!sysfsWrite("duty_cycle", std::to_string(pwm * 1000))) {
-                    std::cerr << "failed to set pwm" << std::endl;
-                    return -1;
-                }
-            #else
-                std::cout << "simulation Motor ch" << channel << " PWM: " << pwm << std::endl;
+            #ifdef BUILD_SIMULATION
+                std::cout << "simulation Motor " << pin << " PWM: " << newPwm << std::endl;
             #endif
             return 0;
         }
 
         void stopMotor() {
+            targetPwm.store(0, std::memory_order_relaxed);
+            #ifdef BUILD_SIMULATION
+                std::cout << "simulation Motor " << pin << " stopped" << std::endl;
+            #endif
+        }
+
+        int freePin() {
             #ifndef BUILD_SIMULATION
-                sysfsWrite("duty_cycle", "0");
-                sysfsWrite("enable", "0");
+                int result = lgGpioFree(handle, pin);
+                return result;
             #else
-                std::cout << "simulation Motor ch" << channel << " stopped" << std::endl;
+                return 0;
             #endif
         }
 
         void cleanup() {
-            if (exported) {
-                stopMotor();
-                // Unexport the channel
-                std::ofstream unexportFs("/sys/class/pwm/pwmchip0/unexport");
-                if (unexportFs.is_open()) {
-                    unexportFs << channel;
-                    unexportFs.close();
+            stopMotor();
+            if (running.load()) {
+                running.store(false, std::memory_order_relaxed);
+                if (pwmThread.joinable()) {
+                    pwmThread.join();
                 }
-                exported = false;
             }
+            freePin();
         }
 
         ~Motor() {
-            cleanup();
+            if (running.load()) {
+                cleanup();
+            }
         }
 };

@@ -8,58 +8,34 @@
 #endif
 
 
-// 4 motors 
-// don't know what pins they're on
-//also don't know gpio chip number but I assume it's 0
+// 4 motors
 
 int main() {
     #ifndef BUILD_SIMULATION
-    int handle = lgGpiochipOpen(0); //open gpio chip 0 
+    int handle = lgGpiochipOpen(0); //open gpio chip 0
 
     if(handle < 0) {
         std::cerr << "failed to initialize lgpio" << std::endl;
         return 1;
     } else {
-        //placeholder values
-        int pin1 = 24; 
+        int pin1 = 24;
         int pin2 = 11;
         int pin3 = 4;
         int pin4 = 18;
 
         Motor motor1(pin1, handle);
-        int result = motor1.claimPin();
-        if(result < 0) {
-            std::cerr << "failed to claim output" << std::endl;
-            lgGpiochipClose(handle);
-            return 1;
-        }
-
         Motor motor2(pin2, handle);
-        result = motor2.claimPin();
-        if(result < 0) {
-            std::cerr << "failed to claim output" << std::endl;
-            motor1.freePin();
-            lgGpiochipClose(handle);
-            return 1;
-        }
-
         Motor motor3(pin3, handle);
-        result = motor3.claimPin();
-        if(result < 0) {
-            std::cerr << "failed to claim output" << std::endl;
-            motor1.freePin();
-            motor2.freePin();
-            lgGpiochipClose(handle);
-            return 1;
-        }
-
         Motor motor4(pin4, handle);
-        result = motor4.claimPin();
-        if(result < 0) {
-            std::cerr << "failed to claim output" << std::endl;
-            motor1.freePin();
-            motor2.freePin();
-            motor3.freePin();
+
+        // Initialize all motors (starts RT PWM threads)
+        if (motor1.init() < 0 || motor2.init() < 0 ||
+            motor3.init() < 0 || motor4.init() < 0) {
+            std::cerr << "failed to initialize motors" << std::endl;
+            motor1.cleanup();
+            motor2.cleanup();
+            motor3.cleanup();
+            motor4.cleanup();
             lgGpiochipClose(handle);
             return 1;
         }
@@ -90,29 +66,10 @@ int main() {
             std::cout << "Input speed for the back motor: " << std::endl;
             std::cin >> input4;
 
-            result = motor1.setPwm(input1);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                stop = true;
-            }
-
-            result = motor2.setPwm(input2);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                stop = true;
-            }
-
-            result = motor3.setPwm(input3);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                stop = true;
-            }
-
-            result = motor4.setPwm(input4);
-            if(result < 0) {
-                std::cerr << "failed to set pwm" << std::endl;
-                stop = true;
-            }
+            if (motor1.setPwm(input1) < 0) stop = true;
+            if (motor2.setPwm(input2) < 0) stop = true;
+            if (motor3.setPwm(input3) < 0) stop = true;
+            if (motor4.setPwm(input4) < 0) stop = true;
 
             std::cout << "stop test? (y/n)" << std::endl;
             char stopChar;
@@ -122,19 +79,14 @@ int main() {
             }
 
             if(stop) {
-                motor1.stopMotor();
-                motor2.stopMotor();
-                motor3.stopMotor();
-                motor4.stopMotor();
-
-                motor1.freePin();
-                motor2.freePin();
-                motor3.freePin();
-                motor4.freePin();
+                motor1.cleanup();
+                motor2.cleanup();
+                motor3.cleanup();
+                motor4.cleanup();
 
                 lgGpiochipClose(handle);
                 break;
-            }    
+            }
         }
 
     }
