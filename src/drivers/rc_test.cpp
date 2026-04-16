@@ -23,6 +23,7 @@ Build:
 */
 
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <csignal>
 #include <thread>
@@ -49,6 +50,7 @@ constexpr double PERIOD_US = 20000.0;  // 20ms in microseconds
 static struct termios g_origTermios;
 static bool g_termRawMode = false;
 static int g_handle = -1;
+static std::ofstream g_log;
 
 static void disableRawMode() {
     if (g_termRawMode) {
@@ -69,12 +71,22 @@ static void enableRawMode() {
 
 static void signalHandler(int) {
     std::cout << "\nCaught signal, cleaning up..." << std::endl;
+    if (g_log.is_open()) g_log.close();
     if (g_handle >= 0) {
         lgTxPwm(g_handle, PIN, 0, 0, 0, 0);
         lgGpiochipClose(g_handle);
     }
     disableRawMode();
     _exit(0);
+}
+
+static auto g_startTime = std::chrono::steady_clock::now();
+
+static void logPwm(const char* event, int pulse_us, double duty, int retval) {
+    auto now = std::chrono::steady_clock::now();
+    double elapsed = std::chrono::duration<double>(now - g_startTime).count();
+    g_log << elapsed << "," << event << "," << pulse_us << "," << duty << "," << retval << "\n";
+    g_log.flush();
 }
 
 static int readKey() {
@@ -120,10 +132,16 @@ int main() {
 
         signal(SIGINT, signalHandler);
 
+        g_log.open("pwm_log.csv");
+        g_log << "time_s,event,pulse_us,duty_pct,retval\n";
+        g_startTime = std::chrono::steady_clock::now();
+
         // Arm ESC: 50Hz, 7.5% duty = 1500us neutral for 7 seconds
         //   lgTxPwm(handle, gpio, freqHz, duty%, offset%, cycles)
         std::cout << "Arming ESC (7 seconds at 1500us neutral)..." << std::endl;
-        int result = lgTxPwm(h, PIN, PWM_FREQ_HZ, pwmToDuty(NEUTRAL_PWM), 0, 0);
+        double armDuty = pwmToDuty(NEUTRAL_PWM);
+        int result = lgTxPwm(h, PIN, PWM_FREQ_HZ, armDuty, 0, 0);
+        logPwm("arm", NEUTRAL_PWM, armDuty, result);
         if (result < 0) {
             std::cerr << "lgTxPwm failed: " << result << std::endl;
             lgGpiochipClose(h);
@@ -155,13 +173,18 @@ int main() {
                 continue;
             }
 
-            lgTxPwm(h, PIN, PWM_FREQ_HZ, pwmToDuty(currentPwm), 0, 0);
-            std::cout << "\rCurrent PWM: " << currentPwm << "us (duty " << pwmToDuty(currentPwm) << "%)   " << std::flush;
+            double duty = pwmToDuty(currentPwm);
+            int ret = lgTxPwm(h, PIN, PWM_FREQ_HZ, duty, 0, 0);
+            logPwm("set", currentPwm, duty, ret);
+            std::cout << "\rCurrent PWM: " << currentPwm << "us (duty " << duty << "%)   " << std::flush;
         }
 
         std::cout << std::endl;
         disableRawMode();
-        lgTxPwm(h, PIN, 0, 0, 0, 0);
+        int stopRet = lgTxPwm(h, PIN, 0, 0, 0, 0);
+        logPwm("stop", 0, 0, stopRet);
+        if (g_log.is_open()) g_log.close();
+        std::cout << "Log saved to pwm_log.csv" << std::endl;
         lgGpiochipClose(h);
         g_handle = -1;
 
