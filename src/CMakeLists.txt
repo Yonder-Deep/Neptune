@@ -61,15 +61,22 @@ add_executable(pool_test drivers/pool_test.cpp)
 target_link_libraries(pool_test motor)
 target_link_libraries(pool_test Threads::Threads)
 
+#executable for rc test (interactive single-motor keyboard control)
+add_executable(rc_test drivers/rc_test.cpp)
+target_link_libraries(rc_test motor)
+target_link_libraries(rc_test Threads::Threads)
+
 #define BUILD SIMULATION
 if(BUILD_SIMULATION)
     target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
     target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
+    target_compile_definitions(rc_test PRIVATE BUILD_SIMULATION)
 endif()
 
 if(NOT BUILD_SIMULATION)
     target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
     target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
+    target_link_libraries(rc_test ${LGPIO_LINK_LIBS})
 endif()
 
 #to use the motor library elsewhere
