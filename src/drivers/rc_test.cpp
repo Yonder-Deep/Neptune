@@ -1,12 +1,17 @@
 /**
-@Class RC Test
+@Class RC Test (lgTxPwm version)
 
-Interactive single-motor control via keyboard.
+Interactive single-motor control via keyboard using lgTxPwm
+for hardware-driven PWM instead of manual RT bit-bang.
+
 W / Up Arrow   = increase speed (+25us)
 S / Down Arrow = decrease speed (-25us)
 Q              = quit
 
-Run with sudo for real-time scheduling priority.
+Duty cycle mapping: duty% = (pulse_us / 20000) * 100
+  1100us = 5.5%,  1500us = 7.5%,  1900us = 9.5%
+
+Run with sudo for GPIO access.
 
 Build:
   cd src
@@ -16,11 +21,10 @@ Build:
 */
 
 #include <iostream>
-#include <chrono>
-#include <thread>
 #include <algorithm>
 #include <csignal>
-#include "motor.hpp"
+#include <thread>
+#include <chrono>
 
 #ifndef BUILD_SIMULATION
     #include <lgpio.h>
@@ -28,17 +32,20 @@ Build:
     #include <unistd.h>
 #endif
 
-// Key codes for arrow keys
 constexpr int KEY_UP = 1000;
 constexpr int KEY_DOWN = 1001;
 
+constexpr int PIN = 18;
+constexpr int MIN_PWM = 1100;
+constexpr int MAX_PWM = 1900;
+constexpr int NEUTRAL_PWM = 1500;
+constexpr int PWM_PERIOD_US = 20000; // 50 Hz
+
 #ifndef BUILD_SIMULATION
 
-// Global state for signal handler cleanup
 static struct termios g_origTermios;
 static bool g_termRawMode = false;
-static Motor* g_motor = nullptr;
-static int g_gpioHandle = -1;
+static int g_handle = -1;
 
 static void disableRawMode() {
     if (g_termRawMode) {
@@ -59,22 +66,19 @@ static void enableRawMode() {
 
 static void signalHandler(int) {
     std::cout << "\nCaught signal, cleaning up..." << std::endl;
-    if (g_motor) {
-        g_motor->cleanup();
-    }
-    if (g_gpioHandle >= 0) {
-        lgGpiochipClose(g_gpioHandle);
+    if (g_handle >= 0) {
+        lgTxPwm(g_handle, PIN, 0, 0, 0, 0); // stop PWM
+        lgGpiochipClose(g_handle);
     }
     disableRawMode();
     _exit(0);
 }
 
-// Read a single keypress, detecting arrow key escape sequences
 static int readKey() {
     char c;
     if (read(STDIN_FILENO, &c, 1) != 1) return -1;
 
-    if (c == 27) { // ESC - might be arrow key
+    if (c == 27) {
         char seq[2];
         if (read(STDIN_FILENO, &seq[0], 1) != 1) return 27;
         if (read(STDIN_FILENO, &seq[1], 1) != 1) return 27;
@@ -88,70 +92,73 @@ static int readKey() {
     return c;
 }
 
+// Convert pulse width in microseconds to duty cycle percentage
+static double pwmToDuty(int pwm_us) {
+    return (static_cast<double>(pwm_us) / PWM_PERIOD_US) * 100.0;
+}
+
 #endif // BUILD_SIMULATION
 
 int main() {
     #ifndef BUILD_SIMULATION
-        int handle = lgGpiochipOpen(0);
-        if (handle < 0) {
+        int h = lgGpiochipOpen(0);
+        if (h < 0) {
             std::cerr << "failed to initialize lgpio" << std::endl;
             return 1;
         }
-        g_gpioHandle = handle;
+        g_handle = h;
 
-        int pin = 18; // GPIO 18 = physical pin 12
-        Motor motor(pin, handle);
-        g_motor = &motor;
-
-        // Install signal handler before arming (Ctrl+C during arm still cleans up)
-        signal(SIGINT, signalHandler);
-
-        int result = motor.init();
-        if (result < 0) {
-            std::cerr << "failed to initialize motor" << std::endl;
-            lgGpiochipClose(handle);
+        if (lgGpioClaimOutput(h, 0, PIN, 0) != LG_OKAY) {
+            std::cerr << "failed to claim GPIO pin " << PIN << std::endl;
+            lgGpiochipClose(h);
             return 1;
         }
 
-        // Arm ESC: hold neutral (1500us) for 7 seconds
-        std::cout << "Arming ESC (7 seconds at neutral)..." << std::endl;
-        motor.setPwm(1500);
+        signal(SIGINT, signalHandler);
+
+        // Arm ESC: 50Hz PWM at 7.5% duty = 1500us neutral for 7 seconds
+        std::cout << "Arming ESC (7 seconds at 1500us neutral)..." << std::endl;
+        int result = lgTxPwm(h, PIN, 50, pwmToDuty(NEUTRAL_PWM), 0, 0);
+        if (result < 0) {
+            std::cerr << "lgTxPwm failed: " << result << std::endl;
+            lgGpiochipClose(h);
+            return 1;
+        }
         std::this_thread::sleep_for(std::chrono::seconds(7));
         std::cout << "ESC armed." << std::endl;
 
         enableRawMode();
 
-        int currentPwm = Motor::NEUTRAL_PWM;
+        int currentPwm = NEUTRAL_PWM;
 
-        std::cout << "\n=== RC Motor Control ===" << std::endl;
+        std::cout << "\n=== RC Motor Control (lgTxPwm) ===" << std::endl;
         std::cout << "W / Up Arrow    = increase PWM (+25us)" << std::endl;
         std::cout << "S / Down Arrow  = decrease PWM (-25us)" << std::endl;
         std::cout << "Q               = quit" << std::endl;
-        std::cout << "\nCurrent PWM: " << currentPwm << "us" << std::flush;
+        std::cout << "\nCurrent PWM: " << currentPwm << "us (duty " << pwmToDuty(currentPwm) << "%)" << std::flush;
 
         while (true) {
             int key = readKey();
 
             if (key == 'w' || key == 'W' || key == KEY_UP) {
-                currentPwm = std::min(currentPwm + 25, (int)Motor::MAX_PWM);
+                currentPwm = std::min(currentPwm + 25, MAX_PWM);
             } else if (key == 's' || key == 'S' || key == KEY_DOWN) {
-                currentPwm = std::max(currentPwm - 25, (int)Motor::MIN_PWM);
+                currentPwm = std::max(currentPwm - 25, MIN_PWM);
             } else if (key == 'q' || key == 'Q') {
                 break;
             } else {
                 continue;
             }
 
-            motor.setPwm(currentPwm);
-            std::cout << "\rCurrent PWM: " << currentPwm << "us   " << std::flush;
+            lgTxPwm(h, PIN, 50, pwmToDuty(currentPwm), 0, 0);
+            std::cout << "\rCurrent PWM: " << currentPwm << "us (duty " << pwmToDuty(currentPwm) << "%)   " << std::flush;
         }
 
         std::cout << std::endl;
         disableRawMode();
-        motor.cleanup();
-        lgGpiochipClose(handle);
-        g_motor = nullptr;
-        g_gpioHandle = -1;
+        lgTxPwm(h, PIN, 0, 0, 0, 0); // stop PWM
+        lgGpiochipClose(h);
+        g_handle = -1;
 
     #else
         std::cout << "Simulation mode. no hardware" << std::endl;
