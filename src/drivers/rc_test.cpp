@@ -1,15 +1,17 @@
 /**
 @Class RC Test (lgTxPwm version)
 
-Interactive single-motor control via keyboard using lgTxPwm
-for hardware-driven PWM instead of manual RT bit-bang.
+Interactive single-motor control via keyboard using lgTxPwm.
 
 W / Up Arrow   = increase speed (+25us)
 S / Down Arrow = decrease speed (-25us)
 Q              = quit
 
-Duty cycle mapping: duty% = (pulse_us / 20000) * 100
-  1100us = 5.5%,  1500us = 7.5%,  1900us = 9.5%
+lgTxPwm(handle, gpio, pwmFrequency, pwmDutyCycle, pwmOffset, pwmCycles)
+  - pwmFrequency: Hz (50 for ESC)
+  - pwmDutyCycle: 0-100% of period
+  - At 50Hz period = 20ms, so duty% = (pulse_us / 20000) * 100
+    1100us = 5.5%,  1500us = 7.5%,  1900us = 9.5%
 
 Run with sudo for GPIO access.
 
@@ -39,7 +41,8 @@ constexpr int PIN = 18;
 constexpr int MIN_PWM = 1100;
 constexpr int MAX_PWM = 1900;
 constexpr int NEUTRAL_PWM = 1500;
-constexpr int PWM_PERIOD_US = 20000; // 50 Hz
+constexpr double PWM_FREQ_HZ = 50.0;  // 50 Hz = 20ms period
+constexpr double PERIOD_US = 20000.0;  // 20ms in microseconds
 
 #ifndef BUILD_SIMULATION
 
@@ -67,7 +70,7 @@ static void enableRawMode() {
 static void signalHandler(int) {
     std::cout << "\nCaught signal, cleaning up..." << std::endl;
     if (g_handle >= 0) {
-        lgTxPwm(g_handle, PIN, 0, 0, 0, 0); // stop PWM
+        lgTxPwm(g_handle, PIN, 0, 0, 0, 0);
         lgGpiochipClose(g_handle);
     }
     disableRawMode();
@@ -93,8 +96,9 @@ static int readKey() {
 }
 
 // Convert pulse width in microseconds to duty cycle percentage
-static double pwmToDuty(int pwm_us) {
-    return (static_cast<double>(pwm_us) / PWM_PERIOD_US) * 100.0;
+// e.g. 1500us / 20000us * 100 = 7.5%
+static double pwmToDuty(int pulse_us) {
+    return (static_cast<double>(pulse_us) / PERIOD_US) * 100.0;
 }
 
 #endif // BUILD_SIMULATION
@@ -116,9 +120,10 @@ int main() {
 
         signal(SIGINT, signalHandler);
 
-        // Arm ESC: 50Hz PWM at 7.5% duty = 1500us neutral for 7 seconds
+        // Arm ESC: 50Hz, 7.5% duty = 1500us neutral for 7 seconds
+        //   lgTxPwm(handle, gpio, freqHz, duty%, offset%, cycles)
         std::cout << "Arming ESC (7 seconds at 1500us neutral)..." << std::endl;
-        int result = lgTxPwm(h, PIN, 50, pwmToDuty(NEUTRAL_PWM), 0, 0);
+        int result = lgTxPwm(h, PIN, PWM_FREQ_HZ, pwmToDuty(NEUTRAL_PWM), 0, 0);
         if (result < 0) {
             std::cerr << "lgTxPwm failed: " << result << std::endl;
             lgGpiochipClose(h);
@@ -150,13 +155,13 @@ int main() {
                 continue;
             }
 
-            lgTxPwm(h, PIN, 50, pwmToDuty(currentPwm), 0, 0);
+            lgTxPwm(h, PIN, PWM_FREQ_HZ, pwmToDuty(currentPwm), 0, 0);
             std::cout << "\rCurrent PWM: " << currentPwm << "us (duty " << pwmToDuty(currentPwm) << "%)   " << std::flush;
         }
 
         std::cout << std::endl;
         disableRawMode();
-        lgTxPwm(h, PIN, 0, 0, 0, 0); // stop PWM
+        lgTxPwm(h, PIN, 0, 0, 0, 0);
         lgGpiochipClose(h);
         g_handle = -1;
 
