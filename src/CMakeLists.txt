@@ -6,9 +6,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-#required for pthread_setaffinity_np / CPU_SET (GNU extensions)
-add_compile_definitions(_GNU_SOURCE)
-
 add_executable(neptune main.cpp)
 
 #BUILD_SIMULATION option
