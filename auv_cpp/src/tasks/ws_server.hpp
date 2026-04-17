@@ -101,8 +101,7 @@ private:
         endpoint_.set_access_channels(websocketpp::log::alevel::access_core);
         
         // Clear frame-level logging to reduce noise
-        endpoint_.clear_access_channels(websocketpp::log::alevel::frame_header |
-                                        websocketpp::log::alevel::frame_payload);
+        endpoint_.clear_access_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload);
 
         // Initialize ASIO transport.
         endpoint_.init_asio();
