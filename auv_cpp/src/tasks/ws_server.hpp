@@ -56,12 +56,13 @@ public:
     }
 
     // Send a message to all connected clients.
+    // Uses binary frame opcode for protobuf payloads
     void broadcast(const std::string& message) {
         {
             std::lock_guard<std::mutex> lock(connections_mtx_);
             for (auto& handle : connections_) {
                 try {
-                    endpoint_.send(handle, message, websocketpp::frame::opcode::text);
+                    endpoint_.send(handle, message, websocketpp::frame::opcode::binary);
                 } catch (const std::exception& e) {
                     log_error(LogSource::WSKT, std::string("broadcast error: ") + e.what());
                 }
@@ -70,9 +71,10 @@ public:
     }
 
     // Send a message to a specific client by handle.
+    // Uses binary frame opcode for protobuf payloads
     void send_to(ConnectionHandle handle, const std::string& message) {
         try {
-            endpoint_.send(handle, message, websocketpp::frame::opcode::text);
+            endpoint_.send(handle, message, websocketpp::frame::opcode::binary);
         } catch (const std::exception& e) {
             log_error(LogSource::WSKT, std::string("send error: ") + e.what());
         }

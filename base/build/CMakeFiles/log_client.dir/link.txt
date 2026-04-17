@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/log_client.dir/log_client.cpp.o -o bin/log_client  libneptune_messages_client.a /usr/lib/x86_64-linux-gnu/libprotobuf.so 

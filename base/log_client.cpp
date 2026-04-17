@@ -149,7 +149,7 @@ int main() {
         client.set_fail_handler(bind(&on_fail, &client, ::_1));
 
         // Connect to server
-        std::string uri = "ws://127.0.0.1:8080";
+        std::string uri = "ws://192.168.100.10:8080";
         std::cout << "[CLIENT] Connecting to " << uri << "..." << std::endl;
 
         websocketpp::lib::error_code ec;
