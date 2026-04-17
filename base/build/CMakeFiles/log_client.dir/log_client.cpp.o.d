@@ -188,7 +188,15 @@ CMakeFiles/log_client.dir/log_client.cpp.o: \
  /usr/include/c++/12/bits/chrono.h /usr/include/c++/12/ratio \
  /usr/include/c++/12/limits /usr/include/c++/12/ctime \
  /usr/include/c++/12/bits/parse_numbers.h /usr/include/c++/12/chrono \
- /usr/include/websocketpp/client.hpp \
+ /usr/include/c++/12/iomanip /usr/include/c++/12/locale \
+ /usr/include/c++/12/bits/locale_facets_nonio.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
+ /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
+ /usr/include/libintl.h /usr/include/c++/12/bits/codecvt.h \
+ /usr/include/c++/12/bits/locale_facets_nonio.tcc \
+ /usr/include/c++/12/bits/locale_conv.h \
+ /usr/include/c++/12/bits/quoted_string.h /usr/include/c++/12/sstream \
+ /usr/include/c++/12/bits/sstream.tcc /usr/include/websocketpp/client.hpp \
  /usr/include/websocketpp/roles/client_endpoint.hpp \
  /usr/include/websocketpp/endpoint.hpp \
  /usr/include/websocketpp/connection.hpp \
@@ -224,13 +232,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: \
  /usr/include/c++/12/bits/uniform_int_dist.h \
  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
  /usr/include/c++/12/pstl/execution_defs.h \
- /usr/include/websocketpp/utilities.hpp /usr/include/c++/12/locale \
- /usr/include/c++/12/bits/locale_facets_nonio.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
- /usr/include/x86_64-linux-gnu/c++/12/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/12/bits/codecvt.h \
- /usr/include/c++/12/bits/locale_facets_nonio.tcc \
- /usr/include/c++/12/bits/locale_conv.h \
+ /usr/include/websocketpp/utilities.hpp \
  /usr/include/websocketpp/impl/utilities_impl.hpp \
  /usr/include/websocketpp/logger/levels.hpp \
  /usr/include/websocketpp/processors/processor.hpp \
@@ -247,8 +249,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: \
  /usr/include/c++/12/ext/concurrence.h \
  /usr/include/c++/12/bits/shared_ptr_atomic.h \
  /usr/include/c++/12/backward/auto_ptr.h \
- /usr/include/c++/12/pstl/glue_memory_defs.h /usr/include/c++/12/sstream \
- /usr/include/c++/12/bits/sstream.tcc /usr/include/c++/12/vector \
+ /usr/include/c++/12/pstl/glue_memory_defs.h /usr/include/c++/12/vector \
  /usr/include/c++/12/bits/stl_vector.h \
  /usr/include/c++/12/bits/stl_bvector.h \
  /usr/include/c++/12/bits/vector.tcc \
@@ -300,8 +301,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: \
  /usr/include/websocketpp/message_buffer/message.hpp \
  /usr/include/websocketpp/message_buffer/alloc.hpp \
  /usr/include/websocketpp/logger/basic.hpp \
- /usr/include/websocketpp/common/time.hpp /usr/include/c++/12/iomanip \
- /usr/include/c++/12/bits/quoted_string.h \
+ /usr/include/websocketpp/common/time.hpp \
  /usr/include/websocketpp/random/random_device.hpp \
  /usr/include/websocketpp/common/random.hpp /usr/include/c++/12/random \
  /usr/include/c++/12/cmath /usr/include/math.h \
@@ -1191,4 +1191,60 @@ CMakeFiles/log_client.dir/log_client.cpp.o: \
  /usr/include/boost/asio/impl/write_at.hpp \
  /usr/include/websocketpp/common/type_traits.hpp \
  /usr/include/websocketpp/transport/asio/security/none.hpp \
- /usr/include/websocketpp/transport/asio/security/base.hpp
+ /usr/include/websocketpp/transport/asio/security/base.hpp \
+ /workspaces/Neptune/base/messages.pb.h \
+ /usr/include/google/protobuf/port_def.inc \
+ /usr/include/google/protobuf/port_undef.inc \
+ /usr/include/google/protobuf/io/coded_stream.h \
+ /usr/include/google/protobuf/stubs/common.h /usr/include/c++/12/set \
+ /usr/include/c++/12/bits/stl_set.h \
+ /usr/include/c++/12/bits/stl_multiset.h \
+ /usr/include/google/protobuf/stubs/macros.h \
+ /usr/include/google/protobuf/stubs/platform_macros.h \
+ /usr/include/google/protobuf/stubs/port.h /usr/include/c++/12/stdlib.h \
+ /usr/include/byteswap.h /usr/include/google/protobuf/stubs/stringpiece.h \
+ /usr/include/google/protobuf/stubs/hash.h \
+ /usr/include/c++/12/unordered_set \
+ /usr/include/c++/12/bits/unordered_set.h \
+ /usr/include/google/protobuf/stubs/logging.h \
+ /usr/include/google/protobuf/stubs/status.h \
+ /usr/include/google/protobuf/stubs/strutil.h \
+ /usr/include/google/protobuf/port.h /usr/include/google/protobuf/arena.h \
+ /usr/include/google/protobuf/arena_impl.h \
+ /usr/include/google/protobuf/arenaz_sampler.h \
+ /usr/include/google/protobuf/arenastring.h \
+ /usr/include/google/protobuf/explicitly_constructed.h \
+ /usr/include/google/protobuf/generated_message_util.h \
+ /usr/include/google/protobuf/stubs/once.h \
+ /usr/include/google/protobuf/any.h \
+ /usr/include/google/protobuf/message_lite.h \
+ /usr/include/google/protobuf/metadata_lite.h \
+ /usr/include/google/protobuf/has_bits.h \
+ /usr/include/google/protobuf/implicit_weak_message.h \
+ /usr/include/google/protobuf/repeated_field.h \
+ /usr/include/google/protobuf/repeated_ptr_field.h \
+ /usr/include/google/protobuf/wire_format_lite.h \
+ /usr/include/google/protobuf/stubs/casts.h \
+ /usr/include/google/protobuf/generated_message_reflection.h \
+ /usr/include/google/protobuf/descriptor.h \
+ /usr/include/google/protobuf/stubs/mutex.h \
+ /usr/include/google/protobuf/generated_enum_reflection.h \
+ /usr/include/google/protobuf/generated_enum_util.h \
+ /usr/include/google/protobuf/unknown_field_set.h \
+ /usr/include/google/protobuf/io/zero_copy_stream_impl_lite.h \
+ /usr/include/google/protobuf/stubs/callback.h \
+ /usr/include/google/protobuf/io/zero_copy_stream.h \
+ /usr/include/google/protobuf/stubs/stl_util.h \
+ /usr/include/google/protobuf/parse_context.h \
+ /usr/include/google/protobuf/endian.h \
+ /usr/include/google/protobuf/inlined_string_field.h \
+ /usr/include/google/protobuf/message.h \
+ /usr/include/google/protobuf/map.h \
+ /usr/include/google/protobuf/map_type_handler.h \
+ /usr/include/google/protobuf/extension_set.h \
+ /usr/include/google/protobuf/map_entry.h \
+ /usr/include/google/protobuf/map_entry_lite.h \
+ /usr/include/google/protobuf/reflection_ops.h \
+ /usr/include/google/protobuf/map_field_inl.h \
+ /usr/include/google/protobuf/map_field.h \
+ /usr/include/google/protobuf/map_field_lite.h

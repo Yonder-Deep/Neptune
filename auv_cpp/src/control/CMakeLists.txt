@@ -7,6 +7,8 @@ target_link_libraries(auv_control PRIVATE
     Threads::Threads
     spdlog::spdlog
     yaml-cpp
+    neptune_messages
+    protobuf::libprotobuf
 )
 
 # Include websocketpp headers (header-only library)

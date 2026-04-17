@@ -1,6 +1,6 @@
 // log_client.cpp
-// Simple WebSocket client to receive log messages from the Neptune AUV server
-// Connects to 127.0.0.1:8080 and prints all received log messages to console
+// WebSocket client that receives protobuf-serialized log messages from Neptune AUV
+// Connects to 127.0.0.1:8080 and deserializes/displays log messages
 
 #include <iostream>
 #include <string>
@@ -8,9 +8,13 @@
 #include <atomic>
 #include <thread>
 #include <chrono>
+#include <iomanip>
+#include <ctime>
 
 #include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_no_tls_client.hpp>
+
+#include "messages.pb.h"  // Protobuf messages
 
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
@@ -47,7 +51,76 @@ void on_close(Client* c, ConnectionHandle hdl) {
 
 // Callback when a message is received
 void on_message(Client* c, ConnectionHandle hdl, MessagePtr msg) {
-    std::cout << "[LOG] " << msg->get_payload() << std::endl;
+    try {
+        // Get the binary payload
+        std::string payload = msg->get_payload();
+
+        // Deserialize protobuf Envelope
+        neptune::Envelope envelope;
+        if (!envelope.ParseFromString(payload)) {
+            std::cerr << "[ERROR] Failed to parse Envelope protobuf" << std::endl;
+            return;
+        }
+
+        // Handle different message types
+        switch (envelope.type()) {
+            case neptune::Envelope::LOG: {
+                // Deserialize LogEntry from envelope payload
+                neptune::LogEntry log_entry;
+                if (!log_entry.ParseFromString(envelope.payload())) {
+                    std::cerr << "[ERROR] Failed to parse LogEntry protobuf" << std::endl;
+                    return;
+                }
+
+                // Format timestamp
+                auto time_ms = log_entry.timestamp_ms();
+                auto time_t = time_ms / 1000;
+                auto ms = time_ms % 1000;
+                std::tm* timeinfo = std::localtime(&time_t);
+                
+                char time_buf[32];
+                std::strftime(time_buf, sizeof(time_buf), "%H:%M:%S", timeinfo);
+
+                // Print formatted log
+                std::cout << "[" << std::setfill('0') << std::setw(2) << timeinfo->tm_hour
+                          << ":" << std::setfill('0') << std::setw(2) << timeinfo->tm_min
+                          << ":" << std::setfill('0') << std::setw(2) << timeinfo->tm_sec
+                          << "." << std::setfill('0') << std::setw(3) << ms << "] "
+                          << "[" << log_entry.level() << "] "
+                          << "[" << log_entry.source() << "] "
+                          << log_entry.message() << std::endl;
+                break;
+            }
+
+            case neptune::Envelope::TELEMETRY: {
+                neptune::Telemetry telemetry;
+                if (!telemetry.ParseFromString(envelope.payload())) {
+                    std::cerr << "[ERROR] Failed to parse Telemetry protobuf" << std::endl;
+                    return;
+                }
+                std::cout << "[TELEMETRY] Received vehicle telemetry update" << std::endl;
+                break;
+            }
+
+            case neptune::Envelope::COMMAND_RESPONSE: {
+                neptune::CommandResponse response;
+                if (!response.ParseFromString(envelope.payload())) {
+                    std::cerr << "[ERROR] Failed to parse CommandResponse protobuf" << std::endl;
+                    return;
+                }
+                std::cout << "[COMMAND] Command #" << response.command_id() 
+                          << " " << (response.success() ? "succeeded" : "failed")
+                          << ": " << response.message() << std::endl;
+                break;
+            }
+
+            default:
+                std::cerr << "[WARNING] Unknown message type: " << envelope.type() << std::endl;
+                break;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR] Exception processing message: " << e.what() << std::endl;
+    }
 }
 
 // Callback on error

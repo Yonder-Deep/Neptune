@@ -1,0 +1,2 @@
+/usr/bin/ar qc libneptune_messages_client.a CMakeFiles/neptune_messages_client.dir/messages.pb.cc.o
+/usr/bin/ranlib libneptune_messages_client.a

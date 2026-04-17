@@ -11,6 +11,8 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 
 #include "types.hpp"   // LogSource, to_string(LogSource)
+#include "time_utils.hpp"  // Time utilities for timestamp generation
+#include "../messages/messages.pb.h"  // Protobuf messages
 
 // This is a file defining how the logger object will function. It is a
 // wrapper of spdlog. There is no logger class, the methods exist as free
@@ -58,7 +60,8 @@ inline std::shared_ptr<spdlog::logger> logger;
 inline std::once_flag init_flag;
 
 // Callback type for broadcasting logs to remote systems (e.g., WebSocket)
-// Signature: void(const std::string& formatted_message)
+// Signature: void(const std::string& serialized_envelope)
+// The string contains binary protobuf-serialized Envelope message
 using LogBroadcastCallback = std::function<void(const std::string&)>;
 inline LogBroadcastCallback broadcast_callback;
 inline std::mutex broadcast_mtx;
@@ -73,6 +76,25 @@ inline spdlog::level::level_enum to_spdlog_level(LogLevel lvl) {
         default:                  return spdlog::level::info;
     }
 }
+
+// Convert LogLevel to string representation
+inline std::string log_level_to_string(LogLevel lvl) {
+    switch (lvl) {
+        case LogLevel::Debug:     return "DEBUG";
+        case LogLevel::Info:      return "INFO";
+        case LogLevel::Warn:      return "WARN";
+        case LogLevel::Error:     return "ERROR";
+        case LogLevel::Critical:  return "CRITICAL";
+        default:                  return "UNKNOWN";
+    }
+}
+
+// // Get current timestamp in milliseconds since epoch using time_utils
+// inline int64_t get_timestamp_ms() {
+//     auto time_point = now();
+//     auto since_epoch = time_point.time_since_epoch();
+//     return std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch).count();
+// }
 
 } // namespace detail
 
@@ -154,9 +176,6 @@ inline void log_message(LogSource source,
         return; // safe no-op if not initialized
     }
 
-    // Format the log message with source
-    std::string formatted = "[" + std::string(to_string(source)) + "] " + std::string(message);
-
     // Send to console and file via spdlog
     detail::logger->log(
         detail::to_spdlog_level(level),
@@ -164,15 +183,28 @@ inline void log_message(LogSource source,
         to_string(source),
         message);
 
-    // Broadcast to remote systems (e.g., WebSocket) if callback is registered
+    // Broadcast to remote systems (e.g., WebSocket) via protobuf
     {
         std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
         if (detail::broadcast_callback) {
             try {
-                // Include log level and timestamp in the broadcast message
-                std::string broadcast_msg = "[" + std::string(to_string(source)) + "] " + 
-                                          std::string(message);
-                detail::broadcast_callback(broadcast_msg);
+                // Create protobuf LogEntry
+                neptune::LogEntry log_entry;
+                log_entry.set_timestamp_ms(get_timestamp_ms());
+                log_entry.set_source(std::string(to_string(source)));
+                log_entry.set_level(detail::log_level_to_string(level));
+                log_entry.set_message(std::string(message));
+
+                // Wrap in Envelope
+                neptune::Envelope envelope;
+                envelope.set_type(neptune::Envelope::LOG);
+                envelope.set_payload(log_entry.SerializeAsString());
+                envelope.set_timestamp_ms(log_entry.timestamp_ms());
+                envelope.set_source("neptune");
+
+                // Serialize and broadcast
+                std::string serialized = envelope.SerializeAsString();
+                detail::broadcast_callback(serialized);
             } catch (const std::exception& e) {
                 // Silently ignore broadcast errors to avoid breaking the logger
             }

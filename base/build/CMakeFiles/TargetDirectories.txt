@@ -1,3 +1,4 @@
+/workspaces/Neptune/base/build/CMakeFiles/neptune_messages_client.dir
 /workspaces/Neptune/base/build/CMakeFiles/log_client.dir
 /workspaces/Neptune/base/build/CMakeFiles/edit_cache.dir
 /workspaces/Neptune/base/build/CMakeFiles/rebuild_cache.dir

@@ -92,6 +92,8 @@ log_client_EXTERNAL_OBJECTS =
 
 bin/log_client: CMakeFiles/log_client.dir/log_client.cpp.o
 bin/log_client: CMakeFiles/log_client.dir/build.make
+bin/log_client: libneptune_messages_client.a
+bin/log_client: /usr/lib/x86_64-linux-gnu/libprotobuf.so
 bin/log_client: CMakeFiles/log_client.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/workspaces/Neptune/base/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable bin/log_client"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/log_client.dir/link.txt --verbose=$(VERBOSE)

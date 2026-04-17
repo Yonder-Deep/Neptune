@@ -18,6 +18,13 @@ inline double elapsed_seconds(TimePoint start, TimePoint end) {
     return std::chrono::duration<double>(end - start).count();
 }
 
+// Get current timestamp in milliseconds since epoch
+inline int64_t get_timestamp_ms() {
+    auto time_point = now();
+    auto since_epoch = time_point.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch).count();
+}
+
 struct WCETTracker {
 
     TimePoint start_time;

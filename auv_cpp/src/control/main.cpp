@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 
         // Step 1: Load configuration from YAML
         log_info(LogSource::MAIN, "Loading configuration from " + config_path);
-        Config config = Config::load(config_path);
+        ::Config config = ::Config::load(config_path);
         log_info(LogSource::MAIN, "Configuration loaded successfully");
 
         // Step 2: Initialize logger
@@ -72,8 +72,9 @@ int main(int argc, char* argv[]) {
         log_info(LogSource::MAIN, "WebSocket server is now running");
 
         // Register WebSocket broadcast callback so all logs are sent to connected clients
-        set_log_broadcast_callback([ws_server = ws_server.get()](const std::string& message) {
-            ws_server->broadcast(message);
+        // The callback receives a serialized protobuf Envelope
+        set_log_broadcast_callback([&ws_server](const std::string& serialized_envelope) {
+            ws_server->broadcast(serialized_envelope);
         });
         log_info(LogSource::MAIN, "Log broadcast to WebSocket clients enabled");
 

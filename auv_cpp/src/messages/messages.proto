@@ -1,0 +1,198 @@
+syntax = "proto3";
+
+package neptune;
+
+// ============================================================================
+// Log Messages
+// ============================================================================
+
+// A single log entry from the embedded system
+message LogEntry {
+    int64 timestamp_ms = 1;     // Milliseconds since epoch
+    string source = 2;          // MAIN, CTRL, NAV, WSKT, LCAL, PRCP
+    string level = 3;           // DEBUG, INFO, WARN, ERROR, CRITICAL
+    string message = 4;         // The actual log message
+}
+
+// ============================================================================
+// Telemetry Messages
+// ============================================================================
+
+// Vehicle state in NED frame (North-East-Down)
+message VehicleState {
+    // Position [meters]
+    double position_north = 1;
+    double position_east = 2;
+    double position_down = 3;
+
+    // Velocity [m/s]
+    double velocity_north = 4;
+    double velocity_east = 5;
+    double velocity_down = 6;
+
+    // Attitude: Roll, Pitch, Yaw [degrees]
+    double roll = 7;
+    double pitch = 8;
+    double yaw = 9;
+
+    // Angular velocity: P, Q, R [rad/s]
+    double angular_velocity_p = 10;
+    double angular_velocity_q = 11;
+    double angular_velocity_r = 12;
+
+    int64 timestamp_ms = 13;    // When this state was estimated
+}
+
+// Sensor readings
+message SensorData {
+    // GPS position (lat/lon/altitude) if available
+    double gps_latitude = 1;
+    double gps_longitude = 2;
+    double gps_altitude = 3;
+    bool gps_valid = 4;
+
+    // Depth sensor [meters]
+    double depth = 5;
+
+    // IMU accelerometer [m/s²]
+    double accel_x = 6;
+    double accel_y = 7;
+    double accel_z = 8;
+
+    // IMU gyroscope [rad/s]
+    double gyro_x = 9;
+    double gyro_y = 10;
+    double gyro_z = 11;
+
+    // IMU magnetometer [Gauss]
+    double mag_x = 12;
+    double mag_y = 13;
+    double mag_z = 14;
+
+    int64 timestamp_ms = 15;
+}
+
+// Complete telemetry packet (can contain vehicle state, sensors, or both)
+message Telemetry {
+    VehicleState vehicle_state = 1;
+    SensorData sensor_data = 2;
+    int64 timestamp_ms = 3;
+}
+
+// ============================================================================
+// Command Messages (Base → AUV)
+// ============================================================================
+
+// A command from base station to AUV
+message Command {
+    enum CommandType {
+        UNKNOWN = 0;
+        MOVE = 1;               // Move to target: params: {x, y, z, timeout_ms}
+        STOP = 2;               // Emergency stop
+        CALIBRATE_IMU = 3;      // Calibrate IMU
+        SET_CONFIG = 4;         // Update configuration: params: {key, value}
+        REQUEST_STATE = 5;      // Request current vehicle state
+        REQUEST_TELEMETRY = 6;  // Request sensor telemetry
+    }
+
+    CommandType type = 1;
+    map<string, string> parameters = 2;
+    int64 timestamp_ms = 3;
+    uint32 command_id = 4;      // For tracking responses
+}
+
+// Response/acknowledgment to a command
+message CommandResponse {
+    uint32 command_id = 1;
+    bool success = 2;
+    string message = 3;
+    int64 timestamp_ms = 4;
+}
+
+// ============================================================================
+// Envelope: Wrapper for any message type
+// ============================================================================
+
+// Top-level message wrapper - all WebSocket messages use this
+message Envelope {
+    enum MessageType {
+        UNKNOWN = 0;
+        LOG = 1;
+        TELEMETRY = 2;
+        COMMAND = 3;
+        COMMAND_RESPONSE = 4;
+        CONFIG = 5;
+    }
+
+    MessageType type = 1;
+    bytes payload = 2;          // Serialized inner message (LogEntry, Telemetry, Command, etc)
+    int64 timestamp_ms = 3;
+    string source = 4;          // "embedded" or "base_station"
+}
+
+// ============================================================================
+// Configuration Messages
+// ============================================================================
+
+// Network configuration
+message NetworkConfig {
+    string ip = 1;
+    int32 port = 2;
+}
+
+// Motor configuration
+message MotorConfig {
+    int32 pin1 = 1;
+    int32 pin2 = 2;
+    int32 pin3 = 3;
+    int32 pin4 = 4;
+}
+
+// Sensor configuration
+message SensorConfig {
+    // GPS
+    int32 gps_baudrate = 1;
+    double gps_timeout = 2;
+
+    // Depth sensor
+    int32 depth_i2c_addr = 3;
+    double depth_fluid_density = 4;
+
+    // IMU
+    repeated double imu_hard_iron_offset = 5;  // 3 values
+    repeated double imu_gyro_offset = 6;       // 3 values
+    double imu_madgwick_gain = 7;
+}
+
+// PID gain configuration
+message PIDGains {
+    double kp = 1;
+    double ki = 2;
+    double kd = 3;
+}
+
+// Control configuration
+message ControlConfig {
+    PIDGains surge = 1;
+    PIDGains sway = 2;
+    PIDGains heave = 3;
+    PIDGains roll = 4;
+    PIDGains pitch = 5;
+    PIDGains yaw = 6;
+    double loop_hz = 7;
+}
+
+// System configuration
+message SystemConfig {
+    bool simulation_mode = 1;
+    bool perception_mode = 2;
+}
+
+// Complete configuration (can be sent from base to embedded for hot-reload)
+message Config {
+    NetworkConfig network = 1;
+    MotorConfig motors = 2;
+    SensorConfig sensors = 3;
+    ControlConfig control = 4;
+    SystemConfig system = 5;
+}

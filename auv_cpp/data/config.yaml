@@ -11,7 +11,7 @@ motors:
   pin4: 0  # Back
 
 network:
-  ip: 0.0.0.0
+  ip: 192.168.100.10
   port: 8080
 
 sensors:

@@ -12,12 +12,30 @@ endif()
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 find_package(Threads REQUIRED)
+find_package(Protobuf REQUIRED)
+
+# Build protobuf library (same messages as embedded)
+add_library(neptune_messages_client STATIC
+    messages.pb.cc
+    messages.pb.h
+)
+
+target_link_libraries(neptune_messages_client PUBLIC
+    protobuf::libprotobuf
+)
+
+target_include_directories(neptune_messages_client PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROTOBUF_INCLUDE_DIR}
+)
 
 # Build log client executable
 add_executable(log_client log_client.cpp)
 
 target_link_libraries(log_client PRIVATE
     Threads::Threads
+    neptune_messages_client
+    protobuf::libprotobuf
 )
 
 # Include websocketpp headers (header-only library)

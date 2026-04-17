@@ -232,76 +232,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/c++/12/ctime \
   /usr/include/c++/12/bits/parse_numbers.h \
   /usr/include/c++/12/chrono \
-  /usr/include/websocketpp/config/asio_no_tls_client.hpp \
-  /usr/include/websocketpp/config/core_client.hpp \
-  /usr/include/websocketpp/common/platforms.hpp \
-  /usr/include/websocketpp/common/cpp11.hpp \
-  /usr/include/websocketpp/common/stdint.hpp \
-  /usr/include/websocketpp/concurrency/basic.hpp \
-  /usr/include/websocketpp/common/thread.hpp \
-  /usr/include/c++/12/mutex \
-  /usr/include/c++/12/bits/std_mutex.h \
-  /usr/include/c++/12/bits/unique_lock.h \
-  /usr/include/c++/12/condition_variable \
-  /usr/include/c++/12/bits/shared_ptr.h \
-  /usr/include/c++/12/bits/shared_ptr_base.h \
-  /usr/include/c++/12/bits/allocated_ptr.h \
-  /usr/include/c++/12/ext/aligned_buffer.h \
-  /usr/include/c++/12/ext/concurrence.h \
-  /usr/include/websocketpp/transport/iostream/endpoint.hpp \
-  /usr/include/websocketpp/transport/base/endpoint.hpp \
-  /usr/include/websocketpp/common/functional.hpp \
-  /usr/include/c++/12/functional \
-  /usr/include/c++/12/bits/std_function.h \
-  /usr/include/c++/12/unordered_map \
-  /usr/include/c++/12/bits/hashtable.h \
-  /usr/include/c++/12/bits/hashtable_policy.h \
-  /usr/include/c++/12/bits/enable_special_members.h \
-  /usr/include/c++/12/bits/node_handle.h \
-  /usr/include/c++/12/bits/unordered_map.h \
-  /usr/include/c++/12/bits/erase_if.h \
-  /usr/include/c++/12/vector \
-  /usr/include/c++/12/bits/stl_uninitialized.h \
-  /usr/include/c++/12/bits/stl_vector.h \
-  /usr/include/c++/12/bits/stl_bvector.h \
-  /usr/include/c++/12/bits/vector.tcc \
-  /usr/include/c++/12/array \
-  /usr/include/c++/12/compare \
-  /usr/include/c++/12/bits/stl_algo.h \
-  /usr/include/c++/12/bits/algorithmfwd.h \
-  /usr/include/c++/12/bits/stl_heap.h \
-  /usr/include/c++/12/bits/stl_tempbuf.h \
-  /usr/include/c++/12/bits/uniform_int_dist.h \
-  /usr/include/websocketpp/common/system_error.hpp \
-  /usr/include/websocketpp/transport/iostream/connection.hpp \
-  /usr/include/websocketpp/transport/iostream/base.hpp \
-  /usr/include/websocketpp/common/connection_hdl.hpp \
-  /usr/include/websocketpp/common/memory.hpp \
-  /usr/include/c++/12/memory \
-  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
-  /usr/include/c++/12/bits/align.h \
-  /usr/include/c++/12/bit \
-  /usr/include/c++/12/bits/shared_ptr_atomic.h \
-  /usr/include/c++/12/backward/auto_ptr.h \
-  /usr/include/c++/12/pstl/glue_memory_defs.h \
-  /usr/include/c++/12/pstl/execution_defs.h \
-  /usr/include/websocketpp/transport/base/connection.hpp \
-  /usr/include/websocketpp/uri.hpp \
-  /usr/include/websocketpp/error.hpp \
-  /usr/include/c++/12/utility \
-  /usr/include/c++/12/bits/stl_relops.h \
-  /usr/include/c++/12/algorithm \
-  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
-  /usr/include/c++/12/sstream \
-  /usr/include/c++/12/bits/sstream.tcc \
-  /usr/include/websocketpp/logger/levels.hpp \
-  /usr/include/websocketpp/http/request.hpp \
-  /usr/include/websocketpp/http/parser.hpp \
-  /usr/include/c++/12/map \
-  /usr/include/c++/12/bits/stl_tree.h \
-  /usr/include/c++/12/bits/stl_map.h \
-  /usr/include/c++/12/bits/stl_multimap.h \
-  /usr/include/websocketpp/utilities.hpp \
+  /usr/include/c++/12/iomanip \
   /usr/include/c++/12/locale \
   /usr/include/c++/12/bits/locale_facets_nonio.h \
   /usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h \
@@ -310,14 +241,19 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/c++/12/bits/codecvt.h \
   /usr/include/c++/12/bits/locale_facets_nonio.tcc \
   /usr/include/c++/12/bits/locale_conv.h \
-  /usr/include/websocketpp/impl/utilities_impl.hpp \
-  /usr/include/websocketpp/http/constants.hpp \
-  /usr/include/websocketpp/http/impl/parser.hpp \
-  /usr/include/websocketpp/http/impl/request.hpp \
-  /usr/include/websocketpp/http/response.hpp \
-  /usr/include/websocketpp/http/impl/response.hpp \
-  /usr/include/websocketpp/message_buffer/message.hpp \
-  /usr/include/websocketpp/frame.hpp \
+  /usr/include/c++/12/bits/quoted_string.h \
+  /usr/include/c++/12/sstream \
+  /usr/include/c++/12/bits/sstream.tcc \
+  /usr/include/websocketpp/client.hpp \
+  /usr/include/websocketpp/roles/client_endpoint.hpp \
+  /usr/include/websocketpp/endpoint.hpp \
+  /usr/include/websocketpp/connection.hpp \
+  /usr/include/websocketpp/close.hpp \
+  /usr/include/websocketpp/error.hpp \
+  /usr/include/c++/12/utility \
+  /usr/include/c++/12/bits/stl_relops.h \
+  /usr/include/websocketpp/common/cpp11.hpp \
+  /usr/include/websocketpp/common/system_error.hpp \
   /usr/include/websocketpp/common/network.hpp \
   /usr/include/netinet/in.h \
   /usr/include/x86_64-linux-gnu/sys/socket.h \
@@ -338,11 +274,103 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/asm-generic/sockios.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
   /usr/include/x86_64-linux-gnu/bits/in.h \
+  /usr/include/websocketpp/common/stdint.hpp \
+  /usr/include/websocketpp/utf8_validator.hpp \
+  /usr/include/websocketpp/frame.hpp \
+  /usr/include/c++/12/algorithm \
+  /usr/include/c++/12/bits/stl_algo.h \
+  /usr/include/c++/12/bits/algorithmfwd.h \
+  /usr/include/c++/12/bits/stl_heap.h \
+  /usr/include/c++/12/bits/stl_tempbuf.h \
+  /usr/include/c++/12/bits/uniform_int_dist.h \
+  /usr/include/c++/12/pstl/glue_algorithm_defs.h \
+  /usr/include/c++/12/pstl/execution_defs.h \
+  /usr/include/websocketpp/utilities.hpp \
+  /usr/include/websocketpp/impl/utilities_impl.hpp \
+  /usr/include/websocketpp/logger/levels.hpp \
+  /usr/include/websocketpp/processors/processor.hpp \
+  /usr/include/websocketpp/processors/base.hpp \
+  /usr/include/websocketpp/uri.hpp \
+  /usr/include/websocketpp/common/memory.hpp \
+  /usr/include/c++/12/memory \
+  /usr/include/c++/12/bits/stl_uninitialized.h \
+  /usr/include/c++/12/bits/stl_raw_storage_iter.h \
+  /usr/include/c++/12/bits/align.h \
+  /usr/include/c++/12/bit \
+  /usr/include/c++/12/bits/shared_ptr.h \
+  /usr/include/c++/12/bits/shared_ptr_base.h \
+  /usr/include/c++/12/bits/allocated_ptr.h \
+  /usr/include/c++/12/ext/aligned_buffer.h \
+  /usr/include/c++/12/ext/concurrence.h \
+  /usr/include/c++/12/bits/shared_ptr_atomic.h \
+  /usr/include/c++/12/backward/auto_ptr.h \
+  /usr/include/c++/12/pstl/glue_memory_defs.h \
+  /usr/include/c++/12/vector \
+  /usr/include/c++/12/bits/stl_vector.h \
+  /usr/include/c++/12/bits/stl_bvector.h \
+  /usr/include/c++/12/bits/vector.tcc \
+  /usr/include/websocketpp/transport/base/connection.hpp \
+  /usr/include/websocketpp/common/connection_hdl.hpp \
+  /usr/include/websocketpp/common/functional.hpp \
+  /usr/include/c++/12/functional \
+  /usr/include/c++/12/bits/std_function.h \
+  /usr/include/c++/12/unordered_map \
+  /usr/include/c++/12/bits/hashtable.h \
+  /usr/include/c++/12/bits/hashtable_policy.h \
+  /usr/include/c++/12/bits/enable_special_members.h \
+  /usr/include/c++/12/bits/node_handle.h \
+  /usr/include/c++/12/bits/unordered_map.h \
+  /usr/include/c++/12/bits/erase_if.h \
+  /usr/include/c++/12/array \
+  /usr/include/c++/12/compare \
+  /usr/include/websocketpp/http/constants.hpp \
+  /usr/include/c++/12/map \
+  /usr/include/c++/12/bits/stl_tree.h \
+  /usr/include/c++/12/bits/stl_map.h \
+  /usr/include/c++/12/bits/stl_multimap.h \
+  /usr/include/c++/12/queue \
+  /usr/include/c++/12/deque \
+  /usr/include/c++/12/bits/stl_deque.h \
+  /usr/include/c++/12/bits/deque.tcc \
+  /usr/include/c++/12/bits/stl_queue.h \
+  /usr/include/websocketpp/impl/connection_impl.hpp \
+  /usr/include/websocketpp/processors/hybi00.hpp \
+  /usr/include/websocketpp/common/md5.hpp \
+  /usr/include/c++/12/cstring \
+  /usr/include/string.h \
+  /usr/include/strings.h \
+  /usr/include/websocketpp/common/platforms.hpp \
+  /usr/include/websocketpp/processors/hybi07.hpp \
+  /usr/include/websocketpp/processors/hybi08.hpp \
+  /usr/include/websocketpp/processors/hybi13.hpp \
+  /usr/include/websocketpp/sha1/sha1.hpp \
+  /usr/include/websocketpp/base64/base64.hpp \
+  /usr/include/c++/12/cassert \
+  /usr/include/assert.h \
+  /usr/include/websocketpp/version.hpp \
+  /usr/include/websocketpp/impl/endpoint_impl.hpp \
+  /usr/include/websocketpp/config/asio_no_tls_client.hpp \
+  /usr/include/websocketpp/config/core_client.hpp \
+  /usr/include/websocketpp/concurrency/basic.hpp \
+  /usr/include/websocketpp/common/thread.hpp \
+  /usr/include/c++/12/mutex \
+  /usr/include/c++/12/bits/std_mutex.h \
+  /usr/include/c++/12/bits/unique_lock.h \
+  /usr/include/c++/12/condition_variable \
+  /usr/include/websocketpp/transport/iostream/endpoint.hpp \
+  /usr/include/websocketpp/transport/base/endpoint.hpp \
+  /usr/include/websocketpp/transport/iostream/connection.hpp \
+  /usr/include/websocketpp/transport/iostream/base.hpp \
+  /usr/include/websocketpp/http/request.hpp \
+  /usr/include/websocketpp/http/parser.hpp \
+  /usr/include/websocketpp/http/impl/parser.hpp \
+  /usr/include/websocketpp/http/impl/request.hpp \
+  /usr/include/websocketpp/http/response.hpp \
+  /usr/include/websocketpp/http/impl/response.hpp \
+  /usr/include/websocketpp/message_buffer/message.hpp \
   /usr/include/websocketpp/message_buffer/alloc.hpp \
   /usr/include/websocketpp/logger/basic.hpp \
   /usr/include/websocketpp/common/time.hpp \
-  /usr/include/c++/12/iomanip \
-  /usr/include/c++/12/bits/quoted_string.h \
   /usr/include/websocketpp/random/random_device.hpp \
   /usr/include/websocketpp/common/random.hpp \
   /usr/include/c++/12/random \
@@ -451,7 +479,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/boost/asio/execution/any_executor.hpp \
   /usr/include/boost/asio/detail/assert.hpp \
   /usr/include/boost/assert.hpp \
-  /usr/include/assert.h \
   /usr/include/boost/asio/detail/cstddef.hpp \
   /usr/include/boost/asio/detail/executor_function.hpp \
   /usr/include/boost/asio/detail/handler_alloc_helpers.hpp \
@@ -507,16 +534,12 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/boost/system/error_code.hpp \
   /usr/include/boost/system/api_config.hpp \
   /usr/include/boost/system/detail/config.hpp \
-  /usr/include/c++/12/cstring \
-  /usr/include/string.h \
-  /usr/include/strings.h \
   /usr/include/boost/cerrno.hpp \
   /usr/include/boost/system/detail/generic_category.hpp \
   /usr/include/boost/system/detail/system_category_posix.hpp \
   /usr/include/boost/system/detail/std_interoperability.hpp \
   /usr/include/boost/asio/detail/impl/throw_error.ipp \
   /usr/include/boost/system/system_error.hpp \
-  /usr/include/c++/12/cassert \
   /usr/include/boost/asio/error.hpp \
   /usr/include/netdb.h \
   /usr/include/rpc/netdb.h \
@@ -1287,62 +1310,145 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
   /usr/include/boost/asio/write_at.hpp \
   /usr/include/boost/asio/impl/write_at.hpp \
   /usr/include/websocketpp/common/type_traits.hpp \
-  /usr/include/websocketpp/base64/base64.hpp \
   /usr/include/websocketpp/transport/asio/security/none.hpp \
   /usr/include/websocketpp/transport/asio/security/base.hpp \
-  /usr/include/websocketpp/client.hpp \
-  /usr/include/websocketpp/roles/client_endpoint.hpp \
-  /usr/include/websocketpp/endpoint.hpp \
-  /usr/include/websocketpp/connection.hpp \
-  /usr/include/websocketpp/close.hpp \
-  /usr/include/websocketpp/utf8_validator.hpp \
-  /usr/include/websocketpp/processors/processor.hpp \
-  /usr/include/websocketpp/processors/base.hpp \
-  /usr/include/c++/12/queue \
-  /usr/include/c++/12/deque \
-  /usr/include/c++/12/bits/stl_deque.h \
-  /usr/include/c++/12/bits/deque.tcc \
-  /usr/include/c++/12/bits/stl_queue.h \
-  /usr/include/websocketpp/impl/connection_impl.hpp \
-  /usr/include/websocketpp/processors/hybi00.hpp \
-  /usr/include/websocketpp/common/md5.hpp \
-  /usr/include/websocketpp/processors/hybi07.hpp \
-  /usr/include/websocketpp/processors/hybi08.hpp \
-  /usr/include/websocketpp/processors/hybi13.hpp \
-  /usr/include/websocketpp/sha1/sha1.hpp \
-  /usr/include/websocketpp/version.hpp \
-  /usr/include/websocketpp/impl/endpoint_impl.hpp
+  /workspaces/Neptune/base/messages.pb.h \
+  /usr/include/google/protobuf/port_def.inc \
+  /usr/include/google/protobuf/port_undef.inc \
+  /usr/include/google/protobuf/io/coded_stream.h \
+  /usr/include/google/protobuf/stubs/common.h \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/bits/stl_set.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
+  /usr/include/google/protobuf/stubs/macros.h \
+  /usr/include/google/protobuf/stubs/platform_macros.h \
+  /usr/include/google/protobuf/stubs/port.h \
+  /usr/include/c++/12/stdlib.h \
+  /usr/include/byteswap.h \
+  /usr/include/google/protobuf/stubs/stringpiece.h \
+  /usr/include/google/protobuf/stubs/hash.h \
+  /usr/include/c++/12/unordered_set \
+  /usr/include/c++/12/bits/unordered_set.h \
+  /usr/include/google/protobuf/stubs/logging.h \
+  /usr/include/google/protobuf/stubs/status.h \
+  /usr/include/google/protobuf/stubs/strutil.h \
+  /usr/include/google/protobuf/port.h \
+  /usr/include/google/protobuf/arena.h \
+  /usr/include/google/protobuf/arena_impl.h \
+  /usr/include/google/protobuf/arenaz_sampler.h \
+  /usr/include/google/protobuf/arenastring.h \
+  /usr/include/google/protobuf/explicitly_constructed.h \
+  /usr/include/google/protobuf/generated_message_util.h \
+  /usr/include/google/protobuf/stubs/once.h \
+  /usr/include/google/protobuf/any.h \
+  /usr/include/google/protobuf/message_lite.h \
+  /usr/include/google/protobuf/metadata_lite.h \
+  /usr/include/google/protobuf/has_bits.h \
+  /usr/include/google/protobuf/implicit_weak_message.h \
+  /usr/include/google/protobuf/repeated_field.h \
+  /usr/include/google/protobuf/repeated_ptr_field.h \
+  /usr/include/google/protobuf/wire_format_lite.h \
+  /usr/include/google/protobuf/stubs/casts.h \
+  /usr/include/google/protobuf/generated_message_reflection.h \
+  /usr/include/google/protobuf/descriptor.h \
+  /usr/include/google/protobuf/stubs/mutex.h \
+  /usr/include/google/protobuf/generated_enum_reflection.h \
+  /usr/include/google/protobuf/generated_enum_util.h \
+  /usr/include/google/protobuf/unknown_field_set.h \
+  /usr/include/google/protobuf/io/zero_copy_stream_impl_lite.h \
+  /usr/include/google/protobuf/stubs/callback.h \
+  /usr/include/google/protobuf/io/zero_copy_stream.h \
+  /usr/include/google/protobuf/stubs/stl_util.h \
+  /usr/include/google/protobuf/parse_context.h \
+  /usr/include/google/protobuf/endian.h \
+  /usr/include/google/protobuf/inlined_string_field.h \
+  /usr/include/google/protobuf/message.h \
+  /usr/include/google/protobuf/map.h \
+  /usr/include/google/protobuf/map_type_handler.h \
+  /usr/include/google/protobuf/extension_set.h \
+  /usr/include/google/protobuf/map_entry.h \
+  /usr/include/google/protobuf/map_entry_lite.h \
+  /usr/include/google/protobuf/reflection_ops.h \
+  /usr/include/google/protobuf/map_field_inl.h \
+  /usr/include/google/protobuf/map_field.h \
+  /usr/include/google/protobuf/map_field_lite.h
 
 
-/usr/include/websocketpp/impl/endpoint_impl.hpp:
+/usr/include/google/protobuf/map_field_inl.h:
 
-/usr/include/websocketpp/sha1/sha1.hpp:
+/usr/include/google/protobuf/map_entry_lite.h:
 
-/usr/include/websocketpp/common/md5.hpp:
+/usr/include/google/protobuf/extension_set.h:
 
-/usr/include/websocketpp/processors/hybi00.hpp:
+/usr/include/google/protobuf/map_type_handler.h:
 
-/usr/include/c++/12/bits/stl_queue.h:
+/usr/include/google/protobuf/inlined_string_field.h:
 
-/usr/include/c++/12/bits/deque.tcc:
+/usr/include/google/protobuf/endian.h:
 
-/usr/include/c++/12/bits/stl_deque.h:
+/usr/include/google/protobuf/parse_context.h:
 
-/usr/include/c++/12/deque:
+/usr/include/google/protobuf/stubs/stl_util.h:
 
-/usr/include/c++/12/queue:
+/usr/include/google/protobuf/stubs/callback.h:
 
-/usr/include/websocketpp/processors/processor.hpp:
+/usr/include/google/protobuf/unknown_field_set.h:
 
-/usr/include/websocketpp/utf8_validator.hpp:
+/usr/include/google/protobuf/generated_enum_util.h:
 
-/usr/include/websocketpp/connection.hpp:
+/usr/include/google/protobuf/generated_enum_reflection.h:
 
-/usr/include/websocketpp/endpoint.hpp:
+/usr/include/google/protobuf/stubs/mutex.h:
 
-/usr/include/websocketpp/roles/client_endpoint.hpp:
+/usr/include/google/protobuf/descriptor.h:
 
-/usr/include/websocketpp/client.hpp:
+/usr/include/google/protobuf/generated_message_reflection.h:
+
+/usr/include/google/protobuf/repeated_field.h:
+
+/usr/include/google/protobuf/metadata_lite.h:
+
+/usr/include/google/protobuf/message_lite.h:
+
+/usr/include/google/protobuf/any.h:
+
+/usr/include/google/protobuf/stubs/once.h:
+
+/usr/include/google/protobuf/generated_message_util.h:
+
+/usr/include/google/protobuf/arenastring.h:
+
+/usr/include/google/protobuf/arena_impl.h:
+
+/usr/include/google/protobuf/arena.h:
+
+/usr/include/google/protobuf/port.h:
+
+/usr/include/google/protobuf/stubs/strutil.h:
+
+/usr/include/google/protobuf/stubs/logging.h:
+
+/usr/include/c++/12/bits/unordered_set.h:
+
+/usr/include/google/protobuf/stubs/hash.h:
+
+/usr/include/google/protobuf/stubs/stringpiece.h:
+
+/usr/include/byteswap.h:
+
+/usr/include/c++/12/stdlib.h:
+
+/usr/include/google/protobuf/stubs/macros.h:
+
+/usr/include/c++/12/set:
+
+/usr/include/google/protobuf/stubs/common.h:
+
+/usr/include/google/protobuf/io/coded_stream.h:
+
+/usr/include/google/protobuf/port_undef.inc:
+
+/workspaces/Neptune/base/messages.pb.h:
 
 /usr/include/boost/asio/write_at.hpp:
 
@@ -1403,6 +1509,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/predef/platform/windows_system.h:
 
 /usr/include/boost/predef/platform/windows_store.h:
+
+/usr/include/google/protobuf/map_field_lite.h:
 
 /usr/include/boost/predef/platform/windows_server.h:
 
@@ -1488,6 +1596,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/predef/library/c/cloudabi.h:
 
+/usr/include/google/protobuf/stubs/status.h:
+
 /usr/include/boost/predef/detail/_cassert.h:
 
 /usr/include/boost/predef/library/c/_prefix.h:
@@ -1550,10 +1660,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/predef/architecture/z.h:
 
-/usr/include/websocketpp/processors/hybi08.hpp:
-
-/usr/include/boost/predef/architecture/x86/64.h:
-
 /usr/include/boost/predef/architecture/x86.h:
 
 /usr/include/boost/predef/architecture/sys390.h:
@@ -1600,37 +1706,27 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/predef/language/stdc.h:
 
-/usr/include/boost/predef/architecture/pyramid.h:
+/usr/include/boost/regex/user.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/sigevent-consts.h:
+/usr/include/boost/regex_fwd.hpp:
 
-/usr/include/boost/asio/execution/bulk_execute.hpp:
+/usr/include/boost/asio/read_until.hpp:
 
-/usr/include/boost/asio/detail/scoped_lock.hpp:
+/usr/include/boost/asio/impl/read_at.hpp:
 
-/usr/include/netinet/in.h:
+/usr/include/boost/asio/impl/read.hpp:
 
-/usr/include/boost/asio/detail/posix_mutex.hpp:
+/usr/include/boost/asio/posix/basic_descriptor.hpp:
 
-/usr/include/boost/asio/detail/mutex.hpp:
+/usr/include/c++/12/future:
 
-/usr/include/c++/12/random:
+/usr/include/boost/asio/detail/future.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/types/sigval_t.h:
+/usr/include/boost/asio/local/stream_protocol.hpp:
 
-/usr/include/boost/asio/impl/error.ipp:
-
-/usr/include/x86_64-linux-gnu/bits/netdb.h:
-
-/usr/include/rpc/netdb.h:
+/usr/include/boost/asio/local/connect_pair.hpp:
 
 /usr/include/netdb.h:
-
-/usr/include/websocketpp/impl/connection_impl.hpp:
-
-/usr/include/boost/asio/buffered_stream_fwd.hpp:
-
-/usr/include/boost/config/compiler/gcc.hpp:
 
 /usr/include/boost/asio/detail/impl/throw_error.ipp:
 
@@ -1666,6 +1762,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/exception/exception.hpp:
 
+/usr/include/google/protobuf/stubs/platform_macros.h:
+
 /usr/include/boost/asio/detail/conditionally_enabled_event.hpp:
 
 /usr/include/boost/asio/ip/basic_resolver.hpp:
@@ -1676,7 +1774,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bits/basic_ios.h:
 
-/usr/include/boost/asio/impl/post.hpp:
+/usr/include/google/protobuf/map_field.h:
 
 /usr/include/boost/asio/impl/handler_alloc_hook.ipp:
 
@@ -1708,10 +1806,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/execution/any_executor.hpp:
 
-/usr/include/boost/asio/execution/blocking_adaptation.hpp:
-
-/usr/include/boost/current_function.hpp:
-
 /usr/include/boost/asio/traits/connect_free.hpp:
 
 /usr/include/boost/asio/traits/connect_member.hpp:
@@ -1730,14 +1824,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/ip/impl/address.ipp:
 
-/usr/include/string.h:
-
-/usr/include/boost/predef/hardware/simd/arm/versions.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
-
-/usr/include/boost/asio/traits/equality_comparable.hpp:
-
 /usr/include/boost/asio/execution/schedule.hpp:
 
 /usr/include/c++/12/bits/localefwd.h:
@@ -1751,18 +1837,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/variadic_templates.hpp:
 
 /usr/include/boost/asio/ip/impl/network_v4.ipp:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
-/usr/include/boost/asio/traits/set_error_free.hpp:
-
-/usr/include/boost/numeric/conversion/cast.hpp:
-
-/usr/include/c++/12/tr1/poly_laguerre.tcc:
-
-/usr/include/boost/asio/execution/set_done.hpp:
 
 /usr/include/websocketpp/common/stdint.hpp:
 
@@ -1824,12 +1898,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/version.hpp:
 
-/usr/include/boost/system/detail/config.hpp:
-
-/usr/include/websocketpp/common/asio.hpp:
-
-/usr/include/c++/12/exception:
-
 /usr/include/c++/12/bits/stl_iterator_base_types.h:
 
 /usr/include/boost/asio/redirect_error.hpp:
@@ -1842,9 +1910,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/websocketpp/transport/asio/connection.hpp:
 
-/usr/include/c++/12/tuple:
-
 /usr/include/c++/12/unordered_map:
+
+/usr/include/c++/12/tuple:
 
 /usr/include/boost/asio/execution/receiver_invocation_error.hpp:
 
@@ -1866,6 +1934,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/websocketpp/connection_base.hpp:
 
+/usr/include/google/protobuf/map_entry.h:
+
 /usr/include/boost/preprocessor/list/adt.hpp:
 
 /usr/include/c++/12/pstl/glue_numeric_defs.h:
@@ -1873,6 +1943,12 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/impl/posix_event.ipp:
 
 /usr/include/c++/12/numeric:
+
+/usr/include/boost/asio/execution/set_done.hpp:
+
+/usr/include/c++/12/tr1/poly_laguerre.tcc:
+
+/usr/include/boost/asio/impl/post.hpp:
 
 /usr/include/boost/asio/detail/epoll_reactor.hpp:
 
@@ -1896,6 +1972,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/detail/scheduler_thread_info.hpp:
 
+/usr/include/boost/config/compiler/gcc.hpp:
+
 /usr/include/c++/12/tr1/gamma.tcc:
 
 /usr/include/c++/12/bits/specfun.h:
@@ -1910,21 +1988,15 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
+/usr/include/google/protobuf/map.h:
+
 /usr/include/boost/asio/traits/static_require.hpp:
-
-/usr/include/boost/asio/local/connect_pair.hpp:
-
-/usr/include/boost/asio/ip/address_v6.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/math-vector.h:
 
 /usr/include/boost/predef/hardware/simd/x86/versions.h:
 
 /usr/include/boost/numeric/conversion/numeric_cast_traits.hpp:
-
-/usr/include/c++/12/bits/quoted_string.h:
-
-/usr/include/boost/asio/traits/submit_member.hpp:
 
 /usr/include/boost/asio/execution/operation_state.hpp:
 
@@ -1940,6 +2012,210 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/preprocessor/config/config.hpp:
 
+/usr/include/websocketpp/message_buffer/message.hpp:
+
+/usr/include/websocketpp/http/response.hpp:
+
+/usr/include/websocketpp/http/parser.hpp:
+
+/usr/include/websocketpp/random/random_device.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
+
+/usr/include/websocketpp/http/request.hpp:
+
+/usr/include/boost/predef/compiler/kai.h:
+
+/usr/include/c++/12/debug/debug.h:
+
+/usr/include/c++/12/bits/std_mutex.h:
+
+/usr/include/x86_64-linux-gnu/asm/ioctl.h:
+
+/usr/include/boost/asio/traits/query_free.hpp:
+
+/usr/include/boost/asio/read.hpp:
+
+/usr/include/websocketpp/config/core_client.hpp:
+
+/usr/include/websocketpp/impl/endpoint_impl.hpp:
+
+/usr/include/boost/current_function.hpp:
+
+/usr/include/boost/asio/execution/blocking_adaptation.hpp:
+
+/usr/include/websocketpp/sha1/sha1.hpp:
+
+/usr/include/boost/asio/ip/address_v6.hpp:
+
+/usr/include/boost/predef/architecture/x86/64.h:
+
+/usr/include/websocketpp/processors/hybi08.hpp:
+
+/usr/include/boost/system/detail/config.hpp:
+
+/usr/include/boost/asio/local/datagram_protocol.hpp:
+
+/usr/include/boost/date_time/posix_time/posix_time_duration.hpp:
+
+/usr/include/websocketpp/common/asio.hpp:
+
+/usr/include/c++/12/exception:
+
+/usr/include/c++/12/bits/range_access.h:
+
+/usr/include/boost/asio/traits/equality_comparable.hpp:
+
+/usr/include/string.h:
+
+/usr/include/boost/predef/hardware/simd/arm/versions.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/12/include/stdarg.h:
+
+/usr/include/websocketpp/common/md5.hpp:
+
+/usr/include/boost/mpl/apply_wrap.hpp:
+
+/usr/include/boost/asio/buffered_stream_fwd.hpp:
+
+/usr/include/websocketpp/impl/connection_impl.hpp:
+
+/usr/include/boost/asio/compose.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/boost/asio/traits/set_error_free.hpp:
+
+/usr/include/boost/numeric/conversion/cast.hpp:
+
+/usr/include/c++/12/bits/stl_queue.h:
+
+/usr/include/c++/12/bits/deque.tcc:
+
+/usr/include/c++/12/queue:
+
+/usr/include/boost/asio/traits/query_member.hpp:
+
+/usr/include/boost/asio/traits/start_free.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/boost/asio/detail/thread_info_base.hpp:
+
+/usr/include/boost/asio/execution/detail/as_operation.hpp:
+
+/usr/include/c++/12/condition_variable:
+
+/usr/include/c++/12/bits/stl_multimap.h:
+
+/usr/include/c++/12/bits/stl_map.h:
+
+/usr/include/boost/asio/detail/reactor.hpp:
+
+/usr/include/c++/12/bits/stl_tree.h:
+
+/usr/include/c++/12/compare:
+
+/usr/include/boost/predef/os/ios.h:
+
+/usr/include/c++/12/array:
+
+/usr/include/c++/12/bits/erase_if.h:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/less.hpp:
+
+/usr/include/c++/12/bits/enable_special_members.h:
+
+/usr/include/c++/12/bits/hashtable_policy.h:
+
+/usr/include/boost/preprocessor/repeat.hpp:
+
+/usr/include/c++/12/bits/std_function.h:
+
+/usr/include/boost/preprocessor/facilities/overload.hpp:
+
+/usr/include/boost/asio/detail/type_traits.hpp:
+
+/usr/include/websocketpp/common/functional.hpp:
+
+/usr/include/boost/mpl/aux_/preprocessed/gcc/apply_wrap.hpp:
+
+/usr/include/boost/asio/detail/assert.hpp:
+
+/usr/include/websocketpp/common/connection_hdl.hpp:
+
+/usr/include/boost/asio/traits/schedule_free.hpp:
+
+/usr/include/c++/12/bits/stl_bvector.h:
+
+/usr/include/boost/asio/execution/sender.hpp:
+
+/usr/include/boost/mpl/if.hpp:
+
+/usr/include/boost/asio/detail/memory.hpp:
+
+/usr/include/c++/12/bits/stl_vector.h:
+
+/usr/include/c++/12/pstl/glue_memory_defs.h:
+
+/usr/include/c++/12/backward/auto_ptr.h:
+
+/usr/include/c++/12/ext/concurrence.h:
+
+/usr/include/boost/asio/detail/keyword_tss_ptr.hpp:
+
+/usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:
+
+/usr/include/websocketpp/processors/hybi00.hpp:
+
+/usr/include/c++/12/bits/shared_ptr.h:
+
+/usr/include/c++/12/tr1/bessel_function.tcc:
+
+/usr/include/boost/predef/architecture.h:
+
+/usr/include/boost/asio/buffered_write_stream_fwd.hpp:
+
+/usr/include/boost/predef/os/cygwin.h:
+
+/usr/include/boost/predef/compiler/dignus.h:
+
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
+
+/usr/include/websocketpp/uri.hpp:
+
+/usr/include/boost/asio/basic_raw_socket.hpp:
+
+/usr/include/websocketpp/processors/processor.hpp:
+
+/usr/include/boost/asio/basic_seq_packet_socket.hpp:
+
+/usr/include/boost/asio/impl/buffered_read_stream.hpp:
+
+/usr/include/websocketpp/impl/utilities_impl.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
+/usr/include/boost/asio/detail/non_const_lvalue.hpp:
+
+/usr/include/c++/12/bits/stl_tempbuf.h:
+
+/usr/include/c++/12/bits/postypes.h:
+
+/usr/include/boost/asio/detail/noncopyable.hpp:
+
+/usr/include/websocketpp/common/random.hpp:
+
+/usr/include/boost/mpl/aux_/arity.hpp:
+
+/usr/include/boost/config/helper_macros.hpp:
+
+/usr/include/c++/12/bits/random.tcc:
+
+/usr/include/websocketpp/frame.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h:
 
 /usr/include/x86_64-linux-gnu/bits/in.h:
@@ -1948,7 +2224,23 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/mpl/equal_to.hpp:
 
+/usr/include/c++/12/mutex:
+
+/usr/include/boost/mpl/aux_/has_apply.hpp:
+
+/usr/include/asm-generic/sockios.h:
+
+/usr/include/boost/asio/detail/posix_static_mutex.hpp:
+
 /usr/include/x86_64-linux-gnu/asm/bitsperlong.h:
+
+/usr/include/c++/12/bits/stl_heap.h:
+
+/usr/include/google/protobuf/io/zero_copy_stream.h:
+
+/usr/include/asm-generic/posix_types.h:
+
+/usr/include/boost/asio/traits/require_free.hpp:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types.h:
 
@@ -1968,129 +2260,17 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/bits/socket.h:
 
-/usr/include/boost/asio/any_io_executor.hpp:
-
-/usr/include/websocketpp/message_buffer/message.hpp:
-
-/usr/include/websocketpp/http/response.hpp:
-
-/usr/include/boost/asio/execution/prefer_only.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
-
-/usr/include/websocketpp/impl/utilities_impl.hpp:
-
-/usr/include/c++/12/bits/locale_facets_nonio.tcc:
-
-/usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
-
-/usr/include/c++/12/bits/stl_map.h:
-
-/usr/include/websocketpp/http/parser.hpp:
-
-/usr/include/websocketpp/random/random_device.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
-
-/usr/include/websocketpp/http/request.hpp:
-
-/usr/include/boost/predef/compiler/kai.h:
-
-/usr/include/c++/12/debug/debug.h:
-
-/usr/include/c++/12/bits/stl_tree.h:
-
-/usr/include/boost/asio/detail/reactor.hpp:
-
-/usr/include/boost/date_time/dst_rules.hpp:
-
-/usr/include/boost/config/helper_macros.hpp:
-
-/usr/include/c++/12/bits/random.tcc:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
-
-/usr/include/websocketpp/uri.hpp:
-
-/usr/include/boost/asio/traits/schedule_free.hpp:
-
-/usr/include/c++/12/pstl/glue_memory_defs.h:
-
-/usr/include/c++/12/backward/auto_ptr.h:
-
-/usr/include/boost/asio/detail/impl/posix_mutex.ipp:
-
-/usr/include/boost/predef/os/cygwin.h:
-
-/usr/include/boost/predef/compiler/dignus.h:
-
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/boost/asio/detail/assert.hpp:
-
-/usr/include/websocketpp/common/connection_hdl.hpp:
-
-/usr/include/boost/asio/detail/non_const_lvalue.hpp:
-
-/usr/include/c++/12/bits/stl_tempbuf.h:
-
-/usr/include/c++/12/bits/postypes.h:
-
-/usr/include/asm-generic/posix_types.h:
-
-/usr/include/boost/asio/traits/require_free.hpp:
-
-/usr/include/c++/12/bits/stl_heap.h:
-
-/usr/include/boost/asio/detail/noncopyable.hpp:
-
-/usr/include/websocketpp/common/random.hpp:
-
-/usr/include/boost/mpl/aux_/arity.hpp:
-
-/usr/include/c++/12/compare:
-
-/usr/include/boost/predef/os/ios.h:
-
-/usr/include/c++/12/array:
-
-/usr/include/c++/12/bits/stl_bvector.h:
-
-/usr/include/boost/asio/execution/sender.hpp:
-
-/usr/include/boost/mpl/if.hpp:
-
-/usr/include/boost/asio/detail/memory.hpp:
-
-/usr/include/c++/12/bits/stl_vector.h:
-
-/usr/include/boost/asio/connect.hpp:
-
-/usr/include/c++/12/bits/stl_uninitialized.h:
-
-/usr/include/c++/12/bits/erase_if.h:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/less.hpp:
-
 /usr/include/websocketpp/transport/iostream/base.hpp:
 
 /usr/include/c++/12/bits/basic_string.h:
 
 /usr/include/stdc-predef.h:
 
-/usr/include/c++/12/bits/range_access.h:
-
-/usr/include/c++/12/bits/functexcept.h:
-
-/usr/include/boost/asio/detail/type_traits.hpp:
+/usr/include/boost/asio/posix/basic_stream_descriptor.hpp:
 
 /usr/include/linux/version.h:
 
-/usr/include/boost/asio/posix/basic_stream_descriptor.hpp:
-
-/usr/include/websocketpp/common/functional.hpp:
-
-/usr/include/boost/mpl/aux_/preprocessed/gcc/apply_wrap.hpp:
+/usr/include/c++/12/bits/functexcept.h:
 
 /usr/include/c++/12/bits/refwrap.h:
 
@@ -2098,15 +2278,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/execution/outstanding_work.hpp:
 
-/usr/include/boost/asio/local/stream_protocol.hpp:
-
 /usr/include/c++/12/cerrno:
 
 /usr/include/boost/asio/detail/concurrency_hint.hpp:
-
-/usr/include/c++/12/bits/std_function.h:
-
-/usr/include/boost/preprocessor/facilities/overload.hpp:
 
 /usr/include/boost/asio/impl/use_future.hpp:
 
@@ -2125,8 +2299,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/config.hpp:
 
 /usr/include/c++/12/bits/stringfwd.h:
-
-/usr/include/x86_64-linux-gnu/bits/wordsize.h:
 
 /usr/include/boost/system/detail/system_category_posix.hpp:
 
@@ -2148,6 +2320,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bit:
 
+/usr/include/google/protobuf/repeated_ptr_field.h:
+
 /usr/include/boost/asio/ip/address_v4_range.hpp:
 
 /usr/include/c++/12/string:
@@ -2156,45 +2330,39 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/basic_streambuf_fwd.hpp:
 
+/usr/include/c++/12/bits/node_handle.h:
+
 /usr/include/c++/12/initializer_list:
 
 /usr/include/c++/12/ext/alloc_traits.h:
 
 /usr/include/boost/asio/detail/reactive_socket_accept_op.hpp:
 
+/usr/include/boost/asio/posix/stream_descriptor.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/termios.h:
+
 /usr/include/x86_64-linux-gnu/bits/siginfo-consts.h:
 
-/usr/include/boost/asio/detail/keyword_tss_ptr.hpp:
-
-/usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:
-
-/usr/include/c++/12/bits/shared_ptr.h:
-
-/usr/include/c++/12/tr1/bessel_function.tcc:
-
-/usr/include/boost/predef/architecture.h:
-
-/usr/include/boost/asio/buffered_write_stream_fwd.hpp:
-
-/usr/include/boost/asio/detail/throw_exception.hpp:
-
-/usr/include/websocketpp/common/system_error.hpp:
-
-/usr/include/websocketpp/transport/iostream/endpoint.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
+
+/usr/include/google/protobuf/io/zero_copy_stream_impl_lite.h:
+
+/usr/include/boost/asio/execution/detail/as_receiver.hpp:
+
+/usr/include/boost/asio/detail/thread_context.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/long-double.h:
+
+/usr/include/websocketpp/transport/base/endpoint.hpp:
+
+/usr/include/libintl.h:
 
 /usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
 /usr/include/c++/12/cstdio:
 
 /usr/include/boost/asio/detail/limits.hpp:
-
-/usr/include/boost/asio/detail/call_stack.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/timesize.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
 
 /usr/include/x86_64-linux-gnu/bits/floatn.h:
 
@@ -2210,6 +2378,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/detail/date_time_fwd.hpp:
 
+/usr/include/c++/12/bits/stl_deque.h:
+
 /usr/include/boost/asio/execution/connect.hpp:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
@@ -2218,17 +2388,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/ip/basic_endpoint.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/sched.h:
-
-/usr/include/boost/asio/traits/start_free.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
 /usr/include/c++/12/bits/invoke.h:
-
-/usr/include/c++/12/utility:
-
-/usr/include/c++/12/bits/utility.h:
 
 /usr/include/c++/12/bits/stl_iterator.h:
 
@@ -2236,17 +2398,19 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/is_executor.hpp:
 
+/usr/include/google/protobuf/port_def.inc:
+
 /usr/include/boost/asio/detail/reactive_socket_sendto_op.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
 /usr/include/locale.h:
 
-/usr/include/websocketpp/processors/hybi13.hpp:
+/usr/include/c++/12/random:
 
-/usr/include/x86_64-linux-gnu/bits/select.h:
+/usr/include/x86_64-linux-gnu/bits/types/sigval_t.h:
 
-/usr/include/boost/throw_exception.hpp:
+/usr/include/boost/asio/detail/mutex.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/time_t.h:
 
@@ -2263,6 +2427,12 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/preprocessor/logical/and.hpp:
 
 /usr/include/boost/asio/impl/multiple_exceptions.ipp:
+
+/usr/include/boost/regex/config.hpp:
+
+/usr/include/websocketpp/message_buffer/alloc.hpp:
+
+/usr/include/boost/preprocessor/control/detail/while.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/getopt_core.h:
 
@@ -2300,6 +2470,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/signal.h:
 
+/usr/include/google/protobuf/reflection_ops.h:
+
 /usr/include/websocketpp/http/impl/request.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/struct_stat.h:
@@ -2318,10 +2490,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/date_time/gregorian/greg_duration_types.hpp:
 
-/usr/include/c++/12/bits/stl_relops.h:
-
-/usr/include/boost/asio/posix/descriptor.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__FILE.h:
@@ -2334,9 +2502,33 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
+/usr/include/c++/12/ext/aligned_buffer.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/c++/12/algorithm:
+
+/usr/include/boost/date_time/locale_config.hpp:
+
+/usr/include/features-time64.h:
+
+/usr/include/boost/asio/write.hpp:
+
+/usr/include/websocketpp/utf8_validator.hpp:
+
+/usr/include/google/protobuf/stubs/casts.h:
+
+/usr/include/boost/preprocessor/tuple/detail/is_single_return.hpp:
+
 /usr/include/c++/12/cctype:
 
+/usr/include/google/protobuf/stubs/port.h:
+
 /usr/include/x86_64-linux-gnu/bits/siginfo-consts-arch.h:
+
+/usr/include/c++/12/bits/hashtable.h:
+
+/usr/include/c++/12/stdexcept:
 
 /usr/include/boost/asio/detail/posix_event.hpp:
 
@@ -2346,17 +2538,13 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/ctype_base.h:
 
+/usr/include/boost/asio/execution/bulk_execute.hpp:
+
 /usr/include/c++/12/ostream:
-
-/usr/include/boost/asio/execution/bulk_guarantee.hpp:
-
-/usr/include/boost/asio/execution/allocator.hpp:
 
 /usr/include/websocketpp/processors/base.hpp:
 
 /usr/include/c++/12/bits/stl_iterator_base_funcs.h:
-
-/usr/include/boost/asio/traits/bulk_execute_member.hpp:
 
 /usr/include/boost/asio/traits/set_error_member.hpp:
 
@@ -2370,11 +2558,21 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/cstdint:
 
-/usr/include/c++/12/bits/node_handle.h:
+/usr/include/boost/asio/posix/descriptor.hpp:
+
+/usr/include/c++/12/bits/stl_relops.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
 /workspaces/Neptune/base/log_client.cpp:
+
+/usr/include/boost/predef/architecture/pyramid.h:
+
+/usr/include/x86_64-linux-gnu/bits/sigevent-consts.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+/usr/include/boost/asio/execution/prefer_only.hpp:
 
 /usr/include/c++/12/ext/numeric_traits.h:
 
@@ -2389,6 +2587,14 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/timer_queue_ptime.hpp:
 
 /usr/include/boost/asio/detail/strand_service.hpp:
+
+/usr/include/boost/asio/any_io_executor.hpp:
+
+/usr/include/c++/12/bits/utility.h:
+
+/usr/include/c++/12/utility:
+
+/usr/include/x86_64-linux-gnu/c++/12/bits/atomic_word.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h:
 
@@ -2406,6 +2612,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/execution/executor.hpp:
 
+/usr/include/boost/asio/execution/allocator.hpp:
+
+/usr/include/boost/asio/execution/bulk_guarantee.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
 /usr/include/x86_64-linux-gnu/bits/timex.h:
@@ -2413,6 +2623,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/traits/execute_free.hpp:
 
 /usr/include/c++/12/iostream:
+
+/usr/include/boost/bind/arg.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
 /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h:
 
@@ -2436,9 +2650,19 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
+/usr/include/c++/12/functional:
+
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+
 /usr/include/boost/asio/impl/compose.hpp:
 
 /usr/include/boost/asio/detail/consuming_buffers.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/select.h:
+
+/usr/include/boost/throw_exception.hpp:
+
+/usr/include/websocketpp/processors/hybi13.hpp:
 
 /usr/include/asm-generic/errno-base.h:
 
@@ -2450,10 +2674,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/numeric/conversion/converter_policies.hpp:
 
-/usr/include/features-time64.h:
-
-/usr/include/boost/asio/write.hpp:
-
 /usr/include/c++/12/bits/align.h:
 
 /usr/include/boost/asio/detail/cstdint.hpp:
@@ -2463,6 +2683,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/x86_64-linux-gnu/bits/local_lim.h:
 
 /usr/include/boost/mpl/aux_/lambda_arity_param.hpp:
+
+/usr/include/c++/12/unordered_set:
 
 /usr/include/boost/predef/architecture/x86/32.h:
 
@@ -2475,18 +2697,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/c++/12/memory:
 
 /usr/include/boost/numeric/conversion/detail/meta.hpp:
-
-/usr/include/c++/12/tr1/special_function_util.h:
-
-/usr/include/boost/asio/query.hpp:
-
-/usr/include/c++/12/bits/locale_facets_nonio.h:
-
-/usr/include/c++/12/bits/exception.h:
-
-/usr/include/x86_64-linux-gnu/bits/sigaction.h:
-
-/usr/include/arpa/inet.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
 
@@ -2514,13 +2724,7 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/limits.h:
 
-/usr/include/asm-generic/sockios.h:
-
-/usr/include/boost/asio/detail/posix_static_mutex.hpp:
-
-/usr/include/c++/12/mutex:
-
-/usr/include/boost/mpl/aux_/has_apply.hpp:
+/usr/include/c++/12/bits/quoted_string.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 
@@ -2530,9 +2734,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
 
-/usr/include/c++/12/bits/hashtable_policy.h:
+/usr/include/x86_64-linux-gnu/bits/timesize.h:
 
-/usr/include/boost/preprocessor/repeat.hpp:
+/usr/include/boost/asio/detail/call_stack.hpp:
 
 /usr/include/linux/falloc.h:
 
@@ -2543,6 +2747,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/type_traits/conditional.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
+
+/usr/include/netinet/in.h:
+
+/usr/include/boost/asio/detail/scoped_lock.hpp:
 
 /usr/include/boost/asio/traits/require_concept_member.hpp:
 
@@ -2578,12 +2786,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/detail/handler_work.hpp:
 
-/usr/include/boost/asio/detail/static_mutex.hpp:
-
-/usr/include/boost/asio/detail/signal_handler.hpp:
-
-/usr/include/boost/date_time/gregorian/greg_duration.hpp:
-
 /usr/include/c++/12/backward/binders.h:
 
 /usr/include/linux/stddef.h:
@@ -2592,9 +2794,15 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bits/memoryfwd.h:
 
+/usr/include/websocketpp/common/thread.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+
 /usr/include/boost/asio/execution/set_error.hpp:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
+
+/usr/include/google/protobuf/wire_format_lite.h:
 
 /usr/include/x86_64-linux-gnu/bits/fcntl.h:
 
@@ -2609,6 +2817,22 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/c++/12/bits/shared_ptr_atomic.h:
 
 /usr/include/c++/12/ratio:
+
+/usr/include/boost/asio/require.hpp:
+
+/usr/include/c++/12/bits/unique_lock.h:
+
+/usr/include/c++/12/bits/stl_pair.h:
+
+/usr/include/boost/asio/co_spawn.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/typesizes.h:
+
+/usr/include/boost/asio/detail/fenced_block.hpp:
+
+/usr/include/boost/asio/detail/handler_type_requirements.hpp:
+
+/usr/include/boost/numeric/conversion/detail/udt_builtin_mixture.hpp:
 
 /usr/include/c++/12/bits/hash_bytes.h:
 
@@ -2628,10 +2852,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/mpl/aux_/numeric_cast_utils.hpp:
 
-/usr/include/c++/12/bits/cpp_type_traits.h:
-
-/usr/include/boost/asio/packaged_task.hpp:
-
 /usr/include/c++/12/bits/alloc_traits.h:
 
 /usr/include/c++/12/bits/stl_construct.h:
@@ -2642,17 +2862,17 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/stdio.h:
 
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/include/websocketpp/client.hpp:
+
+/usr/include/boost/asio/detail/regex_fwd.hpp:
+
+/usr/include/asm-generic/errno.h:
+
 /usr/include/c++/12/tr1/modified_bessel_func.tcc:
 
 /usr/include/boost/asio/basic_socket_streambuf.hpp:
-
-/usr/include/stdlib.h:
-
-/usr/include/c++/12/ext/aligned_buffer.h:
-
-/usr/include/c++/12/algorithm:
-
-/usr/include/boost/date_time/locale_config.hpp:
 
 /usr/include/c++/12/bits/vector.tcc:
 
@@ -2665,6 +2885,12 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/c++/12/cstdlib:
 
 /usr/include/boost/asio/execution/scheduler.hpp:
+
+/usr/include/boost/smart_ptr/detail/spinlock.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+
+/usr/include/boost/date_time/dst_rules.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
@@ -2680,17 +2906,33 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bits/predefined_ops.h:
 
+/usr/include/c++/12/bits/istream.tcc:
+
+/usr/include/c++/12/bits/allocated_ptr.h:
+
+/usr/include/stdint.h:
+
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
 /usr/include/c++/12/bits/string_view.tcc:
 
 /usr/include/endian.h:
 
-/usr/include/c++/12/ext/concurrence.h:
+/usr/include/websocketpp/roles/client_endpoint.hpp:
 
-/usr/include/c++/12/stdexcept:
+/usr/include/c++/12/tr1/riemann_zeta.tcc:
 
-/usr/include/c++/12/bits/hashtable.h:
+/usr/include/boost/asio/execution/bad_executor.hpp:
+
+/usr/include/websocketpp/common/cpp11.hpp:
+
+/usr/include/boost/date_time/date_generators.hpp:
+
+/usr/include/c++/12/deque:
+
+/usr/include/boost/asio/detail/impl/strand_executor_service.hpp:
+
+/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
 /usr/include/asm-generic/bitsperlong.h:
 
@@ -2699,10 +2941,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/x86_64-linux-gnu/sys/eventfd.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
-
-/usr/include/boost/asio/detail/impl/strand_executor_service.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio.h:
 
@@ -2714,18 +2952,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/local/detail/impl/endpoint.ipp:
 
-/usr/include/c++/12/bits/enable_special_members.h:
-
-/usr/include/c++/12/bits/allocated_ptr.h:
-
-/usr/include/stdint.h:
-
-/usr/include/c++/12/bits/istream.tcc:
-
-/usr/include/boost/asio/detail/regex_fwd.hpp:
-
-/usr/include/asm-generic/errno.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/poll.h:
@@ -2734,11 +2960,11 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/asm-generic/ioctl.h:
 
+/usr/include/c++/12/bits/stl_set.h:
+
 /usr/include/boost/type_traits/is_base_of.hpp:
 
 /usr/include/boost/asio.hpp:
-
-/usr/include/c++/12/future:
 
 /usr/include/c++/12/bits/unordered_map.h:
 
@@ -2780,16 +3006,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bits/parse_numbers.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
-
-/usr/include/boost/bind/arg.hpp:
-
-/usr/include/c++/12/sstream:
-
-/usr/include/c++/12/bits/uses_allocator.h:
-
-/usr/include/boost/mpl/aux_/na_spec.hpp:
-
 /usr/include/c++/12/string_view:
 
 /usr/include/c++/12/bits/locale_facets.h:
@@ -2798,47 +3014,11 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/bits/streambuf_iterator.h:
 
-/usr/include/c++/12/tr1/riemann_zeta.tcc:
-
-/usr/include/boost/asio/execution/bad_executor.hpp:
-
-/usr/include/websocketpp/common/cpp11.hpp:
-
-/usr/include/boost/date_time/date_generators.hpp:
-
-/usr/include/boost/asio/detail/future.hpp:
-
 /usr/include/c++/12/bits/basic_ios.tcc:
 
 /usr/include/boost/asio/dispatch.hpp:
 
-/usr/include/boost/asio/system_context.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/ioctls.h:
-
-/usr/include/c++/12/bits/ios_base.h:
-
-/usr/include/c++/12/any:
-
-/usr/include/boost/date_time/gregorian/greg_date.hpp:
-
 /usr/include/x86_64-linux-gnu/bits/termios-misc.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h:
-
-/usr/include/x86_64-linux-gnu/sys/ucontext.h:
-
-/usr/include/x86_64-linux-gnu/sys/socket.h:
-
-/usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h:
-
-/usr/include/boost/preprocessor/array/data.hpp:
-
-/usr/include/boost/asio/execution/detail/submit_receiver.hpp:
-
-/usr/include/c++/12/bits/shared_ptr_base.h:
-
-/usr/include/x86_64-linux-gnu/bits/errno.h:
 
 /usr/include/boost/asio/ip/resolver_base.hpp:
 
@@ -2847,6 +3027,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/x86_64-linux-gnu/bits/signum-arch.h:
 
 /usr/include/x86_64-linux-gnu/bits/ss_flags.h:
+
+/usr/include/boost/asio/connect.hpp:
+
+/usr/include/c++/12/bits/stl_uninitialized.h:
 
 /usr/include/websocketpp/config/asio_no_tls_client.hpp:
 
@@ -2857,6 +3041,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/x86_64-linux-gnu/bits/types/stack_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/epoll.h:
+
+/usr/include/x86_64-linux-gnu/sys/ucontext.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h:
 
 /usr/include/x86_64-linux-gnu/bits/sigstack.h:
 
@@ -2878,6 +3066,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/atomic:
 
+/usr/include/boost/preprocessor/cat.hpp:
+
+/usr/include/websocketpp/concurrency/basic.hpp:
+
 /usr/include/x86_64-linux-gnu/bits/types/__sigval_t.h:
 
 /usr/include/boost/asio/traits/set_value_free.hpp:
@@ -2886,69 +3078,95 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/c++/12/chrono:
 
-/usr/include/boost/asio/read_at.hpp:
+/usr/include/c++/12/bits/exception.h:
 
-/usr/include/boost/asio/basic_serial_port.hpp:
+/usr/include/x86_64-linux-gnu/bits/sigaction.h:
+
+/usr/include/arpa/inet.h:
+
+/usr/include/c++/12/tr1/special_function_util.h:
+
+/usr/include/boost/asio/query.hpp:
+
+/usr/include/c++/12/bits/locale_facets_nonio.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/boost/asio/packaged_task.hpp:
+
+/usr/include/c++/12/bits/cpp_type_traits.h:
+
+/usr/include/boost/asio/detail/signal_handler.hpp:
+
+/usr/include/boost/date_time/gregorian/greg_duration.hpp:
+
+/usr/include/boost/asio/detail/static_mutex.hpp:
+
+/usr/include/c++/12/bits/locale_facets_nonio.tcc:
+
+/usr/include/c++/12/sstream:
+
+/usr/include/c++/12/bits/uses_allocator.h:
+
+/usr/include/boost/mpl/aux_/na_spec.hpp:
+
+/usr/include/boost/asio/read_at.hpp:
 
 /usr/include/boost/asio/detail/reactive_socket_recvmsg_op.hpp:
 
-/usr/include/boost/asio/traits/query_free.hpp:
+/usr/include/boost/asio/basic_serial_port.hpp:
 
 /usr/include/websocketpp/common/platforms.hpp:
 
-/usr/include/boost/preprocessor/cat.hpp:
+/usr/include/websocketpp/endpoint.hpp:
 
-/usr/include/websocketpp/concurrency/basic.hpp:
+/usr/include/boost/asio/buffered_write_stream.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
+/usr/include/websocketpp/connection.hpp:
 
-/usr/include/websocketpp/common/thread.hpp:
+/usr/include/boost/preprocessor/empty.hpp:
 
-/usr/include/c++/12/bits/std_mutex.h:
+/usr/include/websocketpp/transport/iostream/endpoint.hpp:
 
-/usr/include/x86_64-linux-gnu/asm/ioctl.h:
+/usr/include/boost/asio/detail/throw_exception.hpp:
 
-/usr/include/boost/asio/require.hpp:
+/usr/include/websocketpp/common/system_error.hpp:
 
-/usr/include/c++/12/bits/stl_pair.h:
+/usr/include/x86_64-linux-gnu/c++/12/bits/time_members.h:
 
-/usr/include/boost/asio/detail/fenced_block.hpp:
+/usr/include/boost/preprocessor/array/data.hpp:
 
-/usr/include/boost/asio/detail/handler_type_requirements.hpp:
+/usr/include/x86_64-linux-gnu/sys/socket.h:
 
-/usr/include/boost/numeric/conversion/detail/udt_builtin_mixture.hpp:
+/usr/include/rpc/netdb.h:
 
-/usr/include/c++/12/bits/unique_lock.h:
+/usr/include/x86_64-linux-gnu/bits/netdb.h:
 
-/usr/include/boost/asio/traits/query_member.hpp:
+/usr/include/boost/asio/impl/error.ipp:
 
-/usr/include/boost/asio/detail/thread_info_base.hpp:
+/usr/include/boost/asio/detail/posix_mutex.hpp:
 
-/usr/include/boost/asio/execution/detail/as_operation.hpp:
+/usr/include/boost/asio/detail/impl/posix_mutex.ipp:
 
-/usr/include/c++/12/bits/stl_multimap.h:
+/usr/include/boost/asio/traits/bulk_execute_member.hpp:
 
-/usr/include/c++/12/condition_variable:
+/usr/include/boost/asio/system_context.hpp:
 
-/usr/include/websocketpp/frame.hpp:
+/usr/include/x86_64-linux-gnu/bits/ioctls.h:
 
-/usr/include/boost/asio/execution/detail/as_receiver.hpp:
+/usr/include/c++/12/bits/ios_base.h:
 
-/usr/include/boost/asio/detail/thread_context.hpp:
+/usr/include/c++/12/any:
 
-/usr/include/x86_64-linux-gnu/bits/long-double.h:
+/usr/include/boost/date_time/gregorian/greg_date.hpp:
 
-/usr/include/libintl.h:
+/usr/include/c++/12/bits/shared_ptr_base.h:
 
-/usr/include/websocketpp/transport/base/endpoint.hpp:
+/usr/include/x86_64-linux-gnu/bits/errno.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:
+/usr/include/boost/asio/execution/detail/submit_receiver.hpp:
 
-/usr/include/c++/12/functional:
-
-/usr/include/x86_64-linux-gnu/bits/typesizes.h:
-
-/usr/include/boost/asio/co_spawn.hpp:
+/usr/include/boost/asio/traits/submit_member.hpp:
 
 /usr/include/boost/asio/traits/submit_free.hpp:
 
@@ -2985,6 +3203,12 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/websocketpp/transport/asio/base.hpp:
 
 /usr/include/boost/asio/serial_port_base.hpp:
+
+/usr/include/boost/asio/detail/handler_cont_helpers.hpp:
+
+/usr/include/strings.h:
+
+/usr/include/boost/asio/detail/bind_handler.hpp:
 
 /usr/include/websocketpp/processors/hybi07.hpp:
 
@@ -3148,8 +3372,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/type_traits/is_class.hpp:
 
-/usr/include/boost/asio/read_until.hpp:
-
 /usr/include/x86_64-linux-gnu/sys/epoll.h:
 
 /usr/include/boost/asio/is_write_buffered.hpp:
@@ -3158,11 +3380,13 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/detail/thread_group.hpp:
 
-/usr/include/strings.h:
+/usr/include/google/protobuf/arenaz_sampler.h:
 
-/usr/include/boost/asio/detail/bind_handler.hpp:
+/usr/include/boost/asio/placeholders.hpp:
 
-/usr/include/boost/asio/detail/handler_cont_helpers.hpp:
+/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
+
+/usr/include/boost/asio/impl/system_context.hpp:
 
 /usr/include/boost/asio/handler_continuation_hook.hpp:
 
@@ -3224,12 +3448,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/smart_ptr/detail/sp_typeinfo_.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h:
-
-/usr/include/boost/asio/impl/system_context.hpp:
-
-/usr/include/boost/asio/placeholders.hpp:
-
 /usr/include/boost/smart_ptr/detail/sp_counted_impl.hpp:
 
 /usr/include/boost/asio/basic_socket_iostream.hpp:
@@ -3250,12 +3468,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/smart_ptr/detail/sp_nullptr_t.hpp:
 
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
-
-/usr/include/boost/smart_ptr/detail/spinlock.hpp:
-
-/usr/include/boost/preprocessor/tuple/detail/is_single_return.hpp:
-
 /usr/include/boost/smart_ptr/detail/yield_k.hpp:
 
 /usr/include/boost/smart_ptr/detail/sp_thread_pause.hpp:
@@ -3273,6 +3485,10 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/preprocessor/list/fold_left.hpp:
 
 /usr/include/boost/smart_ptr/detail/operator_bool.hpp:
+
+/usr/include/c++/12/bits/atomic_futex.h:
+
+/usr/include/boost/preprocessor/repetition/enum_trailing_params.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
@@ -3384,6 +3600,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/ip/network_v4.hpp:
 
+/usr/include/google/protobuf/implicit_weak_message.h:
+
 /usr/include/boost/mpl/eval_if.hpp:
 
 /usr/include/boost/asio/posix/descriptor_base.hpp:
@@ -3420,9 +3638,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/mpl/integral_c_tag.hpp:
 
-/usr/include/boost/asio/execution/mapping.hpp:
-
 /usr/include/c++/12/bits/functional_hash.h:
+
+/usr/include/boost/asio/execution/mapping.hpp:
 
 /usr/include/boost/preprocessor/punctuation/comma.hpp:
 
@@ -3439,6 +3657,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/mpl/aux_/nttp_decl.hpp:
 
 /usr/include/boost/mpl/aux_/config/nttp.hpp:
+
+/usr/include/google/protobuf/message.h:
 
 /usr/include/boost/mpl/aux_/integral_wrapper.hpp:
 
@@ -3486,12 +3706,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/detail/signal_op.hpp:
 
-/usr/include/websocketpp/message_buffer/alloc.hpp:
-
-/usr/include/boost/preprocessor/control/detail/while.hpp:
-
-/usr/include/boost/regex/config.hpp:
-
 /usr/include/boost/preprocessor/logical/bitand.hpp:
 
 /usr/include/c++/12/bits/std_abs.h:
@@ -3501,8 +3715,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/null_event.hpp:
 
 /usr/include/boost/preprocessor/facilities/identity.hpp:
-
-/usr/include/boost/preprocessor/empty.hpp:
 
 /usr/include/boost/preprocessor/arithmetic/dec.hpp:
 
@@ -3519,8 +3731,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/impl/write.hpp:
 
 /usr/include/boost/preprocessor/tuple/elem.hpp:
-
-/usr/include/boost/asio/posix/basic_descriptor.hpp:
 
 /usr/include/boost/asio/detail/impl/reactive_serial_port_service.ipp:
 
@@ -3539,8 +3749,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/mpl/aux_/comparison_op.hpp:
 
 /usr/include/boost/mpl/numeric_cast.hpp:
-
-/usr/include/boost/mpl/apply_wrap.hpp:
 
 /usr/include/boost/mpl/has_xxx.hpp:
 
@@ -3606,9 +3814,11 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/x86_64-linux-gnu/bits/termios-tcflow.h:
 
-/usr/include/boost/asio/ip/bad_address_cast.hpp:
+/usr/include/c++/12/bits/stl_multiset.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
+
+/usr/include/boost/asio/ip/bad_address_cast.hpp:
 
 /usr/include/boost/numeric/conversion/sign_mixture_enum.hpp:
 
@@ -3634,9 +3844,9 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/mpl/aux_/preprocessed/gcc/times.hpp:
 
-/usr/include/boost/asio/ip/address_v6_range.hpp:
-
 /usr/include/boost/asio/steady_timer.hpp:
+
+/usr/include/boost/asio/ip/address_v6_range.hpp:
 
 /usr/include/boost/mpl/aux_/preprocessor/default_params.hpp:
 
@@ -3688,8 +3898,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/impl/defer.hpp:
 
-/usr/include/boost/regex_fwd.hpp:
-
 /usr/include/boost/asio/basic_datagram_socket.hpp:
 
 /usr/include/boost/mpl/aux_/config/ctps.hpp:
@@ -3699,6 +3907,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/reactive_socket_service.hpp:
 
 /usr/include/boost/asio/buffer.hpp:
+
+/usr/include/google/protobuf/explicitly_constructed.h:
 
 /usr/include/boost/asio/detail/string_view.hpp:
 
@@ -3725,12 +3935,6 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/detail/reactive_wait_op.hpp:
 
 /usr/include/boost/asio/ip/impl/host_name.ipp:
-
-/usr/include/boost/asio/basic_raw_socket.hpp:
-
-/usr/include/boost/asio/basic_seq_packet_socket.hpp:
-
-/usr/include/boost/asio/impl/buffered_read_stream.hpp:
 
 /usr/include/boost/asio/execution/context_as.hpp:
 
@@ -3784,15 +3988,11 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 
 /usr/include/boost/asio/buffered_stream.hpp:
 
-/usr/include/boost/asio/buffered_write_stream.hpp:
-
 /usr/include/c++/12/bits/codecvt.h:
 
 /usr/include/boost/asio/detail/base_from_completion_cond.hpp:
 
 /usr/include/boost/asio/buffers_iterator.hpp:
-
-/usr/include/boost/asio/compose.hpp:
 
 /usr/include/boost/asio/impl/connect.hpp:
 
@@ -3851,6 +4051,8 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/assert.hpp:
 
 /usr/include/boost/asio/ip/impl/address_v6.hpp:
+
+/usr/include/google/protobuf/has_bits.h:
 
 /usr/include/boost/asio/ip/address_v6_iterator.hpp:
 
@@ -3913,25 +4115,3 @@ CMakeFiles/log_client.dir/log_client.cpp.o: /workspaces/Neptune/base/log_client.
 /usr/include/boost/asio/awaitable.hpp:
 
 /usr/include/boost/asio/is_read_buffered.hpp:
-
-/usr/include/boost/date_time/posix_time/posix_time_duration.hpp:
-
-/usr/include/boost/asio/local/datagram_protocol.hpp:
-
-/usr/include/boost/preprocessor/repetition/enum_trailing_params.hpp:
-
-/usr/include/c++/12/bits/atomic_futex.h:
-
-/usr/include/x86_64-linux-gnu/bits/termios.h:
-
-/usr/include/boost/asio/posix/stream_descriptor.hpp:
-
-/usr/include/websocketpp/config/core_client.hpp:
-
-/usr/include/boost/asio/read.hpp:
-
-/usr/include/boost/asio/impl/read.hpp:
-
-/usr/include/boost/asio/impl/read_at.hpp:
-
-/usr/include/boost/regex/user.hpp:

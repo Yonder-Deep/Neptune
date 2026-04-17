@@ -63,6 +63,7 @@ CMAKE_BINARY_DIR = /workspaces/Neptune/base/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/neptune_messages_client.dir/all
 all: CMakeFiles/log_client.dir/all
 .PHONY : all
 
@@ -71,14 +72,41 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/neptune_messages_client.dir/clean
 clean: CMakeFiles/log_client.dir/clean
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/neptune_messages_client.dir
+
+# All Build rule for target.
+CMakeFiles/neptune_messages_client.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/workspaces/Neptune/base/build/CMakeFiles --progress-num=3,4 "Built target neptune_messages_client"
+.PHONY : CMakeFiles/neptune_messages_client.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/neptune_messages_client.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /workspaces/Neptune/base/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/neptune_messages_client.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /workspaces/Neptune/base/build/CMakeFiles 0
+.PHONY : CMakeFiles/neptune_messages_client.dir/rule
+
+# Convenience name for target.
+neptune_messages_client: CMakeFiles/neptune_messages_client.dir/rule
+.PHONY : neptune_messages_client
+
+# clean rule for target.
+CMakeFiles/neptune_messages_client.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/clean
+.PHONY : CMakeFiles/neptune_messages_client.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/log_client.dir
 
 # All Build rule for target.
-CMakeFiles/log_client.dir/all:
+CMakeFiles/log_client.dir/all: CMakeFiles/neptune_messages_client.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/log_client.dir/build.make CMakeFiles/log_client.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/log_client.dir/build.make CMakeFiles/log_client.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/workspaces/Neptune/base/build/CMakeFiles --progress-num=1,2 "Built target log_client"
@@ -86,7 +114,7 @@ CMakeFiles/log_client.dir/all:
 
 # Build rule for subdir invocation for target.
 CMakeFiles/log_client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /workspaces/Neptune/base/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /workspaces/Neptune/base/build/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/log_client.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /workspaces/Neptune/base/build/CMakeFiles 0
 .PHONY : CMakeFiles/log_client.dir/rule

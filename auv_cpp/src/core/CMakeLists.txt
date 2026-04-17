@@ -6,4 +6,5 @@ target_include_directories(auv_core INTERFACE
 
 target_link_libraries(auv_core INTERFACE
     Eigen3::Eigen
+    neptune_messages
 )

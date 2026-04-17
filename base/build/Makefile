@@ -162,6 +162,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named neptune_messages_client
+
+# Build rule for target.
+neptune_messages_client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 neptune_messages_client
+.PHONY : neptune_messages_client
+
+# fast build rule for target.
+neptune_messages_client/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/build
+.PHONY : neptune_messages_client/fast
+
+#=============================================================================
 # Target rules for targets named log_client
 
 # Build rule for target.
@@ -198,6 +211,30 @@ log_client.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/log_client.dir/build.make CMakeFiles/log_client.dir/log_client.cpp.s
 .PHONY : log_client.cpp.s
 
+messages.pb.o: messages.pb.cc.o
+.PHONY : messages.pb.o
+
+# target to build an object file
+messages.pb.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/messages.pb.cc.o
+.PHONY : messages.pb.cc.o
+
+messages.pb.i: messages.pb.cc.i
+.PHONY : messages.pb.i
+
+# target to preprocess a source file
+messages.pb.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/messages.pb.cc.i
+.PHONY : messages.pb.cc.i
+
+messages.pb.s: messages.pb.cc.s
+.PHONY : messages.pb.s
+
+# target to generate assembly for a file
+messages.pb.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neptune_messages_client.dir/build.make CMakeFiles/neptune_messages_client.dir/messages.pb.cc.s
+.PHONY : messages.pb.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -211,9 +248,13 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... log_client"
+	@echo "... neptune_messages_client"
 	@echo "... log_client.o"
 	@echo "... log_client.i"
 	@echo "... log_client.s"
+	@echo "... messages.pb.o"
+	@echo "... messages.pb.i"
+	@echo "... messages.pb.s"
 .PHONY : help
 
 
