@@ -3,16 +3,16 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#include <mutex>
-#include <functional>
+#include <thread>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 
-#include "types.hpp"   // LogSource, to_string(LogSource)
+#include "types.hpp"   // LogSource, OutboundMessage, etc.
 #include "time_utils.hpp"  // Time utilities for timestamp generation
 #include "../messages/messages.pb.h"  // Protobuf messages
+#include "../tasks/thread_task.hpp"  // ThreadTask for enqueue_message()
 
 // This is a file defining how the logger object will function. It is a
 // wrapper of spdlog. There is no logger class, the methods exist as free
@@ -32,6 +32,7 @@
 // So you can have debug logs go to log file but only info+ go to console, base station, etc.
 
 // Example usage:
+//   set_current_task(my_task);  // Call once per thread
 //   log_init("usv.log", LogLevel::Info, LogLevel::Debug);
 //   log_info(LogSource::MAIN, "This is an info message");
 //   log_debug(LogSource::NAV, "This is a debug message");
@@ -59,12 +60,9 @@ namespace detail {
 inline std::shared_ptr<spdlog::logger> logger;
 inline std::once_flag init_flag;
 
-// Callback type for broadcasting logs to remote systems (e.g., WebSocket)
-// Signature: void(const std::string& serialized_envelope)
-// The string contains binary protobuf-serialized Envelope message
-using LogBroadcastCallback = std::function<void(const std::string&)>;
-inline LogBroadcastCallback broadcast_callback;
-inline std::mutex broadcast_mtx;
+// Thread-local pointer to the current task's queue for enqueuing messages.
+// Each thread calls set_current_task() at startup to point to its task.
+inline thread_local ThreadTask* current_task = nullptr;
 
 inline spdlog::level::level_enum to_spdlog_level(LogLevel lvl) {
     switch (lvl) {
@@ -88,13 +86,6 @@ inline std::string log_level_to_string(LogLevel lvl) {
         default:                  return "UNKNOWN";
     }
 }
-
-// // Get current timestamp in milliseconds since epoch using time_utils
-// inline int64_t get_timestamp_ms() {
-//     auto time_point = now();
-//     auto since_epoch = time_point.time_since_epoch();
-//     return std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch).count();
-// }
 
 } // namespace detail
 
@@ -147,20 +138,13 @@ inline void log_shutdown()
 }
 
 //------------------------------------------------------------------------------
-// Remote logging / WebSocket broadcast
-// Register a callback to broadcast logs to the base station or other remote systems
+// Task queue management
+// Call set_current_task() once per thread to enable log enqueueing
 //------------------------------------------------------------------------------
 
-inline void set_log_broadcast_callback(detail::LogBroadcastCallback callback)
+inline void set_current_task(ThreadTask* task)
 {
-    std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
-    detail::broadcast_callback = callback;
-}
-
-inline void clear_log_broadcast_callback()
-{
-    std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
-    detail::broadcast_callback = nullptr;
+    detail::current_task = task;
 }
 
 //------------------------------------------------------------------------------
@@ -183,31 +167,28 @@ inline void log_message(LogSource source,
         to_string(source),
         message);
 
-    // Broadcast to remote systems (e.g., WebSocket) via protobuf
-    {
-        std::lock_guard<std::mutex> lock(detail::broadcast_mtx);
-        if (detail::broadcast_callback) {
-            try {
-                // Create protobuf LogEntry
-                neptune::LogEntry log_entry;
-                log_entry.set_timestamp_ms(get_timestamp_ms());
-                log_entry.set_source(std::string(to_string(source)));
-                log_entry.set_level(detail::log_level_to_string(level));
-                log_entry.set_message(std::string(message));
+    // Enqueue to task's outbound queue for transmission to base (if info and above)
+    if (detail::current_task && level >= LogLevel::Info) {
+        try {
+            // Create protobuf LogEntry
+            neptune::LogEntry log_entry;
+            log_entry.set_timestamp_ms(get_timestamp_ms());
+            log_entry.set_source(std::string(to_string(source)));
+            log_entry.set_level(detail::log_level_to_string(level));
+            log_entry.set_message(std::string(message));
 
-                // Wrap in Envelope
-                neptune::Envelope envelope;
-                envelope.set_type(neptune::Envelope::LOG);
-                envelope.set_payload(log_entry.SerializeAsString());
-                envelope.set_timestamp_ms(log_entry.timestamp_ms());
-                envelope.set_source("neptune");
+            // Wrap in Envelope
+            neptune::Envelope envelope;
+            envelope.set_type(neptune::Envelope::LOG);
+            envelope.set_payload(log_entry.SerializeAsString());
+            envelope.set_timestamp_ms(log_entry.timestamp_ms());
+            envelope.set_source("neptune");
 
-                // Serialize and broadcast
-                std::string serialized = envelope.SerializeAsString();
-                detail::broadcast_callback(serialized);
-            } catch (const std::exception& e) {
-                // Silently ignore broadcast errors to avoid breaking the logger
-            }
+            // Serialize and enqueue to task
+            std::string serialized = envelope.SerializeAsString();
+            detail::current_task->enqueue_message(serialized);
+        } catch (const std::exception& e) {
+            // Silently ignore enqueue errors to avoid breaking the logger
         }
     }
 }

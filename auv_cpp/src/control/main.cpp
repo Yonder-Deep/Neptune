@@ -24,61 +24,78 @@ void signal_handler(int signum) {
 int main(int argc, char* argv[]) {
     try {
         // Determine config path from command line or use default
-        std::string config_path = (argc > 1) ? argv[1] : "data/config.yaml";
+        std::string config_path = (argc > 1) ? argv[1] : "~/Neptune/auv_cpp/data/config.yaml";
 
-        // Step 1: Load configuration from YAML
-        log_info(LogSource::MAIN, "Loading configuration from " + config_path);
-        ::Config config = ::Config::load(config_path);
-        log_info(LogSource::MAIN, "Configuration loaded successfully");
-
-        // Step 2: Initialize logger
-        // Generate timestamped log filename: neptune_YYYY-MM-DD_HH-MM-SS.log
         std::string log_filename = timestamped_filename("neptune", "logs", "log");
 
-        // Console level: Info and above
-        // File level: Debug and above (more verbose logging to file)
+        ::Config config = ::Config::load(config_path);
+
+        // Console level: Info and above, File level: Debug and above (more verbose logging to file)
         log_init(log_filename, LogLevel::Info, LogLevel::Debug);
+
+        
+        auto ws_server = std::make_unique<WebSocketServerTask>(config.network.ip, config.network.port);
+        ws_server->startup();
+        ws_server->activate();
+        
+
+        // Set main thread's task context for logging 
+        // Since this is the main control loop and not technically a thread_task, 
+        // use the WebSocket server task's context for logging so we can enqueue 
+        // messages to its outbound SPSC queue instead of having a separate logger thread.
+        set_current_task(ws_server.get());
+
+
         log_info(LogSource::MAIN, "Logger initialized");
 
-        // Log system configuration
-        log_info(LogSource::MAIN, 
-                 "System mode - Simulation: " + std::string(config.system.simulation ? "enabled" : "disabled") + 
-                 ", Perception: " + std::string(config.system.perception ? "enabled" : "disabled"));
-        log_info(LogSource::MAIN, 
-                 "Network configured - IP: " + config.network.ip + 
-                 ", Port: " + std::to_string(config.network.port));
 
-        // Step 3: Register signal handlers for graceful shutdown
+
+        // Load configuration from YAML
+        log_info(LogSource::MAIN, "Loaded configuration from " + config_path);
+    
+        // Log system configuration
+        log_info(
+            LogSource::MAIN, 
+            "System mode - Simulation: " + std::string(config.system.simulation ? "enabled" : "disabled") + 
+            ", Perception: " + std::string(config.system.perception ? "enabled" : "disabled")
+        );
+        log_info(
+            LogSource::MAIN, 
+            "Network configured - IP: " + config.network.ip + 
+            ", Port: " + std::to_string(config.network.port)
+        );
+
+
+
+        // Register signal handlers for graceful shutdown
         std::signal(SIGINT, signal_handler);   // Handle Ctrl+C
         std::signal(SIGTERM, signal_handler);  // Handle termination signal
 
-        // Step 4: Create and initialize WebSocket server task
-        log_info(LogSource::MAIN, "Initializing WebSocket server on " + config.network.ip + 
-                 ":" + std::to_string(config.network.port));
-        auto ws_server = std::make_unique<WebSocketServerTask>(config.network.ip, config.network.port);
 
-        // Set up WebSocket message handler
-        ws_server->set_message_handler([&config](const std::string& message) {
-            log_debug(LogSource::WSKT, "Received message: " + message);
-            // TODO: Route message to appropriate subsystem controller
-        });
 
-        // Step 5: Start WebSocket server thread
-        log_info(LogSource::MAIN, "Starting WebSocket server thread");
-        ws_server->startup();
+
+        // Declare all other tasks here, add to the vector so we can manage them in the main loop
+        // auto motor_control, etc
+
         
-        // Activate the WebSocket server to begin accepting connections
-        ws_server->activate();
-        log_info(LogSource::MAIN, "WebSocket server is now running");
+        // Add more tasks to this vector as they're created
+        std::vector<ThreadTask*> task_list = {ws_server.get()}; 
 
-        // Register WebSocket broadcast callback so all logs are sent to connected clients
-        // The callback receives a serialized protobuf Envelope
-        set_log_broadcast_callback([&ws_server](const std::string& serialized_envelope) {
-            ws_server->broadcast(serialized_envelope);
-        });
-        log_info(LogSource::MAIN, "Log broadcast to WebSocket clients enabled");
+        for (auto* task : task_list) {
+            if (task->name == "ws-server") {
+                continue;
+            }
+            log_info(LogSource::MAIN, "Starting task: " + task->name);
+            task->startup();
+            task->activate();
+        }
 
-        // Step 6: Main control loop
+        log_info(LogSource::MAIN, "All tasks started successfully");
+
+
+
+
+        //Main control loop
         log_info(LogSource::MAIN, "Entering main control loop");
         RateLoopTimer rate_timer(config.control.loop_hz);
 
@@ -86,6 +103,14 @@ int main(int argc, char* argv[]) {
         while (!should_shutdown.load()) {
             // Mark the start of this cycle
             rate_timer.tick();
+
+            // Poll all task output queues and broadcast messages to base station
+            for (auto* task : task_list) {
+                while (auto msg = task->outbound_q.pop()) {
+                    ws_server->broadcast(std::string(msg->envelope_bytes.data(), msg->envelope_len));
+                }
+            }
+            
 
             // TODO: Implement main control logic here
             // - Read sensor data and update vehicle_state
@@ -101,37 +126,62 @@ int main(int argc, char* argv[]) {
             //          ", " + std::to_string(vehicle_state.position[2]));
 
             log_info(LogSource::MAIN, "heartbeat");
+
+
+
+            
             // Wait until the next cycle is due, maintaining the desired control loop rate
             double cycle_time = rate_timer.wait();
             if (rate_timer.overran()) {
-                log_warn(LogSource::MAIN, 
-                         "Control loop overran desired period (took " + std::to_string(cycle_time) + " seconds)");
+                log_warn(
+                    LogSource::MAIN, 
+                    "Control loop overran desired period (took " + std::to_string(cycle_time) + " seconds)"
+                );
             }
+
         }
 
-        // Step 7: Graceful shutdown sequence
+
+        
+
+        // Graceful shutdown sequence
         log_info(LogSource::MAIN, "Shutting down main control system");
 
-        // Disable WebSocket broadcast before shutting down server
-        clear_log_broadcast_callback();
+        // Drain any remaining messages in task queues before shutdown
+        for (auto* task : task_list) {
+            if (task->name == "ws-server") {
+                continue;
+            }
 
-        log_info(LogSource::MAIN, "Deactivating WebSocket server");
+            task->deactivate();
+            while (auto msg = task->outbound_q.pop()) {
+                ws_server->broadcast(std::string(msg->envelope_bytes.data(), msg->envelope_len));
+            }
+            log_info(LogSource::MAIN, "Drained and deactivated task: " + task->name);
+        }
+
+        // flush WS logs, then shutdown server
+        while (auto msg = ws_server->outbound_q.pop()) {
+            ws_server->broadcast(std::string(msg->envelope_bytes.data(), msg->envelope_len));
+        }
+
+        log_info(LogSource::MAIN, "Drained and deactivating WebSocket server. Goodbye!");
         ws_server->deactivate();
 
-        log_info(LogSource::MAIN, "Stopping WebSocket server");
-        ws_server->shutdown();
+        for (auto* task : task_list) {
+            task->shutdown();
+            task->join();
+            log_info(LogSource::MAIN, "Shutdown and joined task: " + task->name);
+        }
 
-        log_info(LogSource::MAIN, "Waiting for WebSocket server thread to finish");
-        ws_server->join();
 
-        log_info(LogSource::MAIN, "All tasks completed successfully");
 
-        // Step 8: Shutdown logger (flush logs to disk)
         log_shutdown();
 
         return 0;
 
-    } catch (const std::exception& e) {
+    } 
+    catch (const std::exception& e) {
         // Log the exception before shutdown if logger is initialized
         log_critical(LogSource::MAIN, std::string("Fatal error: ") + e.what());
         log_shutdown();

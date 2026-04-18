@@ -180,7 +180,11 @@ public:
             // Start accepting connections.
             endpoint_.start_accept();
 
-            log_info(LogSource::WSKT, std::string("listening on ") + ip_ + ":" + std::to_string(port_));
+            log_info(
+                LogSource::WSKT,
+                std::string("WebSocket server active, listening on ") + ip_ + ":" + std::to_string(port_)
+            );
+            
         } catch (const std::exception& e) {
             log_error(LogSource::WSKT, std::string("failed to activate: ") + e.what());
             return;

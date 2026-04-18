@@ -179,3 +179,32 @@ constexpr const char* to_string(LogDest dest) {
     }
     return "UNKNOWN";
 }
+
+// ============================================================================
+// IPC Message Types for SPSC Ring Buffers
+// ============================================================================
+
+/// Outbound message: task → main loop → base station
+/// Serialized Envelope protobuf message ready to send.
+/// Must be trivially copyable for SPSC queue.
+struct OutboundMessage {
+    uint16_t envelope_len = 0;                     // Length of serialized envelope
+    std::array<char, 512> envelope_bytes = {};     // Serialized Envelope protobuf
+};
+
+static_assert(
+    std::is_trivially_copyable_v<OutboundMessage>,
+    "OutboundMessage must be trivially copyable for SPSC queue"
+);
+
+/// Inbound message: base station → main loop → task
+/// Serialized command message. Expand as needed when commands are implemented.
+struct InboundMessage {
+    uint16_t payload_len = 0;                      // Length of serialized payload
+    std::array<char, 256> payload_bytes = {};      // Serialized payload
+};
+
+static_assert(
+    std::is_trivially_copyable_v<InboundMessage>,
+    "InboundMessage must be trivially copyable for SPSC queue"
+);

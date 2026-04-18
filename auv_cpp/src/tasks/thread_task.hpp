@@ -1,10 +1,13 @@
 #pragma once
 #include <atomic>
 #include <condition_variable>
+#include <cstring>
 #include <mutex>
 #include <string>
 #include <thread>
 
+#include "../core/ring_buffer.hpp"
+#include "../core/types.hpp"
 #include "task.hpp"
 
 // Thread wrapper that manages the lifecycle of a Task.
@@ -36,6 +39,10 @@
 struct ThreadTask : Task {
     std::string name;
 
+    // SPSC queues for IPC with main loop
+    SPSC<OutboundMessage, 128> outbound_q;  // Task → main loop → base
+    SPSC<InboundMessage, 64> inbound_q;     // Main loop → task (future use)
+
     // started == true means the thread should keep running.
     // Setting to false tells the run loop to exit after the current iteration.
     std::atomic<bool> started{false};
@@ -52,8 +59,9 @@ struct ThreadTask : Task {
     std::mutex mtx;
     std::condition_variable cv;
 
-    explicit ThreadTask(std::string task_name)
-        : name(std::move(task_name)) {}
+    explicit ThreadTask(std::string task_name) : name(std::move(task_name)) {}
+
+
 
     // Prevent copying — a thread can't be copied
     ThreadTask(const ThreadTask&) = delete;
@@ -107,6 +115,22 @@ struct ThreadTask : Task {
             worker.join();
         }
     }
+
+
+
+    // Helper: enqueue a serialized protobuf Envelope to the outbound queue.
+    // Typically called from logger.hpp when a log message is written.
+    //
+    // @param serialized_envelope: the raw bytes of a serialized Envelope protobuf
+    // @return true if enqueued successfully, false if queue is full (log dropped)
+    bool enqueue_message(const std::string& serialized_envelope) {
+        OutboundMessage msg;
+        msg.envelope_len = std::min(serialized_envelope.size(), size_t(512));
+        std::memcpy(msg.envelope_bytes.data(), serialized_envelope.c_str(), msg.envelope_len);
+        return outbound_q.push(msg);
+    }
+
+
 
 private:
     // The framework loop — not virtual. Subclasses override loop(), not this.
