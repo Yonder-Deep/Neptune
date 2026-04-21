@@ -22,6 +22,8 @@ public:
      * @brief gets the duty cycle to send to the motor in order to move the motor at the current speed
      */
     float getDutyCycle();
+     protected:
+  Thruster() {};
 private:
     const int STOP_PWM = 1500;
     const int MAX_PWM_DIST = 400;

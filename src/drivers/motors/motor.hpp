@@ -27,4 +27,6 @@ public:
     float cycle;
     protected:
     Motor(int speed,int  cycle) : speed(speed), cycle(cycle){};
+    protected:
+    Motor(){};
 };

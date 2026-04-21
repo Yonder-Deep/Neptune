@@ -10,7 +10,14 @@ endif()
 add_compile_definitions(_GNU_SOURCE)
 
 add_executable(neptune main.cpp)
-
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 #BUILD_SIMULATION option
 #this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
@@ -51,26 +58,21 @@ endif()
 #need pthreads for RT thread
 find_package(Threads REQUIRED)
 
-#executable for testing motor(separate from library)
-add_executable(motor_test drivers/main.cpp)
-target_link_libraries(motor_test motor)
-target_link_libraries(motor_test Threads::Threads)
+enable_testing()
 
-#executable for pool test
-add_executable(pool_test drivers/pool_test.cpp)
-target_link_libraries(pool_test motor)
-target_link_libraries(pool_test Threads::Threads)
+add_executable(
+  thruster_test
+  tests/thruster.cc
+)
 
-#define BUILD SIMULATION
-if(BUILD_SIMULATION)
-    target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
-    target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
-endif()
+target_link_libraries(
+  thruster_test
+  GTest::gtest_main
+)
 
-if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
-    target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
-endif()
+include(GoogleTest)
+gtest_discover_tests(thruster_test)
+
 
 #to use the motor library elsewhere
 #target_link_libraries(your_target motor)
