@@ -1,6 +1,78 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(neptune CXX)
+project(neptune C CXX)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+#required for pthread_setaffinity_np / CPU_SET (GNU extensions)
+add_compile_definitions(_GNU_SOURCE)
 
 add_executable(neptune main.cpp)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+#BUILD_SIMULATION option
+#this isn't a physics engine its to mimic motor.py to simulate the motor
+option(BUILD_SIMULATION "Build in simulation mode" OFF)
+
+#find lgpio library(only if not in simulation mode)
+if(NOT BUILD_SIMULATION)
+    find_library(LGPIO_LIB lgpio)
+    find_path(LGPIO_INCLUDE_DIR lgpio.h)
+
+    if(NOT LGPIO_LIB OR NOT LGPIO_INCLUDE_DIR)
+        message(FATAL_ERROR "lgpio library not found")
+    endif()
+
+    set(LGPIO_LINK_LIBS ${LGPIO_LIB})
+    message(STATUS "Found lgpio library: ${LGPIO_LIB}")
+    message(STATUS "Found lgpio include directory: ${LGPIO_INCLUDE_DIR}")
+
+    #neptune links lgpio and has lgpio include directory if not in simulation
+    target_link_libraries(neptune ${LGPIO_LINK_LIBS})
+    target_include_directories(neptune PRIVATE ${LGPIO_INCLUDE_DIR})
+else()
+    #lgpio library isn't required in simulation mode
+    #not sure how simulations will work yet if we do any
+    message(STATUS "Building in simulation mode. lgpio library not used.")
+    set(LGPIO_LINK_LIBS "")
+endif()
+
+#create motor library (just header file)
+add_library(motor INTERFACE)
+target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
+
+#add lgpio include directory to motor target
+if(NOT BUILD_SIMULATION)
+    target_include_directories(motor INTERFACE ${LGPIO_INCLUDE_DIR})
+    target_link_libraries(motor INTERFACE ${LGPIO_LINK_LIBS})
+endif()
+
+#need pthreads for RT thread
+find_package(Threads REQUIRED)
+
+enable_testing()
+
+add_executable(
+  thruster_test
+  tests/thruster.cc
+)
+
+target_link_libraries(
+  thruster_test
+  GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(thruster_test)
+
+
+#to use the motor library elsewhere
+#target_link_libraries(your_target motor)
