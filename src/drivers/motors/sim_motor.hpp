@@ -5,7 +5,7 @@
 
 class SimulatedMotor : public Motor
 {
-   
+
     public:
     //At some point we should prob use this datatype everywhere, for now its here
      enum MotorLocation {
@@ -25,6 +25,6 @@ class SimulatedMotor : public Motor
     private:
 
     std::string GetMotorPath();
-    const std::string SIM_ADDR = "http://localhost:6767"; 
+    const std::string SIM_ADDR = "http://localhost:6767";
     static httplib::Client* sim_connection;
 };

@@ -9,7 +9,7 @@
  * a client disconnects.
  *
  * No external dependencies — POSIX only.
- * 
+ *
  * For HolyBro Telemetry Radio:
      ensure that radios are connected to Pi and Base Station
      on Pi: sudo pppd /dev/ttyUSB0 57600 lock local noauth 192.168.100.10:192.168.100.11

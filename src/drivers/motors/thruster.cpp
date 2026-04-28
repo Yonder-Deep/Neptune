@@ -36,7 +36,7 @@ int Thruster::sendMotorPWM()
 int Thruster::setSpeed(float newSpeed) {
     this->speed = newSpeed;
     if(newSpeed < -1.0 || newSpeed > 1.0){
-        //TODO clamp here instead   ? 
+        //TODO clamp here instead   ?
         throw new std::logic_error("Motor Speed out of range");
     }
     return sendMotorPWM();

@@ -12,7 +12,7 @@ public:
     bool armed;
 
     Thruster(int pin, int handle, int speed = 0, int cycle = 50);
-    ~Thruster();    
+    ~Thruster();
     int setSpeed(float speed) override;
 
     int setFrequency(float cycle) override;
