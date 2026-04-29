@@ -16,6 +16,7 @@ Requires: sudo (for RT scheduling priority)
 #include <thread>
 #include <atomic>
 #include <cstring>
+#include <string>
 
 #ifndef BUILD_SIMULATION
     #include <lgpio.h>
@@ -23,12 +24,16 @@ Requires: sudo (for RT scheduling priority)
     #include <sys/mman.h>
     #include <time.h>
     #include <pthread.h>
+#else
+    #define CPPHTTPLIB_OPENSSL_SUPPORT 0
+    #include "httplib.h"
 #endif
 
 class Motor {
     private:
         int pin;
         int handle;
+        std::string simName;          // sim Flask endpoint name (e.g. "top_left"); unused on hardware
         std::atomic<int> targetPwm;   // pulse width in microseconds
         std::atomic<bool> running;
         std::thread pwmThread;
@@ -115,9 +120,10 @@ class Motor {
         static constexpr int NEUTRAL_PWM = 1500;
         static constexpr int PWM_CPU_CORE = 3;  // pin PWM thread here (0-3 on Pi 5)
 
-        Motor(int gpioPin, int gpioHandle)
+        Motor(int gpioPin, int gpioHandle, const std::string& simEndpointName = "")
             : pin(gpioPin)
             , handle(gpioHandle)
+            , simName(simEndpointName)
             , targetPwm(0)
             , running(false)
         {}
@@ -155,7 +161,19 @@ class Motor {
             targetPwm.store(newPwm, std::memory_order_relaxed);
 
             #ifdef BUILD_SIMULATION
-                std::cout << "simulation Motor " << pin << " PWM: " << newPwm << std::endl;
+                // Convert PWM us -> normalized speed [-1.0, 1.0] for Webots Flask API.
+                // Static client persists across calls -> reuses TCP connection (keep-alive).
+                static httplib::Client cli("http://localhost:6767");
+                cli.set_connection_timeout(0, 100000);  // 100 ms
+                cli.set_read_timeout(0, 100000);
+                float speed = (newPwm - NEUTRAL_PWM) / 400.0f;
+                std::string body = "{\"speed\": " + std::to_string(speed) + "}";
+                std::string path = "/motor/" + simName + "/set";
+                auto res = cli.Post(path.c_str(), body, "application/json");
+                if (!res) {
+                    std::cerr << "sim Motor '" << simName << "' POST failed" << std::endl;
+                    return -1;
+                }
             #endif
             return 0;
         }
@@ -192,4 +210,5 @@ class Motor {
                 cleanup();
             }
         }
-};
+
+    };

@@ -66,17 +66,28 @@ add_executable(rc_test drivers/rc_test.cpp)
 target_link_libraries(rc_test motor)
 target_link_libraries(rc_test Threads::Threads)
 
+#executable for manual_test (4-motor mixer driven from stdin; talks to sim Flask in BUILD_SIMULATION mode)
+add_executable(manual_test drivers/manual_test.cpp)
+target_link_libraries(manual_test motor)
+target_link_libraries(manual_test Threads::Threads)
+#cpp-httplib uses Winsock on Windows; harmless on POSIX
+if(WIN32)
+    target_link_libraries(manual_test ws2_32)
+endif()
+
 #define BUILD SIMULATION
 if(BUILD_SIMULATION)
     target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
     target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
     target_compile_definitions(rc_test PRIVATE BUILD_SIMULATION)
+    target_compile_definitions(manual_test PRIVATE BUILD_SIMULATION)
 endif()
 
 if(NOT BUILD_SIMULATION)
     target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
     target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
     target_link_libraries(rc_test ${LGPIO_LINK_LIBS})
+    target_link_libraries(manual_test ${LGPIO_LINK_LIBS})
 endif()
 
 #to use the motor library elsewhere
