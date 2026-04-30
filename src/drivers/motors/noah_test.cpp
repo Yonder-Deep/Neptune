@@ -13,8 +13,8 @@ int main(){
     m1->armMotor();
     m2->armMotor();
     m3->armMotor();
-     std::random_device rd;  
-    std::mt19937 gen(rd()); 
+     std::random_device rd;
+    std::mt19937 gen(rd());
      std::uniform_real_distribution<double> dis(-1.0, 1.0);
     while (true)
     {

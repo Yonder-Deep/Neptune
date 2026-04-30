@@ -7,7 +7,7 @@ TEST(Thruster, DutyCycle){
     thruster->cycle = 50;
     thruster->speed = 0.0;
     EXPECT_EQ(7.5, thruster->getDutyCycle());
-    
+
 }
 
 TEST(Thruster, UnarmedFailure){

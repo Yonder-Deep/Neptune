@@ -37,7 +37,7 @@ SimulatedMotor::SimulatedMotor(SimulatedMotor::MotorLocation ml, int speed, floa
     this->ml = ml;
 }
 
-int SimulatedMotor::setSpeed(float speed) 
+int SimulatedMotor::setSpeed(float speed)
 {
     if(!this->armed){
         throw std::logic_error("Tried to set the speed of an unarmed motor");
