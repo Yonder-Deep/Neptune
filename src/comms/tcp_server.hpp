@@ -12,8 +12,10 @@
  *
  * For HolyBro Telemetry Radio:
      ensure that radios are connected to Pi and Base Station
-     on Pi: sudo pppd /dev/ttyUSB0 57600 lock local noauth 192.168.100.10:192.168.100.11
+     on Pi: sudo pppd /dev/ttyUSB0 57600 lock local noauth 192.168.100.11:192.168.100.10
      on base: sudo pppd /dev/ttyUSB0 57600 lock local noauth nodetach 192.168.100.10:192.168.100.11
+
+     IPs should be ordered relative to the device you are running the command on
  */
 
 #include <arpa/inet.h>
