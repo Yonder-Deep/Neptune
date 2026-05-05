@@ -1,6 +1,5 @@
 #pragma once
 #include "motor.hpp"
-#include <lgpio.h>
 #include <httplib.h>
 
 class SimulatedMotor : public Motor

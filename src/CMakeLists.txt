@@ -10,6 +10,7 @@ endif()
 add_compile_definitions(_GNU_SOURCE)
 
 add_executable(neptune main.cpp)
+add_executable(neptune_sim sim_main.cpp)
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -45,19 +46,29 @@ else()
     set(LGPIO_LINK_LIBS "")
 endif()
 
-#create motor library (just header file)
-add_library(motor INTERFACE)
-target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
 
-#add lgpio include directory to motor target
-if(NOT BUILD_SIMULATION)
-    target_include_directories(motor INTERFACE ${LGPIO_INCLUDE_DIR})
-    target_link_libraries(motor INTERFACE ${LGPIO_LINK_LIBS})
-endif()
 
-#need pthreads for RT thread
-find_package(Threads REQUIRED)
 
+link_directories(drivers)
+add_subdirectory(drivers)
+add_subdirectory(types)
+
+
+target_link_libraries(motors ${LGPIO_LINK_LIBS})
+
+#main target
+target_include_directories(motors PRIVATE ${LGPIO_INCLUDE_DIR})
+
+target_link_libraries(neptune_sim motors)
+target_link_libraries(neptune motors)
+
+target_link_libraries(neptune_sim gps_drivers)
+target_link_libraries(neptune gps_drivers)
+
+
+# Everything below here is not part of the main target
+
+#Testing
 enable_testing()
 
 add_executable(
@@ -65,14 +76,21 @@ add_executable(
   tests/thruster.cc
 )
 
-target_link_libraries(
-  thruster_test
+target_link_libraries(thruster_test
   GTest::gtest_main
+  motors
 )
 
 include(GoogleTest)
 gtest_discover_tests(thruster_test)
 
-
-#to use the motor library elsewhere
-#target_link_libraries(your_target motor)
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+if(CLANG_TIDY_EXE)
+    file(GLOB_RECURSE ALL_SOURCE_FILES "*.cpp")
+    add_custom_target(lint
+        COMMAND ${CLANG_TIDY_EXE} ${ALL_SOURCE_FILES}
+        COMMENT "Running clang-tidy on all source files"
+    )
+else()
+  message(WARNING "No linter found, lint target not being added")
+endif()

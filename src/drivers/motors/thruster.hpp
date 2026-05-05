@@ -23,7 +23,7 @@ public:
      */
     float getDutyCycle();
      protected:
-  Thruster() {};
+  explicit Thruster() {};
 private:
     const int STOP_PWM = 1500;
     const int MAX_PWM_DIST = 400;
