@@ -6,7 +6,7 @@ RUN apt-get update -y
 RUN apt-get install -y cmake build-essential
 RUN apt-get install -y ninja-build
 RUN apt-get update -y
-RUN apt-get install -y git gdb curl clang-tidy
+RUN apt-get install -y git gdb curl clang-format
 
 #Get project dependencies 
 RUN apt-get install -y gpiod libgpiod-dev liblgpio-dev libserial-dev gpsd libgps-dev

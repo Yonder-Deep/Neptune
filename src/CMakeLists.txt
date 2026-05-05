@@ -126,3 +126,18 @@ else()
   target_link_libraries(motor_server PRIVATE sim_motor)
   target_compile_definitions(motor_server PRIVATE BUILD_SIMULATION)
 endif()
+
+
+#linter 
+find_program(CLANG_FMT_EXE NAMES "clang-format")
+file(GLOB_RECURSE ALL_SOURCE_FILES   ./*.cpp ./*.hpp ./*.h)
+list(FILTER ALL_SOURCE_FILES EXCLUDE REGEX "build/*")
+if(CLANG_TIDY_EXE)
+ add_custom_target(
+        lint
+        COMMAND ${CLANG_FMT_EXE}
+        -i
+        ${ALL_SOURCE_FILES}
+        COMMENT "Linting all files"
+    )
+endif()
