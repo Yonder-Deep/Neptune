@@ -5,6 +5,7 @@ project(neptune C CXX)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
+find_package(Threads REQUIRED)
 
 #required for pthread_setaffinity_np / CPU_SET (GNU extensions)
 add_compile_definitions(_GNU_SOURCE)
@@ -19,6 +20,8 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+
 #BUILD_SIMULATION option
 #this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
@@ -84,13 +87,42 @@ target_link_libraries(thruster_test
 include(GoogleTest)
 gtest_discover_tests(thruster_test)
 
-find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-if(CLANG_TIDY_EXE)
-    file(GLOB_RECURSE ALL_SOURCE_FILES "*.cpp")
-    add_custom_target(lint
-        COMMAND ${CLANG_TIDY_EXE} ${ALL_SOURCE_FILES}
-        COMMENT "Running clang-tidy on all source files"
-    )
+add_library(thruster STATIC
+  drivers/motors/thruster.cpp
+  drivers/motors/motor.cpp
+)
+target_include_directories(thruster PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
+if(NOT BUILD_SIMULATION)
+  target_link_libraries(thruster PUBLIC ${LGPIO_LINK_LIBS})
+  target_include_directories(thruster PUBLIC ${LGPIO_INCLUDE_DIR})
+endif()
+
+add_library(sim_motor STATIC
+  drivers/motors/sim_motor.cpp
+  drivers/motors/motor.cpp
+)
+target_include_directories(sim_motor PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
+
+add_executable(motor_server
+  drivers/server/motor_server.cpp
+)
+
+target_include_directories(motor_server PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/comms
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
+
+
+target_link_libraries(motor_server PRIVATE Threads::Threads)
+
+if(NOT BUILD_SIMULATION)
+  target_link_libraries(motor_server PRIVATE thruster)
+  target_include_directories(motor_server PRIVATE ${LGPIO_INCLUDE_DIR})
 else()
-  message(WARNING "No linter found, lint target not being added")
+  target_link_libraries(motor_server PRIVATE sim_motor)
+  target_compile_definitions(motor_server PRIVATE BUILD_SIMULATION)
 endif()
