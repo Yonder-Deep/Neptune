@@ -1,6 +1,6 @@
 #include "sim_motor.hpp"
 #include <sstream>
-httplib::Client *SimulatedMotor::sim_connection = nullptr;
+#include "../common/sim.hpp"
 std::string SimulatedMotor::GetMotorPath() {
   switch (this->ml) {
   case SimulatedMotor::FrontLeft:
@@ -25,9 +25,9 @@ std::string SimulatedMotor::GetMotorPath() {
 SimulatedMotor::SimulatedMotor(SimulatedMotor::MotorLocation ml, int speed,
                                float cycle)
     : Motor(speed, cycle) {
-  if (SimulatedMotor::sim_connection == 0) {
-    SimulatedMotor::sim_connection = new httplib::Client(SIM_ADDR);
-    httplib::Result out = SimulatedMotor::sim_connection->Get("/heartbeat");
+  if (sim_connection == 0) {
+    sim_connection = new httplib::Client(SIM_ADDR);
+    httplib::Result out = sim_connection->Get("/heartbeat");
     if (out == nullptr) {
       throw std::runtime_error("No simulation connection found");
     }
@@ -45,7 +45,7 @@ int SimulatedMotor::setSpeed(float speed) {
   std::ostringstream oss;
   oss << "{\"speed\":" << speed << "}";
   std::string s = oss.str();
-  auto out = SimulatedMotor::sim_connection->Post(
+  auto out = sim_connection->Post(
       this->GetMotorPath().c_str(), s.c_str(), "application/json");
   if (out == nullptr) {
     std::cout << "Error sending sim info" << std::endl;

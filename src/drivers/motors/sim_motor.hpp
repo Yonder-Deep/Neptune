@@ -19,6 +19,4 @@ public:
 
 private:
   std::string GetMotorPath();
-  const std::string SIM_ADDR = "http://localhost:6767";
-  static httplib::Client *sim_connection;
 };
