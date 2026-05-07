@@ -1,0 +1,25 @@
+import pyaudio
+import numpy as np
+
+FORMAT = pyaudio.paInt32 # EVO 8 supports 24-bit, usually padded to 32
+CHANNELS = 2             # Number of hydrophones
+RATE = 48000             # Sample rate (Hz)
+CHUNK = 1024             # Buffer size
+
+p = pyaudio.PyAudio()
+
+# Start Stream
+stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+
+def get_clean_vector():
+    # 1. Read raw bytes from the EVO 8
+    data = stream.read(CHUNK)
+    
+    # 2. Convert to NumPy array (assuming 32-bit integer)
+    signal_int = np.frombuffer(data, dtype=np.int32)
+    
+    # 3. Normalize to float32 range [-1, 1]
+    # This is your "clean vector" for math
+    signal_float = signal_int.astype(np.float32) / np.iinfo(np.int32).max
+    
+    return signal_float
