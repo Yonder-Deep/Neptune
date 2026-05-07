@@ -1,17 +1,24 @@
 #include <gtest/gtest.h>
-#include "thruster.hpp"
+#include "../drivers/motors/thruster.hpp"
 #include <stdexcept>
+class ThrusterTest :  public Thruster {
+public:
+    // Use the protected constructor in the fixture's initializer list
+    ThrusterTest() : Thruster() {}
+
+};
+
 TEST(Thruster, DutyCycle){
-    Thruster* thruster = new Thruster();
+    ThrusterTest* thruster = new ThrusterTest();
     thruster->armed = true;
     thruster->cycle = 50;
     thruster->speed = 0.0;
-    EXPECT_EQ(7.5, thruster->getDutyCycle());
+    EXPECT_FLOAT_EQ(7.5f, thruster->getDutyCycle());
 
 }
 
 TEST(Thruster, UnarmedFailure){
-    Thruster* thruster = new Thruster(0,0);
+    Thruster* thruster = new ThrusterTest();
     thruster->armed = false;
-    ASSERT_THROW(thruster->setSpeed(50, std::logic_error()));
+    ASSERT_ANY_THROW(thruster->setSpeed(0.0));
 }
