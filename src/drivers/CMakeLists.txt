@@ -1,5 +1,5 @@
 
-add_library(motors  motors/motor.cpp motors/sim_motor.cpp motors/thruster.cpp)
+add_library(motors  motors/motor.cpp  motors/thruster.cpp)
 
 
 find_package(PkgConfig REQUIRED)

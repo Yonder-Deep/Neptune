@@ -100,7 +100,6 @@ if(NOT BUILD_SIMULATION)
 endif()
 
 add_library(sim_motor STATIC
-  drivers/motors/sim_motor.cpp
   drivers/motors/motor.cpp
 )
 target_include_directories(sim_motor PUBLIC
