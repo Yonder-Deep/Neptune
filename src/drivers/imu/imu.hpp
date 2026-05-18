@@ -16,7 +16,6 @@
 //lsm6dsox is aceleromter and gyroscope
 //lis3mdl is magnetometer
 
-
 struct ImuConfig {
     int bus = 1; //assume i2c bus is 1
     uint8_t ag_addr = 0x6A; //assume lsm6dsox address is 0x6A

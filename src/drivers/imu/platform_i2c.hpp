@@ -10,7 +10,6 @@ typedef struct {
 } platformHandleT;
 
 //platform i2c functions for st driver
-//these match the function pointer types expected by stmdev_ctx_t
 int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t len);
 
 int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len);
