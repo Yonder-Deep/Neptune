@@ -21,6 +21,19 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+#paths to ST driver repos(relative to src/CMakeLists.txt)
+set(LSM6DSOX_PID_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/st/lsm6dsox-pid)
+set(LIS3MDL_PID_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../third_party/st/lis3mdl-pid)
+
+#compiles lsm6dsox_reg.c into a static library called lsm6dsox_driver
+add_library(lsm6dsox_driver STATIC ${LSM6DSOX_PID_DIR}/lsm6dsox_reg.c) 
+#compiles lis3mdl_reg.c into a static library called lis3mdl_driver
+add_library(lis3mdl_driver STATIC ${LIS3MDL_PID_DIR}/lis3mdl_reg.c)
+
+target_include_directories(lsm6dsox_driver PUBLIC ${LSM6DSOX_PID_DIR})
+target_include_directories(lis3mdl_driver PUBLIC ${LIS3MDL_PID_DIR})
+
+target_link_libraries(lsm6dsox_driver lis3mdl_driver)
 
 #BUILD_SIMULATION option
 #this isn't a physics engine its to mimic motor.py to simulate the motor
