@@ -81,6 +81,22 @@ target_link_libraries(neptune motors)
 target_link_libraries(neptune_sim gps_drivers)
 target_link_libraries(neptune gps_drivers)
 
+#for imu testing
+add_executable(imu_test
+  drivers/imu/imuTest.cpp
+  drivers/imu/platform_i2c.cpp
+)
+
+target_include_directories(imu_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/drivers/imu)
+
+target_link_libraries(imu_test PRIVATE
+  lsm6dsox_driver
+  lis3mdl_driver
+  Threads::Threads
+)
+
+target_link_libraries(imu_test PRIVATE ${LGPIO_LIB})
+target_include_directories(imu_test PRIVATE ${LGPIO_INCLUDE_DIR})
 
 # Everything below here is not part of the main target
 

@@ -19,7 +19,7 @@
 struct ImuConfig {
     int bus = 1; //assume i2c bus is 1
     uint8_t ag_addr = 0x6A; //assume lsm6dsox address is 0x6A
-    uint8_t mag_addr = 0x1E; //assume lis3mdl address is 0x1E
+    uint8_t mag_addr = 0x1C; //assume lis3mdl address is 0x1C
 
     //imufusion library https://github.com/xioTechnologies/Fusion/blob/main/Fusion/FusionAhrs.c
     //following values are hard coded from imu.py
@@ -33,17 +33,11 @@ struct EulerDeg {float roll, pitch, yaw; };
 
 class IMU {
 public:
-    //& is a reference so it gets an alias not copy of ImuConfig
-    //const means that cfg isn't modified only read
-    //{} means if someone constructs IMU with no arguments it defaults to basic cfg
     explicit IMU(const ImuConfig& cfg = {}); 
-    //deconstructor
     ~IMU();
 
-    //read register, run ahrs, make roll/pitch/yaw calculations
-    //should update euler, accel_, gyro_, and mag_
     void updateImuReading(); 
-    EulerDeg readEuler() const; //thread-safe read euler
+    EulerDeg readEuler() const;
     
     Vec3f readAccel() const;
     Vec3f readGyro() const;
@@ -59,16 +53,13 @@ private:
     platformHandleT ag_handle_{};
     platformHandleT m_handle_{};
 
-    //st contexts
-    //stmdev_ctx_t is struct from lsm6dsox to talk to the hardware
+    //contexts from lis3mdl and lsm6dsox libraries
     stmdev_ctx_t ag_ctx_{};
     stmdev_ctx_t m_ctx_{};
 
-    //lock members
     mutable std::mutex mtx_;
-    //holds roll, pitch, yaw
     EulerDeg euler_{}; 
-    Vec3f accel_{}, gyro_{}, mag_{}; //holds data for accel, gyro, mag
+    Vec3f accel_{}, gyro_{}, mag_{};
 
     //calibration stuff from imu.py
     float B_[3] = {-18.49f, 46.32f, 29.76f};
@@ -79,6 +70,5 @@ private:
     };
 
     ImuConfig cfg_;
-    //calculate time between updates
     std::chrono::steady_clock::time_point previousTime = std::chrono::steady_clock::now();
 };
