@@ -40,6 +40,7 @@
 
 #include <array>
 #include <csignal>
+#include <cwchar>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -54,6 +55,7 @@
 #endif
 
 #include "../../comms/tcp_server.hpp"
+#include "../../comms/ws.hpp"
 // ---------------------------------------------------------------------------
 // Constants -- mirrors Thruster internals for the "pwm" command converter
 // ---------------------------------------------------------------------------
@@ -221,7 +223,7 @@ int main(int argc, char *argv[]) {
   }
   std::cout << "[INIT] GPIO chip opened." << std::endl;
 #else
-  std::cout << "[SIM] Simulation mode -- routing to Gazebo sim over HTTP."
+  std::cout << "[SIM] Simulation mode -- routing to PyBullet sim over HTTP."
             << std::endl;
 #endif
 
@@ -268,11 +270,12 @@ int main(int argc, char *argv[]) {
   // -----------------------------------------------------------------------
   // TCP server
   // -----------------------------------------------------------------------
-  TcpServer server(port);
+  // TcpServer server(port);
+  WsServer server(port);
   try {
     server.start();
   } catch (const std::exception &e) {
-    std::cerr << "[TCP] " << e.what() << std::endl;
+    std::cerr << "[WebSocket] " << e.what() << std::endl;
 #ifndef BUILD_SIMULATION
     lgGpiochipClose(handle);
 #endif
@@ -286,7 +289,7 @@ int main(int argc, char *argv[]) {
     try {
       server.accept_client();
     } catch (const std::exception &e) {
-      std::cerr << "[TCP] accept failed: " << e.what() << std::endl;
+      std::cerr << "[WebSocket] accept failed: " << e.what() << std::endl;
       break;
     }
 
