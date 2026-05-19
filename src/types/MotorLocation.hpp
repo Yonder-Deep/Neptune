@@ -16,7 +16,7 @@ GPSCoordinate thrust_vector(MotorLocation m){
         case BackLeft:
         return {0.5* SQRT2, -0.5* SQRT2};
     }
-
+    throw std::logic_error("Invalid type");
 }
 // 0 - lat
 // 1 - long

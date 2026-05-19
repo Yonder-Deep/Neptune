@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
   std::cout << "awaiting lock" << std::endl;
   gps->await_lock(5, 200);
   while (true) {
-    std::cout << *(gps->location()) << std::endl;
+    std::cout << (gps->location()) << std::endl;
     sleep(3);
   }
 }

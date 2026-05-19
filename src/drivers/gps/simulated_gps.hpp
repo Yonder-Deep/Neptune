@@ -18,14 +18,14 @@ public:
     }
   }
   bool await_lock(int interval, int tries) override { return true; }
-  GPSCoordinate *location() override {
+  GPSCoordinate location() override {
     auto out = sim_connection->Get("/gps");
     if (out == nullptr) {
       std::cout << "Error getting GPS sim info" << std::endl;
-      return nullptr;
+      //throw?
     }
-    GPSCoordinate *s = new GPSCoordinate();
-    sscanf(out->body.c_str(), "[%lf,%lf,", &s->latitude, &s->longitude);
+    GPSCoordinate s =  GPSCoordinate();
+    sscanf(out->body.c_str(), "[%lf,%lf,", &s.latitude, &s.longitude);
     return s;
   }
 };
