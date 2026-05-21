@@ -1,3 +1,5 @@
 [submodule "third_party/st/lis3mdl-pid"]
 	path = third_party/st/lis3mdl-pid
 	url = https://github.com/STMicroelectronics/lis3mdl-pid.git
+[submodule "third_party/st/lsm6dsox-pid"]
+	path = third_party/st/lsm6dsox-pid
