@@ -1,3 +1,0 @@
-[submodule "third_party/st/lsm6dsox-pid"]
-	path = third_party/st/lsm6dsox-pid
-	url = https://github.com/STMicroelectronics/lsm6dsox-pid.git
