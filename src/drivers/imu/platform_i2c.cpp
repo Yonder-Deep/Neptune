@@ -19,7 +19,7 @@ int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t 
 
 
     #ifndef BUILD_SIMULATION
-        int ret = lgI2cWriteI2cBlockData(ctx->i2cHandle, reg, (const char *)bufp, len);
+        int ret = lgI2cWriteI2CBlockData(ctx->i2cHandle, reg, (const char *)bufp, len);
     #else
         int ret = 0;
     #endif
@@ -35,7 +35,7 @@ int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len) {
     }
 
     #ifndef BUILD_SIMULATION
-        int n = lgI2cReadI2cBlockData(ctx->i2cHandle, reg, (char *)bufp, len);
+        int n = lgI2cReadI2CBlockData(ctx->i2cHandle, reg, (char *)bufp, len);
     #else
         int n = 0;
     #endif

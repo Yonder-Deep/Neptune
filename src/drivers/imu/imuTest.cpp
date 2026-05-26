@@ -1,3 +1,8 @@
+/*
+cmake --build build --target imu_test
+sudo ./build/imu_test
+*/
+
 #include "platform_i2c.hpp"
 #include "lsm6dsox_reg.h"
 #include "lis3mdl_reg.h"
@@ -82,10 +87,10 @@ int main() {
             lsm6dsox_angular_rate_raw_get(&ag_ctx, gyro);
             lis3mdl_magnetic_raw_get(&m_ctx, mag);
 
-            std::cout << accel[0] << ' ' << accel[1] << ' ' << accel[2] << ' \n';
+            std::cout << accel[0] << ' ' << accel[1] << ' ' << accel[2] << '\n';
             
-            std::cout << gyro[0] << ' ' << gyro[1] << ' ' << gyro[2] << ' \n';
-            std::cout << mag[0] << ' ' << mag[1] << ' ' << mag[2] << ' \n';
+            std::cout << gyro[0] << ' ' << gyro[1] << ' ' << gyro[2] << '\n';
+            std::cout << mag[0] << ' ' << mag[1] << ' ' << mag[2] << '\n';
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
