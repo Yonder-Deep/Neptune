@@ -128,6 +128,8 @@ int main() {
             mag1 += mag[1];
             mag2 += mag[2];
 
+            count++;
+
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
