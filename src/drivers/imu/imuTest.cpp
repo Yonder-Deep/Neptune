@@ -3,6 +3,17 @@ cmake --build build --target imu_test
 sudo ./build/imu_test
 */
 
+/*
+pins
+3v3 to 1
+SDA to 3
+SCL to 5
+GND to 6 (any ground)
+*/
+
+//seems to understand no movement and movement
+//reacts fairly quickly
+
 #include "platform_i2c.hpp"
 #include "lsm6dsox_reg.h"
 #include "lis3mdl_reg.h"
@@ -78,6 +89,20 @@ int main() {
         lis3mdl_operating_mode_set(&m_ctx, LIS3MDL_CONTINUOUS_MODE);
         platform_delay(50);
 
+        int count = 0;
+
+        int16_t accel0 = 0;
+        int16_t accel1 = 0;
+        int16_t accel2 = 0;
+
+        int16_t gyro0 = 0;
+        int16_t gyro1 = 0;
+        int16_t gyro2 = 0;
+
+        int16_t mag0 = 0;
+        int16_t mag1 = 0;
+        int16_t mag2 = 0;
+
         while(run) {
             int16_t accel[3]{};
             int16_t gyro[3]{};
@@ -88,12 +113,48 @@ int main() {
             lis3mdl_magnetic_raw_get(&m_ctx, mag);
 
             std::cout << accel[0] << ' ' << accel[1] << ' ' << accel[2] << '\n';
-            
             std::cout << gyro[0] << ' ' << gyro[1] << ' ' << gyro[2] << '\n';
             std::cout << mag[0] << ' ' << mag[1] << ' ' << mag[2] << '\n';
 
+            accel0 += accel[0];
+            accel1 += accel[1];
+            accel2 += accel[2];
+
+            gyro0 += gyro[0];
+            gyro1 += gyro[1];
+            gyro2 += gyro[2];
+
+            mag0 += mag[0];
+            mag1 += mag[1];
+            mag2 += mag[2];
+
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+
+        accel0 /= count;
+        accel1 /= count;
+        accel2 /= count;
+
+        gyro0 /= count;
+        gyro1 /= count;
+        gyro2 /= count;
+
+        mag0 /= count;
+        mag1 /= count;
+        mag2 /= count;
+
+        std::cout << "a0 " << accel0 << '\n';
+        std::cout << "a1 " << accel1 << '\n';
+        std::cout << "a2 " << accel2 << '\n';
+
+        std::cout << "g0 " << gyro0 << '\n';
+        std::cout << "g1 " << gyro1 << '\n';
+        std::cout << "g2 " << gyro2 << '\n';
+        
+        std::cout << "m0 " << mag0 << '\n';
+        std::cout << "m1 " << mag1 << '\n';
+        std::cout << "m2 " << mag2 << '\n';
+
     } catch (const std::exception& e) {
         std::cerr << "error: " << e.what() << '\n';
         lgI2cClose(ag_handle.i2cHandle);
