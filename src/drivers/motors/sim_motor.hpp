@@ -38,8 +38,6 @@ public:
       this->GetMotorPath().c_str(), s.c_str(), "application/json");
   if (out == nullptr) {
     std::cout << "Error sending sim info" << std::endl;
-  } else {
-    std::cout << out->status << std::endl;
   }
 
   return 0;

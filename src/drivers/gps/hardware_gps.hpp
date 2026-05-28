@@ -1,6 +1,5 @@
 #pragma once
 #include "gps.hpp"
-
 #include "../../types/GPSCoordinate.hpp"
 #include <iostream>
 #include <libgpsmm.h>

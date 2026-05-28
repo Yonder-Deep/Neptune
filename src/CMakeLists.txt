@@ -51,17 +51,21 @@ endif()
 
 
 
+# Eigen(linear algebra lib)
+find_package(Eigen3 REQUIRED)
+
+target_include_directories(neptune PRIVATE ${EIGEN3_INCLUDE_DIRS})
+target_include_directories(neptune_sim PRIVATE ${EIGEN3_INCLUDE_DIRS})
 
 link_directories(drivers)
 add_subdirectory(drivers)
 add_subdirectory(types)
-
+add_subdirectory(states)
 
 target_link_libraries(motors ${LGPIO_LINK_LIBS})
 
 #main target
 target_include_directories(motors PRIVATE ${LGPIO_INCLUDE_DIR})
-
 target_link_libraries(neptune_sim motors)
 target_link_libraries(neptune motors)
 

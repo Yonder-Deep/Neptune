@@ -9,7 +9,8 @@ RUN apt-get update -y
 RUN apt-get install -y git gdb curl clang-format
 
 #Get project dependencies
-RUN apt-get install -y gpiod libgpiod-dev liblgpio-dev libserial-dev gpsd libgps-dev
+RUN apt-get install -y gpiod libgpiod-dev liblgpio-dev libserial-dev gpsd libgps-dev libeigen3-dev
+
 #dev dependencies
 RUN apt-get install -y python3 python3-pip pipx
 WORKDIR /workspace/Neptune
