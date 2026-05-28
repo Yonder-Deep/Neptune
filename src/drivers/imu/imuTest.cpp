@@ -42,6 +42,10 @@ not sure how different jesus will be from the ASV in terms of positioning and me
 #include "Fusion.h"
 #include <stdbool.h>
 
+#include <fstream>
+
+
+
 #ifndef BUILD_SIMULATION
 #include <lgpio.h>
 #endif
@@ -52,6 +56,10 @@ volatile bool run = true;
 void on_sigint(int) { run = false; }
 
 int main() {
+
+    std::ofstream outFile("poolImuTest.txt");
+    outFile << "write to file";
+    outFile.close();
 
     FusionAhrs ahrs;
     FusionAhrsInitialise(&ahrs);
