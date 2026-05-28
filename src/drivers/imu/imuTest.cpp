@@ -60,6 +60,7 @@ int main() {
     std::ofstream outFile("poolImuTest.txt");
     outFile << "write to file";
     outFile.close();
+    //writing to file works it just pops up in src
 
     FusionAhrs ahrs;
     FusionAhrsInitialise(&ahrs);

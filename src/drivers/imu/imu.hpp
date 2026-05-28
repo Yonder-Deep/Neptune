@@ -8,6 +8,8 @@
 #include "platform_i2c.hpp"
 #include <mutex>
 
+#include "Fusion.h"
+#include <stdbool.h>
 
 #ifndef BUILD_SIMULATION
     #include <lgpio.h>
@@ -21,15 +23,17 @@ struct ImuConfig {
     uint8_t ag_addr = 0x6A; //assume lsm6dsox address is 0x6A
     uint8_t mag_addr = 0x1C; //assume lis3mdl address is 0x1C
 
-    //imufusion library https://github.com/xioTechnologies/Fusion/blob/main/Fusion/FusionAhrs.c
-    //following values are hard coded from imu.py
-    float accel_reject = 10.0f; ///90.0f for default in library
-    float mag_reject = 10.0f; //90.0f for default in library
+    //from fusion
+    float accel_reject = 10.0f; 
+    float mag_reject = 10.0f; 
     float gain = .5f; 
+
+    //figure out like recovery trigger period for ahrs
+    float update_hz = 10.0f;
+    float recovery_seconds = 5.0f;
 };
 
-struct Vec3f {float x, y, z; };
-struct EulerDeg {float roll, pitch, yaw; };
+struct Vec3f {int16_t x, y, z; };
 
 class IMU {
 public:
@@ -37,7 +41,7 @@ public:
     ~IMU();
 
     void updateImuReading(); 
-    EulerDeg readEuler() const;
+    FusionEuler readEuler() const;
     
     Vec3f readAccel() const;
     Vec3f readGyro() const;
@@ -45,9 +49,11 @@ public:
 
 private:
     void openDevices_();
-    void verifyWhoAmI_();
     void configureSensors_();
     void closeDevices_();
+
+    //ahrs
+    FusionAhrs ahrs;
 
     //handles
     platformHandleT ag_handle_{};
@@ -58,7 +64,7 @@ private:
     stmdev_ctx_t m_ctx_{};
 
     mutable std::mutex mtx_;
-    EulerDeg euler_{}; 
+    FusionEuler euler_{}; 
     Vec3f accel_{}, gyro_{}, mag_{};
 
     //calibration stuff from imu.py
