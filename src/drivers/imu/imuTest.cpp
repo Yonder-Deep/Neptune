@@ -1,4 +1,8 @@
 /*
+reconfigure cmake
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+
 cmake --build build --target imu_test
 sudo ./build/imu_test
 */
@@ -14,6 +18,15 @@ GND to 6 (any ground)
 //seems to understand no movement and movement
 //reacts fairly quickly
 
+
+/*
+we can probably get gyro bias
+we can get a still one and one for in the pool
+
+hard and soft iron offsets will be difficult to get for ASV
+not sure how different jesus will be from the ASV in terms of positioning and metal
+*/
+
 #include "platform_i2c.hpp"
 #include "lsm6dsox_reg.h"
 #include "lis3mdl_reg.h"
@@ -26,14 +39,35 @@ GND to 6 (any ground)
 #include <stdexcept>
 #include <thread>
 
+#include "Fusion.h"
+#include <stdbool.h>
+
 #ifndef BUILD_SIMULATION
 #include <lgpio.h>
 #endif
+
+#define LOOP_TIME (0.1f) //100 milliseconds
 
 volatile bool run = true;
 void on_sigint(int) { run = false; }
 
 int main() {
+
+    FusionAhrs ahrs;
+    FusionAhrsInitialise(&ahrs);
+
+    //basic settings from library
+    const FusionAhrsSettings settings = {
+        .convention = FusionConventionNwu,
+        .gain = 0.5f,
+        .gyroscopeRange = 2000.0f, /* replace with actual gyroscope range */
+        .accelerationRejection = 10.0f,
+        .magneticRejection = 10.0f,
+        .recoveryTriggerPeriod = 50, /* 50 for 100ms loop or 520 for 104Hz sensor rate */
+    };
+
+    FusionAhrsSetSettings(&ahrs, &settings);
+
     std::signal(SIGINT, on_sigint);
 
     platformHandleT ag_handle{};
@@ -74,18 +108,28 @@ int main() {
         m_ctx.mdelay = platform_delay;
         m_ctx.handle = &m_handle_;
 
+        //resets IMU
         lsm6dsox_reset_set(&ag_ctx, PROPERTY_ENABLE);
+        //waits 10ms so reset can finish before more register writes
         platform_delay(10);
 
+        // x/y/z registers update together
         lsm6dsox_block_data_update_set(&ag_ctx, PROPERTY_ENABLE);
+        //sets sensitivity for accelerometer to +-8g; should match converter that is used later
+        //might want to make it less sensitive
         lsm6dsox_xl_full_scale_set(&ag_ctx, LSM6DSOX_8g);
+        //gyro range is +- 2000 degress per second
         lsm6dsox_gy_full_scale_set(&ag_ctx, LSM6DSOX_2000dps);
+        //acceleration output rate is 104Hz so new samples every ~9.6ms
         lsm6dsox_xl_data_rate_set(&ag_ctx, LSM6DSOX_XL_ODR_104Hz);
+        //gyro output rate is also 104Hz
         lsm6dsox_gy_data_rate_set(&ag_ctx, LSM6DSOX_GY_ODR_104Hz);
 
         lis3mdl_block_data_update_set(&m_ctx, PROPERTY_ENABLE);
         lis3mdl_full_scale_set(&m_ctx, LIS3MDL_4_GAUSS);
+        ////80Hz is ultra high performance (not sure if that level is really needed but good yaw would be useful i think)
         lis3mdl_data_rate_set(&m_ctx, LIS3MDL_UHP_80Hz);
+        //run magnometer continuously
         lis3mdl_operating_mode_set(&m_ctx, LIS3MDL_CONTINUOUS_MODE);
         platform_delay(50);
 
@@ -104,6 +148,7 @@ int main() {
         int16_t mag2 = 0;
 
         while(run) {
+            //0 is for x, 1 is for y, and 2 is for z for following arrays
             int16_t accel[3]{};
             int16_t gyro[3]{};
             int16_t mag[3]{};
@@ -112,9 +157,33 @@ int main() {
             lsm6dsox_angular_rate_raw_get(&ag_ctx, gyro);
             lis3mdl_magnetic_raw_get(&m_ctx, mag);
 
-            std::cout << accel[0] << ' ' << accel[1] << ' ' << accel[2] << '\n';
-            std::cout << gyro[0] << ' ' << gyro[1] << ' ' << gyro[2] << '\n';
-            std::cout << mag[0] << ' ' << mag[1] << ' ' << mag[2] << '\n';
+            //lsb to millidegrees/second to degrees/second
+            const FusionVector gyroscope = {lsm6dsox_from_fs2000_to_mdps(gyro[0]) / 1000.0f,
+                lsm6dsox_from_fs2000_to_mdps(gyro[1]) / 1000.0f,
+                lsm6dsox_from_fs2000_to_mdps(gyro[2]) / 1000.0f};
+
+            //lsb to milligrams to grams
+            const FusionVector accelerometer = {lsm6dsox_from_fs8_to_mg(accel[0]) / 1000.0f, 
+                lsm6dsox_from_fs8_to_mg(accel[1]) / 1000.0f,
+                lsm6dsox_from_fs8_to_mg(accel[2]) / 1000.0f};
+
+            //lsb to gauss
+            const FusionVector magnetometer = {lis3mdl_from_fs4_to_gauss(mag[0]),
+                lis3mdl_from_fs4_to_gauss(mag[1]),
+                lis3mdl_from_fs4_to_gauss(mag[2])};
+
+            //for fusionvector stuff we'll likely need to account for bias and stuff later
+            //not sure how exactly they calculated all of that for the AUV
+
+            FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, LOOP_TIME);
+
+            std::cout << 'a' << accel[0] << ' ' << accel[1] << ' ' << accel[2] << '\n';
+            std::cout << 'g' << gyro[0] << ' ' << gyro[1] << ' ' << gyro[2] << '\n';
+            std::cout << 'm' << mag[0] << ' ' << mag[1] << ' ' << mag[2] << '\n';
+
+            const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+
+            std::cout << "roll: " << euler.angle.roll << " pitch: " << euler.angle.pitch << " yaw: " << euler.angle.yaw << "\n";
 
             accel0 += accel[0];
             accel1 += accel[1];
