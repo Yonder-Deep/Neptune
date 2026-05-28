@@ -31,14 +31,13 @@ public:
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input. Please enter a number: ";
         }
-        std::cout << "running:" << out << std::endl;
         switch (out)
         {
         case 0:
             Neptune::instance->rotate(true, speed);
             return std::chrono::milliseconds(wait);
         case 1:
-            Neptune::instance->rotate(true, speed);
+            Neptune::instance->rotate(false, speed);
             return std::chrono::milliseconds(wait);
         case 2:
             Neptune::instance->forwards(speed);
@@ -48,6 +47,7 @@ public:
             return std::chrono::milliseconds(wait);
         case 4:
             int wait;
+            std::cout << "New duration(ms):";
             while (!(std::cin >> wait))
             {
                 std::cin.clear();
@@ -55,9 +55,10 @@ public:
                 std::cout << "Invalid input. Please enter a number: ";
             }
             this->wait = wait;
-            return std::chrono::milliseconds(wait);
+            return std::chrono::milliseconds(10);
         case 5:
             double speed;
+            std::cout << "New speed(0.01 to 1):";
             while (!(std::cin >> speed) && (0.01 <= speed) && (speed <= 1))
             {
                 std::cin.clear();
@@ -65,10 +66,10 @@ public:
                 std::cout << "Invalid input. Please enter a number: ";
             }
             this->speed = speed;
-            return std::chrono::milliseconds(wait);
+            return std::chrono::milliseconds(10);
         case 6:
             Neptune::instance->dispData();
-            return std::chrono::milliseconds(wait);
+            return std::chrono::milliseconds(10);
         }
         return std::chrono::milliseconds(wait);
     }

@@ -175,7 +175,7 @@ public:
     void start()
     {
         Neptune::instance = this;
-        gps->await_lock(5, 500);
+        //gps->await_lock(5, 500);
         std::cout << "Arming motors" << std::endl;
         front_left->armMotor();
         front_right->armMotor();

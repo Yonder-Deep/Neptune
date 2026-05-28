@@ -11,6 +11,11 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <csignal>
+void handle_quit(int signum){
+  Neptune::instance->stop();
+  exit(0);
+}
 int main(int argc, char **argv)
 {
   CLI::App app;
@@ -42,5 +47,6 @@ int main(int argc, char **argv)
   neptune->front_right = front_right;
   neptune->compass = new Compass();
   neptune->state = new Menu();
+  std::signal(SIGINT,handle_quit);
   neptune->start();
 }
