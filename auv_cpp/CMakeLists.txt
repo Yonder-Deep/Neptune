@@ -21,5 +21,9 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-#if we make core subdirectory uncomment this
-#add_subdirectory(src/core)
+add_subdirectory(src/core)
+
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()

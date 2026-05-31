@@ -25,7 +25,7 @@ char* find_radio() {
             &kCFTypeDictionaryValueCallBacks);
     CFDictionarySetValue(matchingUSBDict, CFSTR(kIOPropertyMatchKey),
             subDict);
-    
+
     //NSLog(@"Matching Dict:");
     //NSLog(@"%@", matchingUSBDict);
 
@@ -34,7 +34,7 @@ char* find_radio() {
     matchedService = IOServiceGetMatchingService(kIOMainPortDefault, matchingUSBDict);
 
     //NSLog(@"Service: %u", matchedService);
-    
+
     // Service path, not really that useful for our purposes
     io_string_t servicePath;
     IORegistryEntryGetPath(matchedService, kIOServicePlane, servicePath);
@@ -54,7 +54,7 @@ char* find_radio() {
     size_t devPathLength;
     Boolean gotString = false;
 
-    /* This commented part is from the Apple docs but always comes up null    
+    /* This commented part is from the Apple docs but always comes up null
     CFTypeRef deviceNameAsCFString;
     deviceNameAsCFString = (CFStringRef) IORegistryEntrySearchCFProperty (
             matchedService,
@@ -75,7 +75,7 @@ char* find_radio() {
                 deviceFilePath + strlen(deviceFilePath),
                 MAXPATHLEN - strlen(deviceFilePath),
                 kCFStringEncodingASCII);
-        
+
         if (gotString) {
             //NSLog(@"Device file path: %s", deviceFilePath);
             char* finalResult = malloc(strlen(deviceFilePath));
@@ -111,7 +111,7 @@ int main() {
     NSString *radioPath = [NSString stringWithUTF8String:result];
     free(result);
 
-    
+
     if (radioPath && ![radioPath isEqual: @"Radio device not found"]) {
         NSLog(@"Calling pppd for device at %@", radioPath);
         NSTask *task = [[NSTask alloc] init];

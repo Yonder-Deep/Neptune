@@ -2,5 +2,15 @@
     "name": "neptune",
     "build": {
         "dockerfile": "../Docker/Dockerfile"
+    },
+
+    "runArgs": ["--privileged", "--add-host=host.docker.internal:host-gateway" ],
+    "customizations": {
+    "vscode": {
+        "extensions": [
+            "ms-vscode.cpptools-extension-pack"
+        ]
     }
+},
+"onCreateCommand": "pipx run pre-commit install"
 }

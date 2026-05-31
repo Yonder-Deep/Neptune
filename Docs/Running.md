@@ -14,5 +14,3 @@ build the project, then run it
 cmake --build neptune
 ./neptune
 ```
-
-

@@ -5,11 +5,22 @@ project(neptune C CXX)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
+find_package(Threads REQUIRED)
 
 #required for pthread_setaffinity_np / CPU_SET (GNU extensions)
 add_compile_definitions(_GNU_SOURCE)
 
 add_executable(neptune main.cpp)
+add_executable(neptune_sim sim_main.cpp)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
 
 #BUILD_SIMULATION option
 #this isn't a physics engine its to mimic motor.py to simulate the motor
@@ -38,39 +49,103 @@ else()
     set(LGPIO_LINK_LIBS "")
 endif()
 
-#create motor library (just header file)
-add_library(motor INTERFACE)
-target_include_directories(motor INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/drivers)
 
-#add lgpio include directory to motor target
+
+# Eigen(linear algebra lib)
+find_package(Eigen3 REQUIRED)
+
+target_include_directories(neptune PRIVATE ${EIGEN3_INCLUDE_DIRS})
+target_include_directories(neptune_sim PRIVATE ${EIGEN3_INCLUDE_DIRS})
+
+link_directories(drivers)
+add_subdirectory(drivers)
+add_subdirectory(types)
+add_subdirectory(states)
+
+target_link_libraries(motors ${LGPIO_LINK_LIBS})
+
+#main target
+target_include_directories(motors PRIVATE ${LGPIO_INCLUDE_DIR})
+target_link_libraries(neptune_sim motors)
+target_link_libraries(neptune motors)
+
+target_link_libraries(neptune_sim gps_drivers)
+target_link_libraries(neptune gps_drivers)
+
+
+# Everything below here is not part of the main target
+
+#Testing
+enable_testing()
+
+add_executable(
+  thruster_test
+  tests/thruster.cc
+)
+
+target_link_libraries(thruster_test
+  GTest::gtest_main
+  motors
+)
+
+include(GoogleTest)
+gtest_discover_tests(thruster_test)
+
+add_library(thruster STATIC
+  drivers/motors/thruster.cpp
+  drivers/motors/motor.cpp
+)
+target_include_directories(thruster PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
 if(NOT BUILD_SIMULATION)
-    target_include_directories(motor INTERFACE ${LGPIO_INCLUDE_DIR})
-    target_link_libraries(motor INTERFACE ${LGPIO_LINK_LIBS})
+  target_link_libraries(thruster PUBLIC ${LGPIO_LINK_LIBS})
+  target_include_directories(thruster PUBLIC ${LGPIO_INCLUDE_DIR})
 endif()
 
-#need pthreads for RT thread
-find_package(Threads REQUIRED)
+add_library(sim_motor STATIC
+  drivers/motors/motor.cpp
+)
+target_include_directories(sim_motor PUBLIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
 
-#executable for testing motor(separate from library)
-add_executable(motor_test drivers/main.cpp)
-target_link_libraries(motor_test motor)
-target_link_libraries(motor_test Threads::Threads)
+add_executable(motor_server
+  drivers/server/motor_server.cpp
+)
 
-#executable for pool test
-add_executable(pool_test drivers/pool_test.cpp)
-target_link_libraries(pool_test motor)
-target_link_libraries(pool_test Threads::Threads)
+target_include_directories(motor_server PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/comms
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
+)
 
-#define BUILD SIMULATION
-if(BUILD_SIMULATION)
-    target_compile_definitions(motor_test PRIVATE BUILD_SIMULATION)
-    target_compile_definitions(pool_test PRIVATE BUILD_SIMULATION)
-endif()
+
+target_link_libraries(motor_server PRIVATE Threads::Threads)
 
 if(NOT BUILD_SIMULATION)
-    target_link_libraries(motor_test ${LGPIO_LINK_LIBS})
-    target_link_libraries(pool_test ${LGPIO_LINK_LIBS})
+  target_link_libraries(motor_server PRIVATE thruster)
+  target_include_directories(motor_server PRIVATE ${LGPIO_INCLUDE_DIR})
+else()
+  target_link_libraries(motor_server PRIVATE sim_motor)
+  target_compile_definitions(motor_server PRIVATE BUILD_SIMULATION)
 endif()
 
-#to use the motor library elsewhere
-#target_link_libraries(your_target motor)
+
+#linter
+find_program(PIPX NAMES "pipx")
+if(PIPX)
+ add_custom_target(
+        lint
+        COMMAND ${PIPX} run pre-commit run
+
+        COMMENT "Runing precommit checks"
+    )
+    add_custom_target(
+        lint_all
+        COMMAND ${PIPX} run pre-commit run --all-files
+
+        COMMENT "Runing precommit checks"
+    )
+else()
+message(WARNING "Failed to find pipx for precommit checks")
+endif()
