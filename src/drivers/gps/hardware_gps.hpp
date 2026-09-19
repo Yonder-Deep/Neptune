@@ -6,9 +6,10 @@
 #include <string>
 #include <stdexcept>
 
+const int GPS_CHECK_INTERVAL = 10000;
 /**
  * Note - its likely that only 1 gps can function at a time
- * Reprsents a GPS attached by usb to the pi. Uses the gpsd daemon to gather information
+ * Represents a GPS attached by usb to the pi. Uses the gpsd daemon to gather information
  */
 class HardwareGPS : public GPS {
 public:
@@ -18,17 +19,15 @@ public:
   /**
    * Get the current GPS location once a valid fix is obtained.
    * No alt is gotten.
-   * Maybe block for awhile
+   * May block for awhile if a fix is lost.
    * @return GPSCoordinate containing latitude and longitude.
    */
   GPSCoordinate location() override {
     while (true) {
       struct gps_data_t *data;
-
-      if (!(this->gps_rec->waiting(10000))) {
+      if (!(this->gps_rec->waiting(GPS_CHECK_INTERVAL ))) {
         continue;
       }
-
       if ((data = this->gps_rec->read()) == NULL) {
         std::cerr << "Read error." << std::endl;
         // TODO - what to do here?
@@ -47,6 +46,10 @@ public:
       }
     }
   }
+  /**
+   * Creates a hardware gps. This will run the gpsd daemon
+   * @param location Where to listen for the gps. Often, a usb port like /dev/ttyACM0
+   */
   HardwareGPS(std::string location, const char *gpsd_port = DEFAULT_GPSD_PORT) {
     std::string out = "gpsd " + location;
     int val = system(out.c_str());
@@ -87,7 +90,7 @@ public:
           if (++attempt > tries) {
             return false;
           }
-          std::cout << "No gps fix" << std::endl;
+          std::cout << "No gps fix on attempt" << attempt << std::endl;
         }
       }
     }

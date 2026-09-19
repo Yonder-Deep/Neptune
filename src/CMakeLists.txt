@@ -93,7 +93,6 @@ gtest_discover_tests(thruster_test)
 
 add_library(thruster STATIC
   drivers/motors/thruster.cpp
-  drivers/motors/motor.cpp
 )
 target_include_directories(thruster PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/drivers
@@ -103,32 +102,6 @@ if(NOT BUILD_SIMULATION)
   target_include_directories(thruster PUBLIC ${LGPIO_INCLUDE_DIR})
 endif()
 
-add_library(sim_motor STATIC
-  drivers/motors/motor.cpp
-)
-target_include_directories(sim_motor PUBLIC
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
-)
-
-add_executable(motor_server
-  drivers/server/motor_server.cpp
-)
-
-target_include_directories(motor_server PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/comms
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers
-)
-
-
-target_link_libraries(motor_server PRIVATE Threads::Threads)
-
-if(NOT BUILD_SIMULATION)
-  target_link_libraries(motor_server PRIVATE thruster)
-  target_include_directories(motor_server PRIVATE ${LGPIO_INCLUDE_DIR})
-else()
-  target_link_libraries(motor_server PRIVATE sim_motor)
-  target_compile_definitions(motor_server PRIVATE BUILD_SIMULATION)
-endif()
 
 
 #linter

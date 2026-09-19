@@ -4,15 +4,14 @@
 #include "drivers/gps/gps.hpp"
 #include "drivers/motors/motor.hpp"
 #include "neptune.hpp"
-#include "states/navigate.hpp"
 #include "drivers/motors/thruster.hpp"
 #include "states/menu.hpp"
 #include "lgpio.h"
 #include <iostream>
-#include <thread>
 #include <chrono>
 #include <csignal>
-void handle_quit(int signum){
+void handle_quit(int signum)
+{
   Neptune::instance->stop();
   exit(0);
 }
@@ -28,10 +27,10 @@ int main(int argc, char **argv)
   app.add_option("--motors", pins, "The 4 pins for motors (space delimited) in the form: front_left front_right back_left back_right");
   CLI11_PARSE(app, argc, argv);
   GPS *gps = new HardwareGPS(gps_port);
-  //Hardcoded since I dont think this will ever change on the pi
-
-  if(pins.size() != 4){
-    std::cout << "Wrong number of input pins for motors:" << pins.size() <<"\n";
+  // Hardcoded since I dont think this will ever change on the pi
+  if (pins.size() != 4)
+  {
+    std::cout << "Wrong number of input pins for motors:" << pins.size() << "\n";
     return 1;
   }
   int handle = lgGpiochipOpen(0);
@@ -47,6 +46,6 @@ int main(int argc, char **argv)
   neptune->front_right = front_right;
   neptune->compass = new Compass();
   neptune->state = new Menu();
-  std::signal(SIGINT,handle_quit);
+  std::signal(SIGINT, handle_quit);
   neptune->start();
 }
