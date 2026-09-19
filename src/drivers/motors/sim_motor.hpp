@@ -13,16 +13,7 @@ public:
   SimulatedMotor(MotorLocation ml, int speed,
                                  float cycle) : Motor(speed, cycle)
   {
-    if (sim_connection == 0)
-    {
-      sim_connection = new httplib::Client(SIM_ADDR);
-      httplib::Result out = sim_connection->Get("/heartbeat");
-      if (out == nullptr)
-      {
-        throw std::runtime_error("No simulation connection found");
-      }
-      std::cout << "Status code from sim:" << out->status << std::endl;
-    }
+    check_sim_connected();
     this->ml = ml;
   }
   int setSpeed(float speed) override {
@@ -34,12 +25,7 @@ public:
   std::ostringstream oss;
   oss << "{\"speed\":" << speed << "}";
   std::string s = oss.str();
-  auto out = sim_connection->Post(
-      this->GetMotorPath().c_str(), s.c_str(), "application/json");
-  if (out == nullptr) {
-    std::cout << "Error sending sim info" << std::endl;
-  }
-
+  send_sim_msg(this->GetMotorPath(), s, HTTPMethod::Post );
   return 0;
 }
 int setFrequency(float cycle) override {

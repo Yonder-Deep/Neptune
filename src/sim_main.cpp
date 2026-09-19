@@ -4,7 +4,6 @@
 #include "drivers/motors/motor.hpp"
 #include "types/MotorLocation.hpp"
 #include "neptune.hpp"
-#include "states/navigate.hpp"
 #include "states/menu.hpp"
 #include <iostream>
 #include <thread>
