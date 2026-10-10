@@ -13,7 +13,7 @@ public:
    * @return The return code. Negative indicates errors, otherwise the meaning
    * depends on the impelmenting class
    */
-  virtual int setSpeed(float speed);
+  virtual int setSpeed(float speed)  = 0;
   /**
    * @brief Sets the frequency of the motor pwm, ie how quick cycles are sent to
    * the ESC
@@ -21,12 +21,12 @@ public:
    * @return The return code. Negative indicates errors, otherwise the meaning
    * depends on the impelmenting class
    */
-  virtual int setFrequency(float cycle);
+  virtual int setFrequency(float cycle) = 0;
 
   /**
    * @brief arms the motor. Likely a blocking method for a few seconds
    */
-  virtual void armMotor();
+  virtual void armMotor() = 0;
   float speed;
   float cycle;
 

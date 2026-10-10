@@ -1,6 +1,6 @@
 #pragma once
 #include "state.hpp"
-#include "../../neptune.hpp"
+#include "../neptune.hpp"
 #include <optional>
 #include <array>
 #include <cmath>
