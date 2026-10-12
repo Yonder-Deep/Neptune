@@ -38,4 +38,4 @@ There is no enforced rule about which agents can or cannot be used. You are welc
 ## Contact
 If you have any questions or concerns about this project, please contact us:
 - Team members should use the discord channels
-- Non team members: Open a Github issue. 
+- Non team members: Open a Github issue.
