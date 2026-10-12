@@ -10,7 +10,7 @@ A general guideline is to follow  the [conventional commit standard](https://www
 
 ### Main Branch
 - `main` is the primary working branch and should always contain stable, tested code.
-- All code in `main` must pass automated tests, simulation, and peer review
+- All code in `main` must pass automated tests, simulation, and peer review.
 - Do not force push to `main`, create your own branch before working on your issue.
 
 ### Merge Process
@@ -35,5 +35,7 @@ There is no enforced rule about which agents can or cannot be used. You are welc
 2. You are expected to check AI code yourself, to follow good coding practices, and to match the style of the codebase before you ask for review.
 3. Write pull requests descriptions yourself. It is better to produce a short description of what you understand rather than generate one you do not. If you do not know enough about the code you are pushing to write a description for a pr, you are likely violating point 2.
 
-
-For questions or suggestions about these guidelines, please open an issue or contact the project maintainer.
+## Contact
+If you have any questions or concerns about this project, please contact us:
+- Team members should use the discord channels
+- Non team members: Open a Github issue. 
