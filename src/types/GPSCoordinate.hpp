@@ -1,7 +1,9 @@
 #pragma once
 
 #include <ostream>
+#include <Eigen/Dense>
 
+using namespace Eigen;
 struct GPSCoordinate {
   double latitude;
   double longitude;
@@ -39,8 +41,8 @@ inline GPSCoordinate operator+(GPSCoordinate const& lhs, GPSCoordinate const& rh
     return {lhs.latitude + rhs.latitude, lhs.longitude + rhs.longitude};
 }
 
-inline GPSCoordinate operator-(GPSCoordinate const& lhs, GPSCoordinate const& rhs) {
-    return {lhs.latitude - rhs.latitude, lhs.longitude - rhs.longitude};
+inline Vector2d operator-(GPSCoordinate const& lhs, GPSCoordinate const& rhs) {
+    return Vector2d{lhs.latitude - rhs.latitude, lhs.longitude - rhs.longitude};
 }
 
 inline GPSCoordinate operator*(GPSCoordinate const& coord, double scalar) {
