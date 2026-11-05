@@ -1,3 +1,5 @@
+<img src="https://github.com/Yonder-Deep/Neptune/blob/main/logo.png" alt="Yonder Deep Logo" width="200">
+
 # Neptune
 Yonder Deep 2026
 

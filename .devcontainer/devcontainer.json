@@ -3,14 +3,14 @@
     "build": {
         "dockerfile": "../Docker/Dockerfile"
     },
-
-    "runArgs": ["--privileged", "--add-host=host.docker.internal:host-gateway" ],
+    "runArgs": [
+        "--env", "CONTAINER_ACTIVE=true"
+    ],
     "customizations": {
-    "vscode": {
-        "extensions": [
-            "ms-vscode.cpptools-extension-pack"
-        ]
-    }
-},
-"onCreateCommand": "pipx run pre-commit install"
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack"
+            ]
+        }
+    },
 }

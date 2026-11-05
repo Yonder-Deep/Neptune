@@ -102,23 +102,3 @@ if(NOT BUILD_SIMULATION)
   target_include_directories(thruster PUBLIC ${LGPIO_INCLUDE_DIR})
 endif()
 
-
-
-#linter
-find_program(PIPX NAMES "pipx")
-if(PIPX)
- add_custom_target(
-        lint
-        COMMAND ${PIPX} run pre-commit run
-
-        COMMENT "Runing precommit checks"
-    )
-    add_custom_target(
-        lint_all
-        COMMAND ${PIPX} run pre-commit run --all-files
-
-        COMMENT "Runing precommit checks"
-    )
-else()
-message(WARNING "Failed to find pipx for precommit checks")
-endif()
