@@ -4,35 +4,35 @@
  *
  */
 class Motor {
-public:
-  /**
-   * @brief sets the motor to run at speed until this or another method is
-   * called
-   * @param speed A value between -1.0 and 1.0, with -1.0 being max reverse
-   * thrust, 0.0 being still, and 1.0 being max forward thrust
-   * @return The return code. Negative indicates errors, otherwise the meaning
-   * depends on the impelmenting class
-   */
-  virtual int setSpeed(float speed)  = 0;
-  /**
-   * @brief Sets the frequency of the motor pwm, ie how quick cycles are sent to
-   * the ESC
-   * @param cycle The value, in hz, for the new cycle
-   * @return The return code. Negative indicates errors, otherwise the meaning
-   * depends on the impelmenting class
-   */
-  virtual int setFrequency(float cycle) = 0;
+  public:
+    /**
+     * @brief sets the motor to run at speed until this or another method is
+     * called
+     * @param speed A value between -1.0 and 1.0, with -1.0 being max reverse
+     * thrust, 0.0 being still, and 1.0 being max forward thrust
+     * @return The return code. Negative indicates errors, otherwise the meaning
+     * depends on the impelmenting class
+     */
+    virtual int setSpeed(float speed) = 0;
+    /**
+     * @brief Sets the frequency of the motor pwm, ie how quick cycles are sent to
+     * the ESC
+     * @param cycle The value, in hz, for the new cycle
+     * @return The return code. Negative indicates errors, otherwise the meaning
+     * depends on the impelmenting class
+     */
+    virtual int setFrequency(float cycle) = 0;
 
-  /**
-   * @brief arms the motor. Likely a blocking method for a few seconds
-   */
-  virtual void armMotor() = 0;
-  float speed;
-  float cycle;
+    /**
+     * @brief arms the motor. Likely a blocking method for a few seconds
+     */
+    virtual void armMotor() = 0;
+    float speed;
+    float cycle;
 
-protected:
-  Motor(int speed, int cycle) : speed(speed), cycle(cycle) {};
+  protected:
+    Motor(int speed, int cycle) : speed(speed), cycle(cycle) {};
 
-protected:
-  Motor() {};
+  protected:
+    Motor() {};
 };

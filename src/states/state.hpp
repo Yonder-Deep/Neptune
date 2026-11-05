@@ -1,12 +1,10 @@
 #pragma once
 #include "../neptune.hpp"
 #include <chrono>
-//Represents a state the usv can be in
-class State{
-    public:
-    State(){
-
-    }
+// Represents a state the usv can be in
+class State {
+  public:
+    State() {}
 
     /**
      * @brief The driving logic for this tick

@@ -1,23 +1,21 @@
 #pragma once
-#include "drivers/motors/motor.hpp"
 #include "drivers/gps/gps.hpp"
-#include "states/state.hpp"
 #include "drivers/imu/compass.hpp"
+#include "drivers/motors/motor.hpp"
+#include "states/state.hpp"
 #include "types/MotorLocation.hpp"
 
-#include <cstdlib>
-#include <unistd.h>
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
-#include <thread>
 #include <numbers>
-#include <algorithm>
+#include <thread>
+#include <unistd.h>
 
-
-class Neptune
-{
-public:
+class Neptune {
+  public:
     State *state;
     inline static Neptune *instance = nullptr;
     GPS *gps;
@@ -30,64 +28,47 @@ public:
     /**
      * Pretty prints all of the sensor data to std out in a nice format
      */
-    void dispData()
-    {
+    void dispData() {
         // GPS
-        try
-        {
+        try {
             auto loc = gps->location();
             std::cout << loc << "\n";
-        }
-        catch (...)
-        {
+        } catch (...) {
             std::cout << "GPS Location: <unavailable>\n";
         }
 
         // Motors
-        for (int i = 0; i < 4; ++i)
-        {
+        for (int i = 0; i < 4; ++i) {
             Motor *m = all_motors[i];
-            if (m)
-            {
+            if (m) {
                 double s = 0;
-                try
-                {
+                try {
                     s = m->speed;
-                }
-                catch (...)
-                {
+                } catch (...) {
                 }
                 std::cout << "Motor[" << i << "] speed: " << s << "\n";
-            }
-            else
-            {
+            } else {
                 std::cout << "Motor[" << i << "]: <null>\n";
             }
         }
         // State
-        if (state)
-        {
-            try
-            {
+        if (state) {
+            try {
                 std::cout << "State tick(ms): " << typeid(state).name() << "\n";
-            }
-            catch (...)
-            {
+            } catch (...) {
                 std::cout << "State: <unavailable>\n";
             }
-        }
-        else
-        {
+        } else {
             std::cout << "State: <null>\n";
         }
     }
     /**
      * Sets all motors to forward
      *
-     * @param max The maximum speed magnitude to apply to each motor. Defaults to 0.75. Bounded [0.0, 1.0] with higher numbers being faster
+     * @param max The maximum speed magnitude to apply to each motor. Defaults to 0.75. Bounded
+     * [0.0, 1.0] with higher numbers being faster
      */
-    void forwards(double max = 0.75)
-    {
+    void forwards(double max = 0.75) {
         front_left->setSpeed(max);
         front_right->setSpeed(max);
         back_left->setSpeed(max);
@@ -96,10 +77,10 @@ public:
     /**
      * Applies reverse thrust to all motors.
      *
-     * @param max The maximum speed magnitude to apply to each motor. Defaults to 0.75. Bounded [0.0, 1.0] with higher numbers being faster
+     * @param max The maximum speed magnitude to apply to each motor. Defaults to 0.75. Bounded
+     * [0.0, 1.0] with higher numbers being faster
      */
-    void backwards(double max = 0.75)
-    {
+    void backwards(double max = 0.75) {
         front_left->setSpeed(-max);
         front_right->setSpeed(-max);
         back_left->setSpeed(-max);
@@ -107,10 +88,8 @@ public:
     }
 
     // Helper to halt all motors. Note this stops the motor, and does not account for drifting
-    void stop()
-    {
-        for (Motor *m : all_motors)
-        {
+    void stop() {
+        for (Motor *m : all_motors) {
             m->setSpeed(0);
         }
     }
@@ -118,8 +97,7 @@ public:
     /**
      * Starts neptune. This method will functionally take over the thread it is called from
      */
-    void start()
-    {
+    void start() {
         Neptune::instance = this;
         // gps->await_lock(5, 500);
         std::cout << "Arming motors" << std::endl;
@@ -133,23 +111,18 @@ public:
         all_motors[2] = back_left;
         all_motors[3] = back_right;
 
-        while (true)
-        {
+        while (true) {
             std::this_thread::sleep_for(this->state->tick());
         }
     }
 
-    void rotate(bool clockwise, double max = 0.75)
-    {
-        if (clockwise)
-        {
+    void rotate(bool clockwise, double max = 0.75) {
+        if (clockwise) {
             front_left->setSpeed(max);
             front_right->setSpeed(-max);
             back_left->setSpeed(max);
             back_right->setSpeed(-max);
-        }
-        else
-        {
+        } else {
             front_left->setSpeed(-max);
             front_right->setSpeed(max);
             back_left->setSpeed(-max);
@@ -157,16 +130,13 @@ public:
         }
     }
 
-private:
+  private:
     // Wraps an angle to [0, 2pi]
-    double normalizeToPositiveAngle(double angle)
-    {
-        while (angle < 0)
-        {
+    double normalizeToPositiveAngle(double angle) {
+        while (angle < 0) {
             angle += M_PI * 2;
         }
-        while (angle > 2 * M_PI)
-        {
+        while (angle > 2 * M_PI) {
             angle -= M_PI * 2;
         }
         return angle;
