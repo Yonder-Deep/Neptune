@@ -1,10 +1,3 @@
-cmake_minimum_required(VERSION 3.25)
-
-project(neptune C CXX)
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
-endif()
 find_package(Threads REQUIRED)
 
 #required for pthread_setaffinity_np / CPU_SET (GNU extensions)

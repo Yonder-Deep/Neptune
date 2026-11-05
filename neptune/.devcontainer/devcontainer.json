@@ -1,7 +1,7 @@
 {
     "name": "neptune",
     "build": {
-        "dockerfile": "../Docker/Dockerfile"
+        "dockerfile": "../Dockerfile"
     },
     "runArgs": [
         "--env", "CONTAINER_ACTIVE=true"

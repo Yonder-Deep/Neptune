@@ -10,7 +10,7 @@
 
 .DEFAULT_GOAL := help
 
-.PHONY: help
+.PHONY: help 
 
 help:
 	# Script runner for Yonder-Deep/Neptune
@@ -38,9 +38,9 @@ ifneq "$(HOME)" "/root"
 # Commands outside container #
 # ========================== #
 
-.PHONY: default_enter_container container up enter
+.PHONY: container up enter build
 
-default_enter_container %:
+%: 
 	@echo "Invoked outside of container."
 	@echo "Re-running inside devcontainer: 'make $(MAKECMDGOALS)'"
 	devcontainer exec make $(if $(MAKECMDGOALS),$(MAKECMDGOALS),help)
@@ -59,6 +59,10 @@ enter:
 	@# exit the devcontainer shell
 	devcontainer exec bash || true
 
+# Separate forwarding since make can see the `build/` directory
+build:
+	devcontainer exec make build
+
 # If make is being invoked from inside the container, either from the re-invocation of make by
 # `default_enter_container`, or by a manual invocation from a shell inside the container
 else
@@ -71,11 +75,11 @@ else
 
 build:
 	@echo "Building code inside container..."
-	cd src/build && cmake .. && make
+	cmake -B build -S . && cd build && make
 
 prepare:
 	@echo "Generating build artifacts"
-	cd src/build && cmake ..
+	cmake -B build -S .
 
 clang-format:
 	@echo "Running clang-format..."
