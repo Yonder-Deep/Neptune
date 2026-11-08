@@ -12,3 +12,5 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowAllArgumentsOnNextLine: false
 
 ColumnLimit: 100
+
+BreakTemplateDeclarations: Leave

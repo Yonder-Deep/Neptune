@@ -5,6 +5,7 @@ add_executable(neptune_sim sim_main.cpp)
 
 add_subdirectory(common)
 target_link_libraries(neptune common)
+target_link_libraries(neptune_sim common)
 
 #required for pthread_setaffinity_np / CPU_SET (GNU extensions)
 # TODO: Is this required? (it is not mentioned in the motor driver code anymore)

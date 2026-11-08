@@ -1,9 +1,7 @@
 /// This code loads a configuration from YAML into a struct to easily change the program's behavior.
-#pragma < once>
+#pragma <once>
 
-#include <rfl.hpp>
 #include <rfl/yaml.hpp>
-#include <yaml-cpp/yaml.h>
 
 #include <exception>
 #include <expected>
