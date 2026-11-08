@@ -34,7 +34,6 @@ else()
 endif()
 
 # Eigen(linear algebra lib)
-# TODO: CPMAddPackage
 find_package(Eigen3 REQUIRED)
 
 target_include_directories(neptune PRIVATE ${EIGEN3_INCLUDE_DIRS})
@@ -52,33 +51,42 @@ target_include_directories(motors PRIVATE ${LGPIO_INCLUDE_DIR})
 target_link_libraries(neptune_sim motors gps_drivers)
 target_link_libraries(neptune motors gps_drivers)
 
+xrepo_package("cpp-httplib 0.63.0")
+find_package(httplib)
+target_link_libraries(neptune_sim httplib::httplib)
 
 # Everything below here is not part of the main target
 
 #Testing
 enable_testing()
 
-CPMAddPackage(
-  NAME googletest
-  GITHUB_REPOSITORY google/googletest
-  GIT_TAG v1.18.0
-)
+xrepo_package("gtest 1.17.0")
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# Have to create gtest_main target manually since apparently xrepo can't discover it automatically
+add_library(GTest::gtest_main INTERFACE IMPORTED)
+target_include_directories(GTest::gtest_main INTERFACE "${gtest_INCLUDE_DIRS}")
+target_link_directories(GTest::gtest_main INTERFACE "${gtest_LIBRARY_DIRS}")
+target_link_libraries(GTest::gtest_main INTERFACE 
+    gtest_main
+    ${gtest_LINK_LIBRARIES} 
+    ${gtest_SYS_LIBRARIES}
+)
 
 add_executable(
   thruster_test
   tests/thruster.cc
 )
-
 target_link_libraries(thruster_test
-  GTest::gtest_main
-  motors
+    GTest::gtest_main
+    motors
 )
 
 include(GoogleTest)
 gtest_discover_tests(thruster_test)
 
+# TODO: Why is this is separately built & is it needed?
 add_library(thruster STATIC
   drivers/motors/thruster.cpp
 )

@@ -13,22 +13,19 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/.cache/cpm" CACHE PATH "CPM Source Cache")
-
-message(STATUS "Loading CPM.cmake...")
-set(CPM_DOWNLOAD_VERSION 0.43.2)
-
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
-    message(STATUS "Downloading CPM.cmake to ${CMAKE_BINARY_DIR}/cmake")
-    message(STATUS "Downloading https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake")
+# Bootstrap xrepo.cmake, this just downloads the cmake file not xrepo & cmake
+# When we include() it below, it automatically ensures installation of xrepo & xmake
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/cmake/xrepo.cmake")
+    message(STATUS "Downloading xrepo.cmake wrapper...")
     file(DOWNLOAD
-        "https://github.com/cpm-cmake/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake"
-        "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake"
+        "https://raw.githubusercontent.com/xmake-io/xrepo-cmake/main/xrepo.cmake"
+        "${CMAKE_BINARY_DIR}/cmake/xrepo.cmake"
+        TLS_VERIFY ON
     )
-else ()
-    message(STATUS "CPM.cmake already downloaded")
 endif()
 
-include("${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+set(ENV{XMAKE_PKG_CACHEDIR} "${CMAKE_BINARY_DIR}/.xrepo/cache")
+set(ENV{XMAKE_PKG_INSTALLDIR} "${CMAKE_BINARY_DIR}/.xrepo/packages")
+include(${CMAKE_BINARY_DIR}/cmake/xrepo.cmake)
 
 add_subdirectory(src)
