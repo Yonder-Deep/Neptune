@@ -1,6 +1,7 @@
 #pragma once
+
 #include "../../types/GPSCoordinate.hpp"
-#include <iostream>
+
 /**
  * An abstract class that represents a gps that can gather coordinate location
  */

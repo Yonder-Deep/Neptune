@@ -1,25 +1,18 @@
 find_package(Threads REQUIRED)
 
-#required for pthread_setaffinity_np / CPU_SET (GNU extensions)
-add_compile_definitions(_GNU_SOURCE)
-
 add_executable(neptune main.cpp)
 add_executable(neptune_sim sim_main.cpp)
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
 
+add_subdirectory(common)
+target_link_libraries(neptune common)
+
+#required for pthread_setaffinity_np / CPU_SET (GNU extensions)
+# TODO: Is this required? (it is not mentioned in the motor driver code anymore)
+#       If it is required can it be in ./drivers/motors/CMakeLists.txt?
+add_compile_definitions(_GNU_SOURCE)
 
 #BUILD_SIMULATION option
-#this isn't a physics engine its to mimic motor.py to simulate the motor
 option(BUILD_SIMULATION "Build in simulation mode" OFF)
-
-#find lgpio library(only if not in simulation mode)
 if(NOT BUILD_SIMULATION)
     find_library(LGPIO_LIB lgpio)
     find_path(LGPIO_INCLUDE_DIR lgpio.h)
@@ -36,21 +29,17 @@ if(NOT BUILD_SIMULATION)
     target_link_libraries(neptune ${LGPIO_LINK_LIBS})
     target_include_directories(neptune PRIVATE ${LGPIO_INCLUDE_DIR})
 else()
-    #lgpio library isn't required in simulation mode
-    #not sure how simulations will work yet if we do any
     message(STATUS "Building in simulation mode. lgpio library not used.")
     set(LGPIO_LINK_LIBS "")
 endif()
 
-
-
 # Eigen(linear algebra lib)
+# TODO: CPMAddPackage
 find_package(Eigen3 REQUIRED)
 
 target_include_directories(neptune PRIVATE ${EIGEN3_INCLUDE_DIRS})
 target_include_directories(neptune_sim PRIVATE ${EIGEN3_INCLUDE_DIRS})
 
-link_directories(drivers)
 add_subdirectory(drivers)
 add_subdirectory(types)
 add_subdirectory(states)
@@ -59,17 +48,23 @@ target_link_libraries(motors ${LGPIO_LINK_LIBS})
 
 #main target
 target_include_directories(motors PRIVATE ${LGPIO_INCLUDE_DIR})
-target_link_libraries(neptune_sim motors)
-target_link_libraries(neptune motors)
 
-target_link_libraries(neptune_sim gps_drivers)
-target_link_libraries(neptune gps_drivers)
+target_link_libraries(neptune_sim motors gps_drivers)
+target_link_libraries(neptune motors gps_drivers)
 
 
 # Everything below here is not part of the main target
 
 #Testing
 enable_testing()
+
+CPMAddPackage(
+  NAME googletest
+  GITHUB_REPOSITORY google/googletest
+  GIT_TAG v1.18.0
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_executable(
   thruster_test

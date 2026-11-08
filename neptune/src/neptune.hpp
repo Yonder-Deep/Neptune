@@ -1,16 +1,12 @@
 #pragma once
+
 #include "drivers/gps/gps.hpp"
 #include "drivers/imu/compass.hpp"
 #include "drivers/motors/motor.hpp"
 #include "states/state.hpp"
-#include "types/MotorLocation.hpp"
 
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <cstdlib>
 #include <iostream>
-#include <numbers>
+#include <math.h>
 #include <thread>
 #include <unistd.h>
 

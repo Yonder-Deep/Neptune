@@ -1,7 +1,9 @@
 #pragma once
+
 #include "../../types/GPSCoordinate.hpp"
 #include "../common/sim.hpp"
 #include "gps.hpp"
+
 #include <cstdio>
 
 class Simulated_GPS : public GPS {

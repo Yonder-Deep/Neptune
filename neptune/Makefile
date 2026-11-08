@@ -8,8 +8,6 @@
 # Commands for inside & outside container #
 # ======================================= #
 
-.DEFAULT_GOAL := help
-
 .PHONY: help 
 
 help:
@@ -31,8 +29,7 @@ help:
 	# 	clang-format - Runs clang-format on the C++ in `src/`
 
 # This checks if make is NOT being invoked inside the container.
-# TODO: Give the devcontainer some environment variable to check instead of HOME
-ifneq "$(HOME)" "/root"
+ifneq "$(CONTAINER_ACTIVE)" "true"
 
 # ========================== #
 # Commands outside container #
@@ -84,6 +81,6 @@ prepare:
 clang-format:
 	@echo "Running clang-format..."
 	@# Using find because clang-format does not include file globbing
-	find src -path src/build -prune -o \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i --verbose {} +
+	find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i --verbose {} +
 
 endif

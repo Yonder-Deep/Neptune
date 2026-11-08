@@ -7,6 +7,7 @@
 **/CMakeFiles
 **/CMakeCache.txt
 **/.cache
+**/.cpm_cache
 
 auv/data/local/*
 !auv/data/local/.gitkeep

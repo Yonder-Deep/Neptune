@@ -1,7 +1,12 @@
 #pragma once
+
 #include "../../types/MotorLocation.hpp"
+#include "../common/sim.hpp"
 #include "motor.hpp"
-#include <httplib.h>
+
+#include <sstream>
+#include <stdexcept>
+#include <string>
 
 class SimulatedMotor : public Motor {
 

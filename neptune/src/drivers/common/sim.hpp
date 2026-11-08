@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <httplib.h>
 #include <stdexcept>
 #include <string>
@@ -10,6 +11,7 @@ namespace {
 inline const std::string SIM_ADDR = "http://host.docker.internal:6767";
 inline httplib::Client *sim_connection = nullptr;
 } // namespace
+
 enum HTTPMethod { Post, Get };
 
 /**

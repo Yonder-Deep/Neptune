@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "../drivers/motors/thruster.hpp"
-#include <stdexcept>
+
 class ThrusterTest :  public Thruster {
 public:
     // Use the protected constructor in the fixture's initializer list

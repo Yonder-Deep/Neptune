@@ -1,17 +1,16 @@
+#include "drivers/common/sim.hpp"
 #include "drivers/gps/gps.hpp"
 #include "drivers/gps/simulated_gps.hpp"
+#include "drivers/imu/compass.hpp"
 #include "drivers/motors/motor.hpp"
 #include "drivers/motors/sim_motor.hpp"
 #include "neptune.hpp"
 #include "states/menu.hpp"
 #include "types/MotorLocation.hpp"
-#include <chrono>
-#include <iostream>
-#include <thread>
 
-int main()
+#include <httplib.h>
 
-{
+int main() {
     sim_connection = new httplib::Client(SIM_ADDR);
     GPS *g = new Simulated_GPS();
 

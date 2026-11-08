@@ -1,6 +1,6 @@
 #pragma once
-#include "../neptune.hpp"
 #include <chrono>
+
 // Represents a state the usv can be in
 class State {
   public:
