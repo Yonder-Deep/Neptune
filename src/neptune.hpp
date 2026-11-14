@@ -4,6 +4,8 @@
 #include "states/state.hpp"
 #include "drivers/imu/compass.hpp"
 #include "types/MotorLocation.hpp"
+#include "types/BodyCommand.hpp"
+#include "control/thruster_allocator.hpp"
 
 #include <cstdlib>
 #include <unistd.h>
@@ -27,6 +29,7 @@ public:
     Motor *back_right;
     Motor *all_motors[4];
     Compass *compass;
+    ThrusterAllocator allocator;
     /**
      * Pretty prints all of the sensor data to std out in a nice format
      */
@@ -157,18 +160,30 @@ public:
         }
     }
 
-private:
-    // Wraps an angle to [0, 2pi]
-    double normalizeToPositiveAngle(double angle)
+    /**
+     * Moves the boat in the requested direction, Forward (surge), strafing (sway) and turning (yaw).
+     * Stays in effect until another motor command is given
+     *
+     * @param command The desired motion, each axis bounded [-1.0, 1.0]. See BodyCommand
+    */
+    void drive(const BodyCommand &command)
     {
-        while (angle < 0)
-        {
-            angle += M_PI * 2;
+        std::array<double, 4> speeds = allocator.allocate(command);
+        front_right->setSpeed(speeds[FrontRight]);
+        front_left->setSpeed(speeds[FrontLeft]);
+        back_right->setSpeed(speeds[BackRight]);
+        back_left->setSpeed(speeds[BackLeft]);
+    }
+
+private:
+    // Wraps an angle to [0, 2pi)
+    double normalizeToPositiveAngle(double angle) {
+        constexpr double TWO_PI = 2.0 * M_PI; // or 2.0 * M_PI
+
+        double normalized = std::fmod(angle, TWO_PI);
+        if (normalized < 0) {
+            normalized += TWO_PI;
         }
-        while (angle > 2 * M_PI)
-        {
-            angle -= M_PI * 2;
-        }
-        return angle;
+        return normalized;
     }
 };
