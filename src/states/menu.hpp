@@ -22,7 +22,7 @@ public:
     std::chrono::milliseconds tick() override
     {
         Neptune::instance->stop();
-        std::cout << "Current duration(ms): " << wait << "Current Speed:" << speed << "\nOptions:\n[0] Rotate Clockwise \n[1] Rotate Counter-Clockwise \n[2] Move Forwards \n[3] Move Backwards \n[4]Set Duration \n[5]Change Speed \n[6]Read Sensors" << std::endl;
+        std::cout << "Current duration(ms): " << wait << "Current Speed:" << speed << "\nOptions:\n[0] Rotate Clockwise \n[1] Rotate Counter-Clockwise \n[2] Move Forwards \n[3] Move Backwards \n[4]Set Duration \n[5]Change Speed \n[6]Read Sensors \n[7] Strafe Right \n[8] Strafe Left \n[9] Forward-Right + Rotate CW" << std::endl;
         std::cout << ":";
         int out;
         while (!(std::cin >> out) && (0 <= out) && (out <= 6))
@@ -34,17 +34,17 @@ public:
         switch (out)
         {
         case 0:
-            Neptune::instance->rotate(true, speed);
-            return std::chrono::milliseconds(wait);
+            Neptune::instance->drive({0, 0, this->speed});
+            return std::chrono::milliseconds(this->wait);
         case 1:
-            Neptune::instance->rotate(false, speed);
-            return std::chrono::milliseconds(wait);
+            Neptune::instance->drive({0, 0, -this->speed});
+            return std::chrono::milliseconds(this->wait);
         case 2:
-            Neptune::instance->forwards(speed);
-            return std::chrono::milliseconds(wait);
+            Neptune::instance->drive({this->speed, 0, 0});
+            return std::chrono::milliseconds(this->wait);
         case 3:
-            Neptune::instance->backwards(speed);
-            return std::chrono::milliseconds(wait);
+            Neptune::instance->drive({-this->speed, 0, 0});
+            return std::chrono::milliseconds(this->wait);
         case 4:
             int wait;
             std::cout << "New duration(ms):";
@@ -70,6 +70,15 @@ public:
         case 6:
             Neptune::instance->dispData();
             return std::chrono::milliseconds(10);
+        case 7:
+            Neptune::instance->drive({0, this->speed, 0});
+            return std::chrono::milliseconds(this->wait);
+        case 8:
+            Neptune::instance->drive({0, -this->speed, 0});
+            return std::chrono::milliseconds(this->wait);
+        case 9:
+            Neptune::instance->drive({this->speed, this->speed, this->speed});
+            return std::chrono::milliseconds(this->wait);
         }
         return std::chrono::milliseconds(wait);
     }
