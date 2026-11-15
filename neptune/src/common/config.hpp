@@ -32,7 +32,7 @@ std::expected<Config, std::string> load_config(std::filesystem::path config_file
     std::ifstream config_file(config_filepath);
 
     if (!config_file.is_open()) {
-        return std::unexpected(std::string("Could not open file 'config.yaml'"));
+        return std::unexpected(std::string("Could not open file ") + config_filepath.string());
     }
 
     std::stringstream buffer;
