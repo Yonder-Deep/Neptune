@@ -91,6 +91,14 @@ target_link_libraries(thruster_test
 include(GoogleTest)
 gtest_discover_tests(thruster_test)
 
+add_executable(
+  allocator_test
+  tests/allocator.cc
+)
+target_include_directories(allocator_test PRIVATE ${EIGEN3_INCLUDE_DIRS})
+target_link_libraries(allocator_test GTest::gtest_main)
+gtest_discover_tests(allocator_test)
+
 add_library(thruster STATIC
   drivers/motors/thruster.cpp
 )
