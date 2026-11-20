@@ -28,6 +28,7 @@ endif()
 
 set(ENV{XMAKE_PKG_CACHEDIR} "${CMAKE_BINARY_DIR}/.xrepo/cache")
 set(ENV{XMAKE_PKG_INSTALLDIR} "${CMAKE_BINARY_DIR}/.xrepo/packages")
+set(XREPO_PACKAGE_VERBOSE ON)
 include(${CMAKE_BINARY_DIR}/cmake/xrepo.cmake)
 
 add_subdirectory(src)

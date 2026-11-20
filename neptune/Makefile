@@ -83,4 +83,8 @@ clang-format:
 	@# Using find because clang-format does not include file globbing
 	find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i --verbose {} +
 
+ci:
+	make clang-format
+	make build || make build
+
 endif
