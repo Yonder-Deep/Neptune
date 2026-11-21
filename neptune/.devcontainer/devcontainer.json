@@ -1,0 +1,16 @@
+{
+    "name": "neptune",
+    "build": {
+        "dockerfile": "../Dockerfile"
+    },
+    "runArgs": [
+        "--env", "CONTAINER_ACTIVE=true"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack"
+            ]
+        }
+    },
+}
